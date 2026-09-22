@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "robot-navigation-lab"
+version = "0.1.0"
+description = "Reproducible planning, trajectory validation, and tracking-control experiments."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "numpy>=1.24",
+  "scipy>=1.10",
+  "matplotlib>=3.7",
+  "Pillow>=10",
+  "gymnasium>=1.0,<2",
+]
+
+[project.optional-dependencies]
+rl = ["torch>=2.0"]
+dev = ["pytest>=8"]
+ui-test = ["playwright>=1.50,<2"]
+
+[project.scripts]
+navlab = "navlab.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"navlab.showcase" = ["web/index.html", "web/style.css", "web/app.js"]
+
+[tool.setuptools.exclude-package-data]
+"navlab.showcase" = ["web/app.test.js"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"

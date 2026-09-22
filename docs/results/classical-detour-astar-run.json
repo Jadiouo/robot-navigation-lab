@@ -1,0 +1,162 @@
+{
+  "schema_version": 1,
+  "command": {
+    "scenario": "detour",
+    "planner": "astar",
+    "controller": "pure_pursuit",
+    "seed": 0,
+    "budget": 2500,
+    "backward_pass": true,
+    "lookahead_braking": true,
+    "max_steps": 2000
+  },
+  "environment": {
+    "created_at_utc": "2026-09-22T07:16:11.063859+00:00",
+    "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+    "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.39",
+    "dependencies": {
+      "numpy": "2.4.6",
+      "scipy": "1.17.1",
+      "matplotlib": "3.10.9",
+      "Pillow": "10.2.0",
+      "gymnasium": "1.3.0",
+      "torch": "2.12.0"
+    },
+    "source_digest_sha256": "fa1ae78ef55fb3a552015a1db65c402e1d5171bc4910f75ce2f3b14229a6dc45"
+  },
+  "vehicle": {
+    "wheelbase": 2.5,
+    "width": 1.6,
+    "front_overhang": 0.8,
+    "rear_overhang": 0.8,
+    "dt": 0.05,
+    "max_steer": 0.6,
+    "max_steer_rate": 0.8,
+    "max_accel": 2.0,
+    "max_decel": 3.0,
+    "max_speed": 8.0,
+    "safety_margin": 0.15
+  },
+  "scenario": {
+    "name": "detour",
+    "start": {
+      "x": 4.25,
+      "y": 13.25,
+      "yaw": 0.0,
+      "v": 0.0,
+      "delta": 0.0
+    },
+    "goal": [
+      37.25,
+      13.25
+    ],
+    "metadata": {
+      "description": "Static known map with one obstacle that requires an upper detour.",
+      "seed": 0
+    },
+    "grid": {
+      "shape_yx": [
+        52,
+        84
+      ],
+      "resolution_m": 0.5,
+      "origin_xy_m": [
+        0.0,
+        0.0
+      ],
+      "occupancy_sha256": "a39d913f3505a16c881ed941f5d7e289b78c2ade93b13205090b358b54656e31"
+    }
+  },
+  "planning": {
+    "status": "success",
+    "reason": "",
+    "stats": {
+      "expanded": 856,
+      "path_cost": 40.0416305603426,
+      "algorithm": "astar"
+    }
+  },
+  "timings": {
+    "planning_wall_s": 0.05117281299953902,
+    "trajectory_wall_s": 0.02091740200012282,
+    "policy_inference_wall_s": 0.0027645459931591176,
+    "policy_inference_calls": 200
+  },
+  "trajectory": {
+    "status": "success",
+    "reason": "",
+    "diagnostics": {
+      "candidate": "cubic-c2",
+      "max_abs_kappa": 0.24784772053136783,
+      "attempts": [
+        {
+          "candidate": "cubic-c2",
+          "status": "success",
+          "reason": ""
+        }
+      ]
+    }
+  },
+  "environment_contract": {
+    "action": {
+      "shape": [
+        1
+      ],
+      "range": [
+        -1.0,
+        1.0
+      ],
+      "meaning": "normalized steering"
+    },
+    "observation": {
+      "dtype": "float32",
+      "shape": [
+        40
+      ],
+      "range": [
+        -1.0,
+        1.0
+      ],
+      "schema": "[cte/4,heading_error/pi,v/vmax,delta/deltamax,(v-v_ref)/vmax]+7*[x_body/16,y_body/16,yaw_rel/pi,kappa*wheelbase,v_ref/vmax]",
+      "preview_distances_m": [
+        1.0,
+        2.0,
+        4.0,
+        6.0,
+        8.0,
+        12.0,
+        16.0
+      ]
+    },
+    "goal": {
+      "position_tolerance_m": 1.25,
+      "speed_tolerance_mps": 0.45
+    },
+    "max_steps": 2000,
+    "lookahead_braking": true
+  },
+  "metrics": {
+    "steps": 200,
+    "duration_s": 10.0,
+    "success": true,
+    "collision": false,
+    "termination_reason": "success",
+    "final_progress_m": 39.770676036097484,
+    "mean_abs_cte_m": 0.25155865834666136,
+    "max_abs_cte_m": 0.716279605658576,
+    "mean_abs_heading_error_rad": 0.07339534280671534,
+    "speed_rmse_mps": 0.3648475694333639,
+    "max_overspeed_mps": 0.3133773446277086,
+    "mean_abs_steering_rate_radps": 0.13663868829142303,
+    "max_abs_steering_rate_radps": 0.8000000000000002,
+    "max_abs_kinematic_lateral_accel_mps2": 2.7974568874564065,
+    "p99_abs_kinematic_lateral_accel_mps2": 2.79212457473053,
+    "time_to_goal_s": 10.0
+  },
+  "artifacts": {
+    "trace": "trace.csv",
+    "trajectory": "trajectory.csv",
+    "overview": "overview.png",
+    "replay": "replay.gif"
+  }
+}

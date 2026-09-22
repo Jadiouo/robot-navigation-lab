@@ -1,0 +1,3638 @@
+{
+  "schema_version": 1,
+  "kind": "post_training_held_out_reevaluation",
+  "route_split": "test",
+  "route_seeds": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19
+  ],
+  "provenance_note": "This is a post-training evaluation-only run. The formal train.json and original training-comparison.json remain the record of selection. Metrics reporting was extended after training; this run adds current raw trace columns and current metrics without training or selecting on held-out test.",
+  "ppo": {
+    "0": {
+      "checkpoint": "artifacts/ppo-final/seed-0/best_checkpoint.pt",
+      "checkpoint_sha256": "c6116d67fa75778bf7ba397007c3d2eb5fb3f3fc1d3351669187997f7b67b16e",
+      "episodes": [
+        {
+          "seed": 0,
+          "metrics": {
+            "steps": 307,
+            "duration_s": 15.350000000000001,
+            "success": false,
+            "collision": true,
+            "termination_reason": "collision",
+            "final_progress_m": 40.43935170425055,
+            "mean_abs_cte_m": 1.199685413684457,
+            "max_abs_cte_m": 3.5602220503096125,
+            "mean_abs_heading_error_rad": 0.34148348067864964,
+            "speed_rmse_mps": 0.5528655508523683,
+            "max_overspeed_mps": 1.6101119584634407,
+            "mean_abs_steering_rate_radps": 0.11590060349007769,
+            "max_abs_steering_rate_radps": 0.8000000000000002,
+            "max_abs_kinematic_lateral_accel_mps2": 1.1201097970677432,
+            "p99_abs_kinematic_lateral_accel_mps2": 1.1122259794964982,
+            "time_to_goal_s": null
+          }
+        },
+        {
+          "seed": 1,
+          "metrics": {
+            "steps": 306,
+            "duration_s": 15.3,
+            "success": false,
+            "collision": true,
+            "termination_reason": "collision",
+            "final_progress_m": 39.70354808797317,
+            "mean_abs_cte_m": 1.1408755497720986,
+            "max_abs_cte_m": 3.4279319169325557,
+            "mean_abs_heading_error_rad": 0.31984797760165923,
+            "speed_rmse_mps": 0.5560470448036363,
+            "max_overspeed_mps": 1.5017488942984272,
+            "mean_abs_steering_rate_radps": 0.11445670825204039,
+            "max_abs_steering_rate_radps": 0.8000000000000002,
+            "max_abs_kinematic_lateral_accel_mps2": 1.0381131894874582,
+            "p99_abs_kinematic_lateral_accel_mps2": 1.030053096152839,
+            "time_to_goal_s": null
+          }
+        },
+        {
+          "seed": 2,
+          "metrics": {
+            "steps": 286,
+            "duration_s": 14.3,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 38.17373764275269,
+            "mean_abs_cte_m": 1.0178789149645373,
+            "max_abs_cte_m": 3.5424572166295105,
+            "mean_abs_heading_error_rad": 0.3224025529235848,
+            "speed_rmse_mps": 0.5277467073778802,
+            "max_overspeed_mps": 1.6315629988016993,
+            "mean_abs_steering_rate_radps": 0.11569167635032347,
+            "max_abs_steering_rate_radps": 0.8000000000000002,
+            "max_abs_kinematic_lateral_accel_mps2": 1.1213380224139236,
+            "p99_abs_kinematic_lateral_accel_mps2": 1.1083452073742615,
+            "time_to_goal_s": 14.3
+          }
+        },
+        {
+          "seed": 3,
+          "metrics": {
+            "steps": 286,
+            "duration_s": 14.3,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 38.113561182846965,
+            "mean_abs_cte_m": 0.9852263278448304,
+            "max_abs_cte_m": 3.486384233660515,
+            "mean_abs_heading_error_rad": 0.3125560366193957,
+            "speed_rmse_mps": 0.531348126237337,
+            "max_overspeed_mps": 1.6164643193611816,
+            "mean_abs_steering_rate_radps": 0.1132833837837606,
+            "max_abs_steering_rate_radps": 0.8000000000000002,
+            "max_abs_kinematic_lateral_accel_mps2": 1.1714119555455427,
+            "p99_abs_kinematic_lateral_accel_mps2": 1.1596140492489588,
+            "time_to_goal_s": 14.3
+          }
+        },
+        {
+          "seed": 4,
+          "metrics": {
+            "steps": 306,
+            "duration_s": 15.3,
+            "success": false,
+            "collision": true,
+            "termination_reason": "collision",
+            "final_progress_m": 40.14938888096768,
+            "mean_abs_cte_m": 1.1961330974250914,
+            "max_abs_cte_m": 3.5605468058309357,
+            "mean_abs_heading_error_rad": 0.341160981120516,
+            "speed_rmse_mps": 0.5527916740540847,
+            "max_overspeed_mps": 1.609096778185973,
+            "mean_abs_steering_rate_radps": 0.1185689621111926,
+            "max_abs_steering_rate_radps": 0.8000000000000004,
+            "max_abs_kinematic_lateral_accel_mps2": 1.0507686598452608,
+            "p99_abs_kinematic_lateral_accel_mps2": 1.0408143341368208,
+            "time_to_goal_s": null
+          }
+        },
+        {
+          "seed": 5,
+          "metrics": {
+            "steps": 306,
+            "duration_s": 15.3,
+            "success": false,
+            "collision": true,
+            "termination_reason": "collision",
+            "final_progress_m": 39.19317093767246,
+            "mean_abs_cte_m": 1.1466612516163235,
+            "max_abs_cte_m": 3.438504040832541,
+            "mean_abs_heading_error_rad": 0.3214476301063817,
+            "speed_rmse_mps": 0.5556725735339831,
+            "max_overspeed_mps": 1.572049718859076,
+            "mean_abs_steering_rate_radps": 0.11578268366409282,
+            "max_abs_steering_rate_radps": 0.8000000000000002,
+            "max_abs_kinematic_lateral_accel_mps2": 0.9082241820993812,
+            "p99_abs_kinematic_lateral_accel_mps2": 0.8998010613811217,
+            "time_to_goal_s": null
+          }
+        },
+        {
+          "seed": 6,
+          "metrics": {
+            "steps": 285,
+            "duration_s": 14.25,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 37.545534186110416,
+            "mean_abs_cte_m": 0.9496000960944343,
+            "max_abs_cte_m": 3.373356846305336,
+            "mean_abs_heading_error_rad": 0.2988967877784673,
+            "speed_rmse_mps": 0.5216255683750428,
+            "max_overspeed_mps": 1.5839993788631148,
+            "mean_abs_steering_rate_radps": 0.10916086670599484,
+            "max_abs_steering_rate_radps": 0.8000000000000002,
+            "max_abs_kinematic_lateral_accel_mps2": 1.0444189183251802,
+            "p99_abs_kinematic_lateral_accel_mps2": 1.0349842263829785,
+            "time_to_goal_s": 14.25
+          }
+        },
+        {
+          "seed": 7,
+          "metrics": {
+            "steps": 307,
+            "duration_s": 15.350000000000001,
+            "success": false,
+            "collision": true,
+            "termination_reason": "collision",
+            "final_progress_m": 39.59952712855239,
+            "mean_abs_cte_m": 1.1910533026169103,
+            "max_abs_cte_m": 3.549086339536865,
+            "mean_abs_heading_error_rad": 0.33745245847832184,
+            "speed_rmse_mps": 0.5531732440979529,
+            "max_overspeed_mps": 1.5114489871332022,
+            "mean_abs_steering_rate_radps": 0.11827707401316019,
+            "max_abs_steering_rate_radps": 0.8000000000000002,
+            "max_abs_kinematic_lateral_accel_mps2": 0.9279449631130108,
+            "p99_abs_kinematic_lateral_accel_mps2": 0.9190764665122535,
+            "time_to_goal_s": null
+          }
+        },
+        {
+          "seed": 8,
+          "metrics": {
+            "steps": 307,
+            "duration_s": 15.350000000000001,
+            "success": false,
+            "collision": true,
+            "termination_reason": "collision",
+            "final_progress_m": 40.52322296303746,
+            "mean_abs_cte_m": 1.2271078080215359,
+            "max_abs_cte_m": 3.6337117980875044,
+            "mean_abs_heading_error_rad": 0.35194024414859915,
+            "speed_rmse_mps": 0.5513244840824469,
+            "max_overspeed_mps": 1.5041646848734904,
+            "mean_abs_steering_rate_radps": 0.11946511722931258,
+            "max_abs_steering_rate_radps": 0.8000000000000002,
+            "max_abs_kinematic_lateral_accel_mps2": 1.0882125023640814,
+            "p99_abs_kinematic_lateral_accel_mps2": 1.0788496731143922,
+            "time_to_goal_s": null
+          }
+        },
+        {
+          "seed": 9,
+          "metrics": {
+            "steps": 286,
+            "duration_s": 14.3,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 38.085066123433265,
+            "mean_abs_cte_m": 0.9851532402982812,
+            "max_abs_cte_m": 3.478857808922543,
+            "mean_abs_heading_error_rad": 0.312077240364365,
+            "speed_rmse_mps": 0.5317566258124072,
+            "max_overspeed_mps": 1.531720393445407,
+            "mean_abs_steering_rate_radps": 0.1130887268410696,
+            "max_abs_steering_rate_radps": 0.8000000000000002,
+            "max_abs_kinematic_lateral_accel_mps2": 1.1636473187160643,
+            "p99_abs_kinematic_lateral_accel_mps2": 1.1511282466380097,
+            "time_to_goal_s": 14.3
+          }
+        },
+        {
+          "seed": 10,
+          "metrics": {
+            "steps": 286,
+            "duration_s": 14.3,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 38.13070885898401,
+            "mean_abs_cte_m": 1.0091984640903409,
+            "max_abs_cte_m": 3.522957415953871,
+            "mean_abs_heading_error_rad": 0.31943206022813797,
+            "speed_rmse_mps": 0.5264006896991856,
+            "max_overspeed_mps": 1.6408385666361822,
+            "mean_abs_steering_rate_radps": 0.11441910016786802,
+            "max_abs_steering_rate_radps": 0.8000000000000002,
+            "max_abs_kinematic_lateral_accel_mps2": 1.1243974741533287,
+            "p99_abs_kinematic_lateral_accel_mps2": 1.1106340167189015,
+            "time_to_goal_s": 14.3
+          }
+        },
+        {
+          "seed": 11,
+          "metrics": {
+            "steps": 308,
+            "duration_s": 15.4,
+            "success": false,
+            "collision": true,
+            "termination_reason": "collision",
+            "final_progress_m": 38.81082572226149,
+            "mean_abs_cte_m": 1.1118858056210785,
+            "max_abs_cte_m": 3.3558244560272015,
+            "mean_abs_heading_error_rad": 0.30763704640614736,
+            "speed_rmse_mps": 0.552443627846495,
+            "max_overspeed_mps": 1.5596596197673436,
+            "mean_abs_steering_rate_radps": 0.11231694278101641,
+            "max_abs_steering_rate_radps": 0.8000000000000002,
+            "max_abs_kinematic_lateral_accel_mps2": 0.8751528821587575,
+            "p99_abs_kinematic_lateral_accel_mps2": 0.8673736775754629,
+            "time_to_goal_s": null
+          }
+        },
+        {
+          "seed": 12,
+          "metrics": {
+            "steps": 285,
+            "duration_s": 14.25,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 37.67516902330555,
+            "mean_abs_cte_m": 0.9447353799865525,
+            "max_abs_cte_m": 3.378760749410438,
+            "mean_abs_heading_error_rad": 0.2976381921137562,
+            "speed_rmse_mps": 0.5227049803255727,
+            "max_overspeed_mps": 1.6078035563504092,
+            "mean_abs_steering_rate_radps": 0.10734407760595018,
+            "max_abs_steering_rate_radps": 0.8000000000000007,
+            "max_abs_kinematic_lateral_accel_mps2": 1.1003677911834848,
+            "p99_abs_kinematic_lateral_accel_mps2": 1.086704659575818,
+            "time_to_goal_s": 14.25
+          }
+        },
+        {
+          "seed": 13,
+          "metrics": {
+            "steps": 307,
+            "duration_s": 15.350000000000001,
+            "success": false,
+            "collision": true,
+            "termination_reason": "collision",
+            "final_progress_m": 40.56860721333101,
+            "mean_abs_cte_m": 1.222553357041289,
+            "max_abs_cte_m": 3.616577452305552,
+            "mean_abs_heading_error_rad": 0.35029701076862374,
+            "speed_rmse_mps": 0.5485959421241956,
+            "max_overspeed_mps": 1.5417733594685186,
+            "mean_abs_steering_rate_radps": 0.11818131930665007,
+            "max_abs_steering_rate_radps": 0.8000000000000002,
+            "max_abs_kinematic_lateral_accel_mps2": 1.1172121257311909,
+            "p99_abs_kinematic_lateral_accel_mps2": 1.107860892833987,
+            "time_to_goal_s": null
+          }
+        },
+        {
+          "seed": 14,
+          "metrics": {
+            "steps": 288,
+            "duration_s": 14.4,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 38.64867342394754,
+            "mean_abs_cte_m": 1.042136823296686,
+            "max_abs_cte_m": 3.6179609469284184,
+            "mean_abs_heading_error_rad": 0.3311011638218273,
+            "speed_rmse_mps": 0.5339413384031556,
+            "max_overspeed_mps": 1.614257512185282,
+            "mean_abs_steering_rate_radps": 0.11951334308832884,
+            "max_abs_steering_rate_radps": 0.8000000000000007,
+            "max_abs_kinematic_lateral_accel_mps2": 1.242731013142563,
+            "p99_abs_kinematic_lateral_accel_mps2": 1.230953050416107,
+            "time_to_goal_s": 14.4
+          }
+        },
+        {
+          "seed": 15,
+          "metrics": {
+            "steps": 306,
+            "duration_s": 15.3,
+            "success": false,
+            "collision": true,
+            "termination_reason": "collision",
+            "final_progress_m": 40.37229246689935,
+            "mean_abs_cte_m": 1.1992257356755336,
+            "max_abs_cte_m": 3.5698212401235456,
+            "mean_abs_heading_error_rad": 0.343320611088214,
+            "speed_rmse_mps": 0.5533511166696232,
+            "max_overspeed_mps": 1.6530915703673907,
+            "mean_abs_steering_rate_radps": 0.11747703014635573,
+            "max_abs_steering_rate_radps": 0.8000000000000004,
+            "max_abs_kinematic_lateral_accel_mps2": 1.1073382712280975,
+            "p99_abs_kinematic_lateral_accel_mps2": 1.0979828552767437,
+            "time_to_goal_s": null
+          }
+        },
+        {
+          "seed": 16,
+          "metrics": {
+            "steps": 285,
+            "duration_s": 14.25,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 37.78906244328552,
+            "mean_abs_cte_m": 0.97915142449318,
+            "max_abs_cte_m": 3.4406891125307206,
+            "mean_abs_heading_error_rad": 0.30885517887359565,
+            "speed_rmse_mps": 0.5256732731453039,
+            "max_overspeed_mps": 1.6271414693634796,
+            "mean_abs_steering_rate_radps": 0.11080415170443686,
+            "max_abs_steering_rate_radps": 0.8000000000000004,
+            "max_abs_kinematic_lateral_accel_mps2": 1.0702485485660584,
+            "p99_abs_kinematic_lateral_accel_mps2": 1.0578906970443631,
+            "time_to_goal_s": 14.25
+          }
+        },
+        {
+          "seed": 17,
+          "metrics": {
+            "steps": 306,
+            "duration_s": 15.3,
+            "success": false,
+            "collision": true,
+            "termination_reason": "collision",
+            "final_progress_m": 39.98441630405827,
+            "mean_abs_cte_m": 1.1790674221098862,
+            "max_abs_cte_m": 3.515324815144618,
+            "mean_abs_heading_error_rad": 0.33416485537593094,
+            "speed_rmse_mps": 0.5580178091567461,
+            "max_overspeed_mps": 1.6150668472873555,
+            "mean_abs_steering_rate_radps": 0.11717137343743268,
+            "max_abs_steering_rate_radps": 0.8000000000000004,
+            "max_abs_kinematic_lateral_accel_mps2": 1.0427643311329546,
+            "p99_abs_kinematic_lateral_accel_mps2": 1.0355600152287998,
+            "time_to_goal_s": null
+          }
+        },
+        {
+          "seed": 18,
+          "metrics": {
+            "steps": 286,
+            "duration_s": 14.3,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 38.20689464789504,
+            "mean_abs_cte_m": 0.9924085357213176,
+            "max_abs_cte_m": 3.5035407037150614,
+            "mean_abs_heading_error_rad": 0.3154156924941016,
+            "speed_rmse_mps": 0.5361722303228479,
+            "max_overspeed_mps": 1.6465084383475175,
+            "mean_abs_steering_rate_radps": 0.11383921501936613,
+            "max_abs_steering_rate_radps": 0.8000000000000002,
+            "max_abs_kinematic_lateral_accel_mps2": 1.1900172688246864,
+            "p99_abs_kinematic_lateral_accel_mps2": 1.174776479629675,
+            "time_to_goal_s": 14.3
+          }
+        },
+        {
+          "seed": 19,
+          "metrics": {
+            "steps": 286,
+            "duration_s": 14.3,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 37.80018988582046,
+            "mean_abs_cte_m": 0.9555684733789117,
+            "max_abs_cte_m": 3.408438825919827,
+            "mean_abs_heading_error_rad": 0.30114445588721556,
+            "speed_rmse_mps": 0.5247368426841195,
+            "max_overspeed_mps": 1.6095246930301754,
+            "mean_abs_steering_rate_radps": 0.11120970797288666,
+            "max_abs_steering_rate_radps": 0.8000000000000004,
+            "max_abs_kinematic_lateral_accel_mps2": 1.1228805794494314,
+            "p99_abs_kinematic_lateral_accel_mps2": 1.1101165287520105,
+            "time_to_goal_s": 14.3
+          }
+        }
+      ],
+      "summary": {
+        "episodes": 20,
+        "successes": 10,
+        "success_rate": 0.5,
+        "collision_rate": 0.5,
+        "timeout_rate": 0.0,
+        "quality_all_rollouts": {
+          "mean_abs_cte_m": 1.0837653211876637,
+          "max_abs_cte_m": 3.499047738755359,
+          "speed_rmse_mps": 0.5408194724802191,
+          "max_overspeed_mps": 1.5894016872544332,
+          "max_abs_kinematic_lateral_accel_mps2": 1.08136498972741,
+          "p99_abs_kinematic_lateral_accel_mps2": 1.0707372606745,
+          "final_progress_m": 38.97564744136927
+        },
+        "quality_success_only": {
+          "mean_abs_cte_m": 0.9861057680169074,
+          "max_abs_cte_m": 3.4753403859976246,
+          "speed_rmse_mps": 0.5282106382382852,
+          "max_overspeed_mps": 1.6109821326384448,
+          "max_abs_kinematic_lateral_accel_mps2": 1.1351458890320263,
+          "p99_abs_kinematic_lateral_accel_mps2": 1.1225147161781084,
+          "final_progress_m": 38.016859741838154
+        },
+        "mean_time_to_goal_s_success_only": 14.295000000000002
+      }
+    },
+    "1": {
+      "checkpoint": "artifacts/ppo-final/seed-1/best_checkpoint.pt",
+      "checkpoint_sha256": "3e5b6e085937387c1d914f58604d5c764b7086affaccfe5facda7951a94737eb",
+      "episodes": [
+        {
+          "seed": 0,
+          "metrics": {
+            "steps": 177,
+            "duration_s": 8.85,
+            "success": false,
+            "collision": true,
+            "termination_reason": "collision",
+            "final_progress_m": 22.521511704423308,
+            "mean_abs_cte_m": 0.9753452340082153,
+            "max_abs_cte_m": 2.820615092257154,
+            "mean_abs_heading_error_rad": 0.3917247623591059,
+            "speed_rmse_mps": 0.5138773484636604,
+            "max_overspeed_mps": 1.6055316083359024,
+            "mean_abs_steering_rate_radps": 0.1942321413149268,
+            "max_abs_steering_rate_radps": 0.8000000000000002,
+            "max_abs_kinematic_lateral_accel_mps2": 1.210825194639987,
+            "p99_abs_kinematic_lateral_accel_mps2": 1.1325683180912334,
+            "time_to_goal_s": null
+          }
+        },
+        {
+          "seed": 1,
+          "metrics": {
+            "steps": 197,
+            "duration_s": 9.850000000000001,
+            "success": false,
+            "collision": true,
+            "termination_reason": "collision",
+            "final_progress_m": 23.88200076450151,
+            "mean_abs_cte_m": 1.1366082362542018,
+            "max_abs_cte_m": 4.100583378396731,
+            "mean_abs_heading_error_rad": 0.41513102478105846,
+            "speed_rmse_mps": 0.4930441281329583,
+            "max_overspeed_mps": 1.694236800343047,
+            "mean_abs_steering_rate_radps": 0.18934461797781402,
+            "max_abs_steering_rate_radps": 0.8000000000000002,
+            "max_abs_kinematic_lateral_accel_mps2": 1.1421884353310732,
+            "p99_abs_kinematic_lateral_accel_mps2": 1.0982926518215026,
+            "time_to_goal_s": null
+          }
+        },
+        {
+          "seed": 2,
+          "metrics": {
+            "steps": 173,
+            "duration_s": 8.65,
+            "success": false,
+            "collision": true,
+            "termination_reason": "collision",
+            "final_progress_m": 21.520181270473,
+            "mean_abs_cte_m": 0.9492540348678032,
+            "max_abs_cte_m": 2.812958733895509,
+            "mean_abs_heading_error_rad": 0.3917455716811739,
+            "speed_rmse_mps": 0.5158629358531561,
+            "max_overspeed_mps": 1.6075619173215985,
+            "mean_abs_steering_rate_radps": 0.17953531521593216,
+            "max_abs_steering_rate_radps": 0.8000000000000002,
+            "max_abs_kinematic_lateral_accel_mps2": 0.9465136198686606,
+            "p99_abs_kinematic_lateral_accel_mps2": 0.9396357108015008,
+            "time_to_goal_s": null
+          }
+        },
+        {
+          "seed": 3,
+          "metrics": {
+            "steps": 173,
+            "duration_s": 8.65,
+            "success": false,
+            "collision": true,
+            "termination_reason": "collision",
+            "final_progress_m": 21.275056733021778,
+            "mean_abs_cte_m": 0.899820618076076,
+            "max_abs_cte_m": 2.641203772665739,
+            "mean_abs_heading_error_rad": 0.37141952586725524,
+            "speed_rmse_mps": 0.5166344541191149,
+            "max_overspeed_mps": 1.6951188545871485,
+            "mean_abs_steering_rate_radps": 0.1715150182646823,
+            "max_abs_steering_rate_radps": 0.8000000000000002,
+            "max_abs_kinematic_lateral_accel_mps2": 1.001931397917973,
+            "p99_abs_kinematic_lateral_accel_mps2": 0.9786779910000132,
+            "time_to_goal_s": null
+          }
+        },
+        {
+          "seed": 4,
+          "metrics": {
+            "steps": 182,
+            "duration_s": 9.1,
+            "success": false,
+            "collision": true,
+            "termination_reason": "collision",
+            "final_progress_m": 23.140339340138862,
+            "mean_abs_cte_m": 1.0290045930341016,
+            "max_abs_cte_m": 2.8907453830286407,
+            "mean_abs_heading_error_rad": 0.4076828029650485,
+            "speed_rmse_mps": 0.5061800311800403,
+            "max_overspeed_mps": 1.6294944916400174,
+            "mean_abs_steering_rate_radps": 0.2009850322258669,
+            "max_abs_steering_rate_radps": 0.8000000000000002,
+            "max_abs_kinematic_lateral_accel_mps2": 1.194322348182452,
+            "p99_abs_kinematic_lateral_accel_mps2": 1.1630221507734855,
+            "time_to_goal_s": null
+          }
+        },
+        {
+          "seed": 5,
+          "metrics": {
+            "steps": 188,
+            "duration_s": 9.4,
+            "success": false,
+            "collision": true,
+            "termination_reason": "collision",
+            "final_progress_m": 23.37534045201748,
+            "mean_abs_cte_m": 1.0419564615817163,
+            "max_abs_cte_m": 3.297537916422931,
+            "mean_abs_heading_error_rad": 0.403155465854543,
+            "speed_rmse_mps": 0.5013096543814708,
+            "max_overspeed_mps": 1.727689009087354,
+            "mean_abs_steering_rate_radps": 0.19701275325558604,
+            "max_abs_steering_rate_radps": 0.8000000000000004,
+            "max_abs_kinematic_lateral_accel_mps2": 1.1420807833825688,
+            "p99_abs_kinematic_lateral_accel_mps2": 1.1086437709979136,
+            "time_to_goal_s": null
+          }
+        },
+        {
+          "seed": 6,
+          "metrics": {
+            "steps": 179,
+            "duration_s": 8.950000000000001,
+            "success": false,
+            "collision": true,
+            "termination_reason": "collision",
+            "final_progress_m": 21.68843526494669,
+            "mean_abs_cte_m": 0.9022600900707834,
+            "max_abs_cte_m": 2.5368448412204474,
+            "mean_abs_heading_error_rad": 0.37171104133139277,
+            "speed_rmse_mps": 0.5018563889774722,
+            "max_overspeed_mps": 1.7185297833069246,
+            "mean_abs_steering_rate_radps": 0.17086845403277007,
+            "max_abs_steering_rate_radps": 0.8000000000000002,
+            "max_abs_kinematic_lateral_accel_mps2": 1.0011138611045636,
+            "p99_abs_kinematic_lateral_accel_mps2": 0.9578784734063656,
+            "time_to_goal_s": null
+          }
+        },
+        {
+          "seed": 7,
+          "metrics": {
+            "steps": 181,
+            "duration_s": 9.05,
+            "success": false,
+            "collision": true,
+            "termination_reason": "collision",
+            "final_progress_m": 22.97736505560958,
+            "mean_abs_cte_m": 1.024345672411414,
+            "max_abs_cte_m": 2.898988943259102,
+            "mean_abs_heading_error_rad": 0.4093507713837994,
+            "speed_rmse_mps": 0.507510261572992,
+            "max_overspeed_mps": 1.7458602292444168,
+            "mean_abs_steering_rate_radps": 0.20697067822046702,
+            "max_abs_steering_rate_radps": 0.8000000000000002,
+            "max_abs_kinematic_lateral_accel_mps2": 1.1425859507155802,
+            "p99_abs_kinematic_lateral_accel_mps2": 1.1146703005156595,
+            "time_to_goal_s": null
+          }
+        },
+        {
+          "seed": 8,
+          "metrics": {
+            "steps": 174,
+            "duration_s": 8.700000000000001,
+            "success": false,
+            "collision": true,
+            "termination_reason": "collision",
+            "final_progress_m": 22.263659582205097,
+            "mean_abs_cte_m": 0.9966986846770994,
+            "max_abs_cte_m": 2.966477036060527,
+            "mean_abs_heading_error_rad": 0.4076856430444713,
+            "speed_rmse_mps": 0.5227566531635968,
+            "max_overspeed_mps": 1.7444784892836938,
+            "mean_abs_steering_rate_radps": 0.19411969189157433,
+            "max_abs_steering_rate_radps": 0.8000000000000002,
+            "max_abs_kinematic_lateral_accel_mps2": 1.2069503462030948,
+            "p99_abs_kinematic_lateral_accel_mps2": 1.1073821601881724,
+            "time_to_goal_s": null
+          }
+        },
+        {
+          "seed": 9,
+          "metrics": {
+            "steps": 173,
+            "duration_s": 8.65,
+            "success": false,
+            "collision": true,
+            "termination_reason": "collision",
+            "final_progress_m": 21.287390045043157,
+            "mean_abs_cte_m": 0.8991747965935223,
+            "max_abs_cte_m": 2.640872423935923,
+            "mean_abs_heading_error_rad": 0.3709101843887519,
+            "speed_rmse_mps": 0.5184636811803159,
+            "max_overspeed_mps": 1.73148430815228,
+            "mean_abs_steering_rate_radps": 0.17178764646452976,
+            "max_abs_steering_rate_radps": 0.8000000000000002,
+            "max_abs_kinematic_lateral_accel_mps2": 0.9905860795169221,
+            "p99_abs_kinematic_lateral_accel_mps2": 0.9789035880820027,
+            "time_to_goal_s": null
+          }
+        },
+        {
+          "seed": 10,
+          "metrics": {
+            "steps": 174,
+            "duration_s": 8.700000000000001,
+            "success": false,
+            "collision": true,
+            "termination_reason": "collision",
+            "final_progress_m": 21.569984499248022,
+            "mean_abs_cte_m": 0.9428096946376804,
+            "max_abs_cte_m": 2.773949715184523,
+            "mean_abs_heading_error_rad": 0.38902540305211303,
+            "speed_rmse_mps": 0.5139790368256496,
+            "max_overspeed_mps": 1.6385082317221351,
+            "mean_abs_steering_rate_radps": 0.1817070697915965,
+            "max_abs_steering_rate_radps": 0.8000000000000002,
+            "max_abs_kinematic_lateral_accel_mps2": 0.9875499381250294,
+            "p99_abs_kinematic_lateral_accel_mps2": 0.9507587239172707,
+            "time_to_goal_s": null
+          }
+        },
+        {
+          "seed": 11,
+          "metrics": {
+            "steps": 193,
+            "duration_s": 9.65,
+            "success": false,
+            "collision": true,
+            "termination_reason": "collision",
+            "final_progress_m": 23.442202485265824,
+            "mean_abs_cte_m": 1.0479143588513231,
+            "max_abs_cte_m": 3.522665077531431,
+            "mean_abs_heading_error_rad": 0.39746656190044105,
+            "speed_rmse_mps": 0.491060273567926,
+            "max_overspeed_mps": 1.5507426461894347,
+            "mean_abs_steering_rate_radps": 0.1877161014675515,
+            "max_abs_steering_rate_radps": 0.8000000000000002,
+            "max_abs_kinematic_lateral_accel_mps2": 1.0883504111560651,
+            "p99_abs_kinematic_lateral_accel_mps2": 1.0760997787914972,
+            "time_to_goal_s": null
+          }
+        },
+        {
+          "seed": 12,
+          "metrics": {
+            "steps": 177,
+            "duration_s": 8.85,
+            "success": false,
+            "collision": true,
+            "termination_reason": "collision",
+            "final_progress_m": 21.43752236750192,
+            "mean_abs_cte_m": 0.8729402220726257,
+            "max_abs_cte_m": 2.484297938311899,
+            "mean_abs_heading_error_rad": 0.36000838585735573,
+            "speed_rmse_mps": 0.5048392821513176,
+            "max_overspeed_mps": 1.688981286649481,
+            "mean_abs_steering_rate_radps": 0.1704362853098724,
+            "max_abs_steering_rate_radps": 0.8000000000000002,
+            "max_abs_kinematic_lateral_accel_mps2": 1.020684766792818,
+            "p99_abs_kinematic_lateral_accel_mps2": 0.9756652662281227,
+            "time_to_goal_s": null
+          }
+        },
+        {
+          "seed": 13,
+          "metrics": {
+            "steps": 183,
+            "duration_s": 9.15,
+            "success": false,
+            "collision": true,
+            "termination_reason": "collision",
+            "final_progress_m": 23.401585632483194,
+            "mean_abs_cte_m": 1.0675151203236484,
+            "max_abs_cte_m": 3.138024818795196,
+            "mean_abs_heading_error_rad": 0.42143169858640267,
+            "speed_rmse_mps": 0.5085401918001264,
+            "max_overspeed_mps": 1.748301381878643,
+            "mean_abs_steering_rate_radps": 0.19844293545504085,
+            "max_abs_steering_rate_radps": 0.8000000000000002,
+            "max_abs_kinematic_lateral_accel_mps2": 1.2147969609242353,
+            "p99_abs_kinematic_lateral_accel_mps2": 1.1481743758693874,
+            "time_to_goal_s": null
+          }
+        },
+        {
+          "seed": 14,
+          "metrics": {
+            "steps": 172,
+            "duration_s": 8.6,
+            "success": false,
+            "collision": true,
+            "termination_reason": "collision",
+            "final_progress_m": 21.511965269288837,
+            "mean_abs_cte_m": 0.9578388628670246,
+            "max_abs_cte_m": 2.854707775679132,
+            "mean_abs_heading_error_rad": 0.3972679402566025,
+            "speed_rmse_mps": 0.5217861897008916,
+            "max_overspeed_mps": 1.7641844094281154,
+            "mean_abs_steering_rate_radps": 0.17437119192855302,
+            "max_abs_steering_rate_radps": 0.8000000000000002,
+            "max_abs_kinematic_lateral_accel_mps2": 1.0478000345331193,
+            "p99_abs_kinematic_lateral_accel_mps2": 1.0338609502708533,
+            "time_to_goal_s": null
+          }
+        },
+        {
+          "seed": 15,
+          "metrics": {
+            "steps": 188,
+            "duration_s": 9.4,
+            "success": false,
+            "collision": true,
+            "termination_reason": "collision",
+            "final_progress_m": 23.75287602956771,
+            "mean_abs_cte_m": 1.1010085693931029,
+            "max_abs_cte_m": 3.61598098320819,
+            "mean_abs_heading_error_rad": 0.42206632515164033,
+            "speed_rmse_mps": 0.5003992613636921,
+            "max_overspeed_mps": 1.6101525705178241,
+            "mean_abs_steering_rate_radps": 0.19523397623065938,
+            "max_abs_steering_rate_radps": 0.8000000000000002,
+            "max_abs_kinematic_lateral_accel_mps2": 1.2105566093033393,
+            "p99_abs_kinematic_lateral_accel_mps2": 1.1435743641369354,
+            "time_to_goal_s": null
+          }
+        },
+        {
+          "seed": 16,
+          "metrics": {
+            "steps": 176,
+            "duration_s": 8.8,
+            "success": false,
+            "collision": true,
+            "termination_reason": "collision",
+            "final_progress_m": 21.61292415974378,
+            "mean_abs_cte_m": 0.920574209159592,
+            "max_abs_cte_m": 2.658678238463988,
+            "mean_abs_heading_error_rad": 0.37969038794110577,
+            "speed_rmse_mps": 0.512206226724947,
+            "max_overspeed_mps": 1.6259581024992062,
+            "mean_abs_steering_rate_radps": 0.1774047850207849,
+            "max_abs_steering_rate_radps": 0.8000000000000002,
+            "max_abs_kinematic_lateral_accel_mps2": 0.9983470175161514,
+            "p99_abs_kinematic_lateral_accel_mps2": 0.9644040791571675,
+            "time_to_goal_s": null
+          }
+        },
+        {
+          "seed": 17,
+          "metrics": {
+            "steps": 186,
+            "duration_s": 9.3,
+            "success": false,
+            "collision": true,
+            "termination_reason": "collision",
+            "final_progress_m": 23.40920437400136,
+            "mean_abs_cte_m": 1.0499381465982158,
+            "max_abs_cte_m": 3.24744639318232,
+            "mean_abs_heading_error_rad": 0.40722717913745443,
+            "speed_rmse_mps": 0.5015711135005082,
+            "max_overspeed_mps": 1.6474272673270636,
+            "mean_abs_steering_rate_radps": 0.19562499333293207,
+            "max_abs_steering_rate_radps": 0.8000000000000002,
+            "max_abs_kinematic_lateral_accel_mps2": 1.181719325857603,
+            "p99_abs_kinematic_lateral_accel_mps2": 1.123809044605647,
+            "time_to_goal_s": null
+          }
+        },
+        {
+          "seed": 18,
+          "metrics": {
+            "steps": 173,
+            "duration_s": 8.65,
+            "success": false,
+            "collision": true,
+            "termination_reason": "collision",
+            "final_progress_m": 21.31830444552858,
+            "mean_abs_cte_m": 0.9076236367299864,
+            "max_abs_cte_m": 2.6669390837867124,
+            "mean_abs_heading_error_rad": 0.374784056684352,
+            "speed_rmse_mps": 0.5170789347979055,
+            "max_overspeed_mps": 1.7137198216436786,
+            "mean_abs_steering_rate_radps": 0.1715819587597268,
+            "max_abs_steering_rate_radps": 0.8000000000000002,
+            "max_abs_kinematic_lateral_accel_mps2": 1.0178481786717728,
+            "p99_abs_kinematic_lateral_accel_mps2": 0.9946409862182802,
+            "time_to_goal_s": null
+          }
+        },
+        {
+          "seed": 19,
+          "metrics": {
+            "steps": 176,
+            "duration_s": 8.8,
+            "success": false,
+            "collision": true,
+            "termination_reason": "collision",
+            "final_progress_m": 21.405535680661483,
+            "mean_abs_cte_m": 0.8798050664248365,
+            "max_abs_cte_m": 2.526067738534145,
+            "mean_abs_heading_error_rad": 0.36277022211218385,
+            "speed_rmse_mps": 0.5073931850802955,
+            "max_overspeed_mps": 1.6507451412751628,
+            "mean_abs_steering_rate_radps": 0.16910576210780573,
+            "max_abs_steering_rate_radps": 0.8000000000000002,
+            "max_abs_kinematic_lateral_accel_mps2": 1.0146851901624145,
+            "p99_abs_kinematic_lateral_accel_mps2": 0.9790761160051249,
+            "time_to_goal_s": null
+          }
+        }
+      ],
+      "summary": {
+        "episodes": 20,
+        "successes": 0,
+        "success_rate": 0.0,
+        "collision_rate": 1.0,
+        "timeout_rate": 0.0,
+        "quality_all_rollouts": {
+          "mean_abs_cte_m": 0.9801218154316486,
+          "max_abs_cte_m": 2.954779264191012,
+          "speed_rmse_mps": 0.5088174616269019,
+          "max_overspeed_mps": 1.6769353175216561,
+          "max_abs_kinematic_lateral_accel_mps2": 1.0880718224952712,
+          "p99_abs_kinematic_lateral_accel_mps2": 1.0484869400439067,
+          "final_progress_m": 22.339669257783562
+        },
+        "quality_success_only": {
+          "mean_abs_cte_m": null,
+          "max_abs_cte_m": null,
+          "speed_rmse_mps": null,
+          "max_overspeed_mps": null,
+          "max_abs_kinematic_lateral_accel_mps2": null,
+          "p99_abs_kinematic_lateral_accel_mps2": null,
+          "final_progress_m": null
+        },
+        "mean_time_to_goal_s_success_only": null
+      }
+    },
+    "2": {
+      "checkpoint": "artifacts/ppo-final/seed-2/best_checkpoint.pt",
+      "checkpoint_sha256": "c6b4aa0a09088fc8c250507f452e5c101135c58bca2248ab257c516dc5ddaf4d",
+      "episodes": [
+        {
+          "seed": 0,
+          "metrics": {
+            "steps": 181,
+            "duration_s": 9.05,
+            "success": false,
+            "collision": true,
+            "termination_reason": "collision",
+            "final_progress_m": 18.57679825451434,
+            "mean_abs_cte_m": 0.8387907051671136,
+            "max_abs_cte_m": 4.093955533750921,
+            "mean_abs_heading_error_rad": 0.41722031873725224,
+            "speed_rmse_mps": 0.515833456648273,
+            "max_overspeed_mps": 1.377899950196588,
+            "mean_abs_steering_rate_radps": 0.08508894154133059,
+            "max_abs_steering_rate_radps": 0.8000000000000002,
+            "max_abs_kinematic_lateral_accel_mps2": 0.3383244634009774,
+            "p99_abs_kinematic_lateral_accel_mps2": 0.32363422189238716,
+            "time_to_goal_s": null
+          }
+        },
+        {
+          "seed": 1,
+          "metrics": {
+            "steps": 182,
+            "duration_s": 9.1,
+            "success": false,
+            "collision": true,
+            "termination_reason": "collision",
+            "final_progress_m": 18.257018066818773,
+            "mean_abs_cte_m": 0.7906094521396876,
+            "max_abs_cte_m": 4.21132190921804,
+            "mean_abs_heading_error_rad": 0.38998466506677304,
+            "speed_rmse_mps": 0.4946886784902294,
+            "max_overspeed_mps": 1.3321788274491175,
+            "mean_abs_steering_rate_radps": 0.08355357008730317,
+            "max_abs_steering_rate_radps": 0.8000000000000002,
+            "max_abs_kinematic_lateral_accel_mps2": 0.3323108199897456,
+            "p99_abs_kinematic_lateral_accel_mps2": 0.3193827257233395,
+            "time_to_goal_s": null
+          }
+        },
+        {
+          "seed": 2,
+          "metrics": {
+            "steps": 181,
+            "duration_s": 9.05,
+            "success": false,
+            "collision": true,
+            "termination_reason": "collision",
+            "final_progress_m": 18.679067276525878,
+            "mean_abs_cte_m": 0.8708686148530759,
+            "max_abs_cte_m": 4.1833981401876805,
+            "mean_abs_heading_error_rad": 0.4355620055978523,
+            "speed_rmse_mps": 0.5226541658920149,
+            "max_overspeed_mps": 1.4175979060585029,
+            "mean_abs_steering_rate_radps": 0.09031049866044061,
+            "max_abs_steering_rate_radps": 0.8000000000000002,
+            "max_abs_kinematic_lateral_accel_mps2": 0.4053048251847894,
+            "p99_abs_kinematic_lateral_accel_mps2": 0.3869554447435237,
+            "time_to_goal_s": null
+          }
+        },
+        {
+          "seed": 3,
+          "metrics": {
+            "steps": 181,
+            "duration_s": 9.05,
+            "success": false,
+            "collision": true,
+            "termination_reason": "collision",
+            "final_progress_m": 18.271526728481053,
+            "mean_abs_cte_m": 0.8231967849707381,
+            "max_abs_cte_m": 4.237095685206679,
+            "mean_abs_heading_error_rad": 0.41494796408596335,
+            "speed_rmse_mps": 0.5118791021162404,
+            "max_overspeed_mps": 1.3552340088465864,
+            "mean_abs_steering_rate_radps": 0.08413770185649724,
+            "max_abs_steering_rate_radps": 0.8000000000000002,
+            "max_abs_kinematic_lateral_accel_mps2": 0.4174576616468104,
+            "p99_abs_kinematic_lateral_accel_mps2": 0.39620820836859194,
+            "time_to_goal_s": null
+          }
+        },
+        {
+          "seed": 4,
+          "metrics": {
+            "steps": 181,
+            "duration_s": 9.05,
+            "success": false,
+            "collision": true,
+            "termination_reason": "collision",
+            "final_progress_m": 18.702961851688652,
+            "mean_abs_cte_m": 0.8474484398174438,
+            "max_abs_cte_m": 4.061204215028766,
+            "mean_abs_heading_error_rad": 0.4203627908131622,
+            "speed_rmse_mps": 0.5153247343188766,
+            "max_overspeed_mps": 1.3779307084665917,
+            "mean_abs_steering_rate_radps": 0.08675833312712239,
+            "max_abs_steering_rate_radps": 0.8000000000000002,
+            "max_abs_kinematic_lateral_accel_mps2": 0.34336191308340813,
+            "p99_abs_kinematic_lateral_accel_mps2": 0.32518978787315483,
+            "time_to_goal_s": null
+          }
+        },
+        {
+          "seed": 5,
+          "metrics": {
+            "steps": 181,
+            "duration_s": 9.05,
+            "success": false,
+            "collision": true,
+            "termination_reason": "collision",
+            "final_progress_m": 18.515928840730826,
+            "mean_abs_cte_m": 0.8057239310639728,
+            "max_abs_cte_m": 4.07643590010122,
+            "mean_abs_heading_error_rad": 0.40134559945038,
+            "speed_rmse_mps": 0.5098840972291041,
+            "max_overspeed_mps": 1.4011994160433652,
+            "mean_abs_steering_rate_radps": 0.08832720323409164,
+            "max_abs_steering_rate_radps": 0.8000000000000002,
+            "max_abs_kinematic_lateral_accel_mps2": 0.3584166003017048,
+            "p99_abs_kinematic_lateral_accel_mps2": 0.34821367230505634,
+            "time_to_goal_s": null
+          }
+        },
+        {
+          "seed": 6,
+          "metrics": {
+            "steps": 181,
+            "duration_s": 9.05,
+            "success": false,
+            "collision": true,
+            "termination_reason": "collision",
+            "final_progress_m": 18.165969929512848,
+            "mean_abs_cte_m": 0.7962048652036882,
+            "max_abs_cte_m": 4.2401600941886235,
+            "mean_abs_heading_error_rad": 0.4012659057307123,
+            "speed_rmse_mps": 0.5031505289991169,
+            "max_overspeed_mps": 1.3937061407241882,
+            "mean_abs_steering_rate_radps": 0.08083463801863444,
+            "max_abs_steering_rate_radps": 0.8000000000000002,
+            "max_abs_kinematic_lateral_accel_mps2": 0.41762494911929,
+            "p99_abs_kinematic_lateral_accel_mps2": 0.400767028172354,
+            "time_to_goal_s": null
+          }
+        },
+        {
+          "seed": 7,
+          "metrics": {
+            "steps": 180,
+            "duration_s": 9.0,
+            "success": false,
+            "collision": true,
+            "termination_reason": "collision",
+            "final_progress_m": 18.804982843012212,
+            "mean_abs_cte_m": 0.8449370152811105,
+            "max_abs_cte_m": 3.9101515657999424,
+            "mean_abs_heading_error_rad": 0.4229133561959735,
+            "speed_rmse_mps": 0.523070305468819,
+            "max_overspeed_mps": 1.3928470564052566,
+            "mean_abs_steering_rate_radps": 0.09211360655414562,
+            "max_abs_steering_rate_radps": 0.8000000000000002,
+            "max_abs_kinematic_lateral_accel_mps2": 0.3584691198356867,
+            "p99_abs_kinematic_lateral_accel_mps2": 0.33472459547793326,
+            "time_to_goal_s": null
+          }
+        },
+        {
+          "seed": 8,
+          "metrics": {
+            "steps": 181,
+            "duration_s": 9.05,
+            "success": false,
+            "collision": true,
+            "termination_reason": "collision",
+            "final_progress_m": 18.942568782957377,
+            "mean_abs_cte_m": 0.8877149313701204,
+            "max_abs_cte_m": 4.081779469736943,
+            "mean_abs_heading_error_rad": 0.43701692884760995,
+            "speed_rmse_mps": 0.5293738233753701,
+            "max_overspeed_mps": 1.394754454760988,
+            "mean_abs_steering_rate_radps": 0.08772280361523946,
+            "max_abs_steering_rate_radps": 0.8000000000000002,
+            "max_abs_kinematic_lateral_accel_mps2": 0.34803624907412106,
+            "p99_abs_kinematic_lateral_accel_mps2": 0.32953323747410984,
+            "time_to_goal_s": null
+          }
+        },
+        {
+          "seed": 9,
+          "metrics": {
+            "steps": 181,
+            "duration_s": 9.05,
+            "success": false,
+            "collision": true,
+            "termination_reason": "collision",
+            "final_progress_m": 18.27472465766785,
+            "mean_abs_cte_m": 0.8227196209483262,
+            "max_abs_cte_m": 4.234367182793145,
+            "mean_abs_heading_error_rad": 0.41475930549330964,
+            "speed_rmse_mps": 0.5115708284003839,
+            "max_overspeed_mps": 1.3542297873417217,
+            "mean_abs_steering_rate_radps": 0.08414892811142936,
+            "max_abs_steering_rate_radps": 0.8000000000000002,
+            "max_abs_kinematic_lateral_accel_mps2": 0.4176266017370895,
+            "p99_abs_kinematic_lateral_accel_mps2": 0.39646932303196153,
+            "time_to_goal_s": null
+          }
+        },
+        {
+          "seed": 10,
+          "metrics": {
+            "steps": 181,
+            "duration_s": 9.05,
+            "success": false,
+            "collision": true,
+            "termination_reason": "collision",
+            "final_progress_m": 18.60140322164999,
+            "mean_abs_cte_m": 0.8617920800826706,
+            "max_abs_cte_m": 4.2163261237275815,
+            "mean_abs_heading_error_rad": 0.4310418630416801,
+            "speed_rmse_mps": 0.5207414591806059,
+            "max_overspeed_mps": 1.4035710723352643,
+            "mean_abs_steering_rate_radps": 0.08924622133950502,
+            "max_abs_steering_rate_radps": 0.8000000000000002,
+            "max_abs_kinematic_lateral_accel_mps2": 0.40959258218322664,
+            "p99_abs_kinematic_lateral_accel_mps2": 0.3913363178836616,
+            "time_to_goal_s": null
+          }
+        },
+        {
+          "seed": 11,
+          "metrics": {
+            "steps": 182,
+            "duration_s": 9.1,
+            "success": false,
+            "collision": true,
+            "termination_reason": "collision",
+            "final_progress_m": 18.367574640413356,
+            "mean_abs_cte_m": 0.7881645383371588,
+            "max_abs_cte_m": 4.256681513533433,
+            "mean_abs_heading_error_rad": 0.38643359007112527,
+            "speed_rmse_mps": 0.4958178022349319,
+            "max_overspeed_mps": 1.3459900893160301,
+            "mean_abs_steering_rate_radps": 0.08248838622655187,
+            "max_abs_steering_rate_radps": 0.8000000000000002,
+            "max_abs_kinematic_lateral_accel_mps2": 0.3710066502190536,
+            "p99_abs_kinematic_lateral_accel_mps2": 0.3464644623194556,
+            "time_to_goal_s": null
+          }
+        },
+        {
+          "seed": 12,
+          "metrics": {
+            "steps": 182,
+            "duration_s": 9.1,
+            "success": false,
+            "collision": true,
+            "termination_reason": "collision",
+            "final_progress_m": 18.08497446116776,
+            "mean_abs_cte_m": 0.8025057480630401,
+            "max_abs_cte_m": 4.416893013025338,
+            "mean_abs_heading_error_rad": 0.398561552645106,
+            "speed_rmse_mps": 0.49854476416201277,
+            "max_overspeed_mps": 1.3340327910160787,
+            "mean_abs_steering_rate_radps": 0.07962139769569858,
+            "max_abs_steering_rate_radps": 0.8000000000000002,
+            "max_abs_kinematic_lateral_accel_mps2": 0.42951547703907506,
+            "p99_abs_kinematic_lateral_accel_mps2": 0.4141772885943968,
+            "time_to_goal_s": null
+          }
+        },
+        {
+          "seed": 13,
+          "metrics": {
+            "steps": 181,
+            "duration_s": 9.05,
+            "success": false,
+            "collision": true,
+            "termination_reason": "collision",
+            "final_progress_m": 18.832662023236928,
+            "mean_abs_cte_m": 0.8743553431204023,
+            "max_abs_cte_m": 4.095270537244506,
+            "mean_abs_heading_error_rad": 0.4322129558978509,
+            "speed_rmse_mps": 0.5233756357437662,
+            "max_overspeed_mps": 1.4113407189547322,
+            "mean_abs_steering_rate_radps": 0.08667756911387758,
+            "max_abs_steering_rate_radps": 0.8000000000000002,
+            "max_abs_kinematic_lateral_accel_mps2": 0.34292566341378977,
+            "p99_abs_kinematic_lateral_accel_mps2": 0.3252759523483293,
+            "time_to_goal_s": null
+          }
+        },
+        {
+          "seed": 14,
+          "metrics": {
+            "steps": 181,
+            "duration_s": 9.05,
+            "success": false,
+            "collision": true,
+            "termination_reason": "collision",
+            "final_progress_m": 18.660890005492387,
+            "mean_abs_cte_m": 0.8819766107085559,
+            "max_abs_cte_m": 4.182563298028049,
+            "mean_abs_heading_error_rad": 0.4424649673778445,
+            "speed_rmse_mps": 0.5240152910331854,
+            "max_overspeed_mps": 1.4054524023709072,
+            "mean_abs_steering_rate_radps": 0.09033673985228353,
+            "max_abs_steering_rate_radps": 0.8000000000000002,
+            "max_abs_kinematic_lateral_accel_mps2": 0.3985062189426434,
+            "p99_abs_kinematic_lateral_accel_mps2": 0.38077377032873505,
+            "time_to_goal_s": null
+          }
+        },
+        {
+          "seed": 15,
+          "metrics": {
+            "steps": 181,
+            "duration_s": 9.05,
+            "success": false,
+            "collision": true,
+            "termination_reason": "collision",
+            "final_progress_m": 18.621117630922097,
+            "mean_abs_cte_m": 0.8412996341203021,
+            "max_abs_cte_m": 4.0405562868012606,
+            "mean_abs_heading_error_rad": 0.4189237936238298,
+            "speed_rmse_mps": 0.5154362167814784,
+            "max_overspeed_mps": 1.4045107680224882,
+            "mean_abs_steering_rate_radps": 0.08548156872201318,
+            "max_abs_steering_rate_radps": 0.8000000000000002,
+            "max_abs_kinematic_lateral_accel_mps2": 0.3360279423592121,
+            "p99_abs_kinematic_lateral_accel_mps2": 0.3200629397396276,
+            "time_to_goal_s": null
+          }
+        },
+        {
+          "seed": 16,
+          "metrics": {
+            "steps": 180,
+            "duration_s": 9.0,
+            "success": false,
+            "collision": true,
+            "termination_reason": "collision",
+            "final_progress_m": 18.35438064510267,
+            "mean_abs_cte_m": 0.8201201429009873,
+            "max_abs_cte_m": 4.165107812676331,
+            "mean_abs_heading_error_rad": 0.4144342932462458,
+            "speed_rmse_mps": 0.5187759531815346,
+            "max_overspeed_mps": 1.38371922698822,
+            "mean_abs_steering_rate_radps": 0.08653404961029688,
+            "max_abs_steering_rate_radps": 0.8000000000000002,
+            "max_abs_kinematic_lateral_accel_mps2": 0.4110624386408116,
+            "p99_abs_kinematic_lateral_accel_mps2": 0.3931065909096776,
+            "time_to_goal_s": null
+          }
+        },
+        {
+          "seed": 17,
+          "metrics": {
+            "steps": 181,
+            "duration_s": 9.05,
+            "success": false,
+            "collision": true,
+            "termination_reason": "collision",
+            "final_progress_m": 18.562009115026353,
+            "mean_abs_cte_m": 0.8285629202917517,
+            "max_abs_cte_m": 4.112426357152981,
+            "mean_abs_heading_error_rad": 0.41157371082187716,
+            "speed_rmse_mps": 0.5128289215931233,
+            "max_overspeed_mps": 1.364925687657293,
+            "mean_abs_steering_rate_radps": 0.08640385584298584,
+            "max_abs_steering_rate_radps": 0.8000000000000002,
+            "max_abs_kinematic_lateral_accel_mps2": 0.3407810801467407,
+            "p99_abs_kinematic_lateral_accel_mps2": 0.3277121877638994,
+            "time_to_goal_s": null
+          }
+        },
+        {
+          "seed": 18,
+          "metrics": {
+            "steps": 181,
+            "duration_s": 9.05,
+            "success": false,
+            "collision": true,
+            "termination_reason": "collision",
+            "final_progress_m": 18.308581567648677,
+            "mean_abs_cte_m": 0.8299975476589596,
+            "max_abs_cte_m": 4.235239893883575,
+            "mean_abs_heading_error_rad": 0.41823018631202497,
+            "speed_rmse_mps": 0.5141877432488878,
+            "max_overspeed_mps": 1.3707936417714037,
+            "mean_abs_steering_rate_radps": 0.0852306580675241,
+            "max_abs_steering_rate_radps": 0.8000000000000002,
+            "max_abs_kinematic_lateral_accel_mps2": 0.415723596156267,
+            "p99_abs_kinematic_lateral_accel_mps2": 0.3941938160759663,
+            "time_to_goal_s": null
+          }
+        },
+        {
+          "seed": 19,
+          "metrics": {
+            "steps": 182,
+            "duration_s": 9.1,
+            "success": false,
+            "collision": true,
+            "termination_reason": "collision",
+            "final_progress_m": 18.162774775087716,
+            "mean_abs_cte_m": 0.8149198957324858,
+            "max_abs_cte_m": 4.427364425001429,
+            "mean_abs_heading_error_rad": 0.40398861472788933,
+            "speed_rmse_mps": 0.500847194203106,
+            "max_overspeed_mps": 1.3758180639338244,
+            "mean_abs_steering_rate_radps": 0.08011564186641149,
+            "max_abs_steering_rate_radps": 0.8000000000000002,
+            "max_abs_kinematic_lateral_accel_mps2": 0.43058754602528043,
+            "p99_abs_kinematic_lateral_accel_mps2": 0.4147633741027072,
+            "time_to_goal_s": null
+          }
+        }
+      ],
+      "summary": {
+        "episodes": 20,
+        "successes": 0,
+        "success_rate": 0.0,
+        "collision_rate": 1.0,
+        "timeout_rate": 0.0,
+        "quality_all_rollouts": {
+          "mean_abs_cte_m": 0.8335954410915797,
+          "max_abs_cte_m": 4.173914947854322,
+          "speed_rmse_mps": 0.513100035115053,
+          "max_overspeed_mps": 1.3798866359329574,
+          "max_abs_kinematic_lateral_accel_mps2": 0.38113311992498616,
+          "p99_abs_kinematic_lateral_accel_mps2": 0.36344724725644345,
+          "final_progress_m": 18.487395765882887
+        },
+        "quality_success_only": {
+          "mean_abs_cte_m": null,
+          "max_abs_cte_m": null,
+          "speed_rmse_mps": null,
+          "max_overspeed_mps": null,
+          "max_abs_kinematic_lateral_accel_mps2": null,
+          "p99_abs_kinematic_lateral_accel_mps2": null,
+          "final_progress_m": null
+        },
+        "mean_time_to_goal_s_success_only": null
+      }
+    }
+  },
+  "classical": {
+    "pure_pursuit": {
+      "episodes": [
+        {
+          "seed": 0,
+          "metrics": {
+            "steps": 357,
+            "duration_s": 17.85,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 40.44350897543775,
+            "mean_abs_cte_m": 0.19731628947747504,
+            "max_abs_cte_m": 0.5087165478014993,
+            "mean_abs_heading_error_rad": 0.09779490762076153,
+            "speed_rmse_mps": 0.49064130169657727,
+            "max_overspeed_mps": 1.3491641833912136,
+            "mean_abs_steering_rate_radps": 0.13667925279013582,
+            "max_abs_steering_rate_radps": 0.8000000000000002,
+            "max_abs_kinematic_lateral_accel_mps2": 1.7472361395886242,
+            "p99_abs_kinematic_lateral_accel_mps2": 1.7330114523558384,
+            "time_to_goal_s": 17.85
+          }
+        },
+        {
+          "seed": 1,
+          "metrics": {
+            "steps": 352,
+            "duration_s": 17.6,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 39.66117674049174,
+            "mean_abs_cte_m": 0.19063529978677451,
+            "max_abs_cte_m": 0.4942775075932209,
+            "mean_abs_heading_error_rad": 0.09631163368500911,
+            "speed_rmse_mps": 0.4901543098543363,
+            "max_overspeed_mps": 1.376817577535875,
+            "mean_abs_steering_rate_radps": 0.1290725398470055,
+            "max_abs_steering_rate_radps": 0.8000000000000002,
+            "max_abs_kinematic_lateral_accel_mps2": 1.5936394380226162,
+            "p99_abs_kinematic_lateral_accel_mps2": 1.5747069462222028,
+            "time_to_goal_s": 17.6
+          }
+        },
+        {
+          "seed": 2,
+          "metrics": {
+            "steps": 320,
+            "duration_s": 16.0,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 38.12927755039496,
+            "mean_abs_cte_m": 0.2310384248111776,
+            "max_abs_cte_m": 0.5096312590976877,
+            "mean_abs_heading_error_rad": 0.09748690143997604,
+            "speed_rmse_mps": 0.4678581662856213,
+            "max_overspeed_mps": 1.3524366727534531,
+            "mean_abs_steering_rate_radps": 0.15375409171683713,
+            "max_abs_steering_rate_radps": 0.8000000000000002,
+            "max_abs_kinematic_lateral_accel_mps2": 1.739442384868011,
+            "p99_abs_kinematic_lateral_accel_mps2": 1.7281836174784437,
+            "time_to_goal_s": 16.0
+          }
+        },
+        {
+          "seed": 3,
+          "metrics": {
+            "steps": 320,
+            "duration_s": 16.0,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 38.082001844463115,
+            "mean_abs_cte_m": 0.2255689889906814,
+            "max_abs_cte_m": 0.5007696823908387,
+            "mean_abs_heading_error_rad": 0.09594557090519304,
+            "speed_rmse_mps": 0.47036585577383716,
+            "max_overspeed_mps": 1.3675504251665602,
+            "mean_abs_steering_rate_radps": 0.1499475810356671,
+            "max_abs_steering_rate_radps": 0.8000000000000002,
+            "max_abs_kinematic_lateral_accel_mps2": 1.6428132045298334,
+            "p99_abs_kinematic_lateral_accel_mps2": 1.627910028641633,
+            "time_to_goal_s": 16.0
+          }
+        },
+        {
+          "seed": 4,
+          "metrics": {
+            "steps": 355,
+            "duration_s": 17.75,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 40.11517599298548,
+            "mean_abs_cte_m": 0.1986007104342599,
+            "max_abs_cte_m": 0.5101844238582458,
+            "mean_abs_heading_error_rad": 0.0982743596154088,
+            "speed_rmse_mps": 0.4898303840469435,
+            "max_overspeed_mps": 1.3821624590710724,
+            "mean_abs_steering_rate_radps": 0.13651603524114045,
+            "max_abs_steering_rate_radps": 0.8000000000000002,
+            "max_abs_kinematic_lateral_accel_mps2": 1.7599020012196747,
+            "p99_abs_kinematic_lateral_accel_mps2": 1.7471291115551302,
+            "time_to_goal_s": 17.75
+          }
+        },
+        {
+          "seed": 5,
+          "metrics": {
+            "steps": 349,
+            "duration_s": 17.45,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 39.15060443063803,
+            "mean_abs_cte_m": 0.19385423132268206,
+            "max_abs_cte_m": 0.50133941567195,
+            "mean_abs_heading_error_rad": 0.0977221290855106,
+            "speed_rmse_mps": 0.49387845698554167,
+            "max_overspeed_mps": 1.3528404849604938,
+            "mean_abs_steering_rate_radps": 0.13185299501719652,
+            "max_abs_steering_rate_radps": 0.8000000000000002,
+            "max_abs_kinematic_lateral_accel_mps2": 1.6443314506432007,
+            "p99_abs_kinematic_lateral_accel_mps2": 1.627180883134331,
+            "time_to_goal_s": 17.45
+          }
+        },
+        {
+          "seed": 6,
+          "metrics": {
+            "steps": 316,
+            "duration_s": 15.8,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 37.50140943637547,
+            "mean_abs_cte_m": 0.22126651635067554,
+            "max_abs_cte_m": 0.49452271894426825,
+            "mean_abs_heading_error_rad": 0.09549960170559395,
+            "speed_rmse_mps": 0.4660765784258448,
+            "max_overspeed_mps": 1.311609222376339,
+            "mean_abs_steering_rate_radps": 0.14626132238868483,
+            "max_abs_steering_rate_radps": 0.8000000000000002,
+            "max_abs_kinematic_lateral_accel_mps2": 1.557990155452145,
+            "p99_abs_kinematic_lateral_accel_mps2": 1.5360611421909194,
+            "time_to_goal_s": 15.8
+          }
+        },
+        {
+          "seed": 7,
+          "metrics": {
+            "steps": 353,
+            "duration_s": 17.650000000000002,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 39.56683808134138,
+            "mean_abs_cte_m": 0.1994582695333755,
+            "max_abs_cte_m": 0.5118576095077656,
+            "mean_abs_heading_error_rad": 0.09884730154110286,
+            "speed_rmse_mps": 0.490290576622159,
+            "max_overspeed_mps": 1.3564049556029927,
+            "mean_abs_steering_rate_radps": 0.13718433839403535,
+            "max_abs_steering_rate_radps": 0.8000000000000002,
+            "max_abs_kinematic_lateral_accel_mps2": 1.7686156347386024,
+            "p99_abs_kinematic_lateral_accel_mps2": 1.7537787511370122,
+            "time_to_goal_s": 17.650000000000002
+          }
+        },
+        {
+          "seed": 8,
+          "metrics": {
+            "steps": 357,
+            "duration_s": 17.85,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 40.50524773811805,
+            "mean_abs_cte_m": 0.2019319971447446,
+            "max_abs_cte_m": 0.5169286915181353,
+            "mean_abs_heading_error_rad": 0.09882521353636291,
+            "speed_rmse_mps": 0.4929313467973031,
+            "max_overspeed_mps": 1.3762854348636482,
+            "mean_abs_steering_rate_radps": 0.13847892224287786,
+            "max_abs_steering_rate_radps": 0.8000000000000002,
+            "max_abs_kinematic_lateral_accel_mps2": 1.8395283918045262,
+            "p99_abs_kinematic_lateral_accel_mps2": 1.8259906693457046,
+            "time_to_goal_s": 17.85
+          }
+        },
+        {
+          "seed": 9,
+          "metrics": {
+            "steps": 320,
+            "duration_s": 16.0,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 38.05517697036326,
+            "mean_abs_cte_m": 0.2255344796982957,
+            "max_abs_cte_m": 0.500769829172833,
+            "mean_abs_heading_error_rad": 0.09621086719793095,
+            "speed_rmse_mps": 0.4675061592874535,
+            "max_overspeed_mps": 1.3418154943469345,
+            "mean_abs_steering_rate_radps": 0.14974740585603286,
+            "max_abs_steering_rate_radps": 0.8000000000000002,
+            "max_abs_kinematic_lateral_accel_mps2": 1.6408738556145406,
+            "p99_abs_kinematic_lateral_accel_mps2": 1.6255065395771007,
+            "time_to_goal_s": 16.0
+          }
+        },
+        {
+          "seed": 10,
+          "metrics": {
+            "steps": 320,
+            "duration_s": 16.0,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 38.09593623653764,
+            "mean_abs_cte_m": 0.22959859565900684,
+            "max_abs_cte_m": 0.5080229642256927,
+            "mean_abs_heading_error_rad": 0.09717612799912918,
+            "speed_rmse_mps": 0.4668810458515854,
+            "max_overspeed_mps": 1.3486585275789797,
+            "mean_abs_steering_rate_radps": 0.15277843920048326,
+            "max_abs_steering_rate_radps": 0.8000000000000002,
+            "max_abs_kinematic_lateral_accel_mps2": 1.7153514426856962,
+            "p99_abs_kinematic_lateral_accel_mps2": 1.7024032030212388,
+            "time_to_goal_s": 16.0
+          }
+        },
+        {
+          "seed": 11,
+          "metrics": {
+            "steps": 347,
+            "duration_s": 17.35,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 38.76976962480388,
+            "mean_abs_cte_m": 0.1889275623445217,
+            "max_abs_cte_m": 0.49256322245066564,
+            "mean_abs_heading_error_rad": 0.09655553042442971,
+            "speed_rmse_mps": 0.4923921780888708,
+            "max_overspeed_mps": 1.3747421681438596,
+            "mean_abs_steering_rate_radps": 0.12831928372726661,
+            "max_abs_steering_rate_radps": 0.8000000000000002,
+            "max_abs_kinematic_lateral_accel_mps2": 1.5463589753166302,
+            "p99_abs_kinematic_lateral_accel_mps2": 1.5203566248111575,
+            "time_to_goal_s": 17.35
+          }
+        },
+        {
+          "seed": 12,
+          "metrics": {
+            "steps": 317,
+            "duration_s": 15.850000000000001,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 37.63416045689284,
+            "mean_abs_cte_m": 0.21957206424199424,
+            "max_abs_cte_m": 0.49099973714286943,
+            "mean_abs_heading_error_rad": 0.09488702309314687,
+            "speed_rmse_mps": 0.4655869792965702,
+            "max_overspeed_mps": 1.3650079432636057,
+            "mean_abs_steering_rate_radps": 0.14529155786163894,
+            "max_abs_steering_rate_radps": 0.8000000000000002,
+            "max_abs_kinematic_lateral_accel_mps2": 1.5318612019592632,
+            "p99_abs_kinematic_lateral_accel_mps2": 1.5145356160683783,
+            "time_to_goal_s": 15.850000000000001
+          }
+        },
+        {
+          "seed": 13,
+          "metrics": {
+            "steps": 357,
+            "duration_s": 17.85,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 40.58663458892832,
+            "mean_abs_cte_m": 0.20091119741541488,
+            "max_abs_cte_m": 0.5150223544704592,
+            "mean_abs_heading_error_rad": 0.09846469290100361,
+            "speed_rmse_mps": 0.49218327803016343,
+            "max_overspeed_mps": 1.3802359046175265,
+            "mean_abs_steering_rate_radps": 0.1375244685581752,
+            "max_abs_steering_rate_radps": 0.8000000000000002,
+            "max_abs_kinematic_lateral_accel_mps2": 1.8178406733414003,
+            "p99_abs_kinematic_lateral_accel_mps2": 1.8020928993172298,
+            "time_to_goal_s": 17.85
+          }
+        },
+        {
+          "seed": 14,
+          "metrics": {
+            "steps": 323,
+            "duration_s": 16.150000000000002,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 38.60377377814928,
+            "mean_abs_cte_m": 0.23344101231327735,
+            "max_abs_cte_m": 0.5130653342214734,
+            "mean_abs_heading_error_rad": 0.09760283584359242,
+            "speed_rmse_mps": 0.46766572307802495,
+            "max_overspeed_mps": 1.3597064722366403,
+            "mean_abs_steering_rate_radps": 0.15552524532027104,
+            "max_abs_steering_rate_radps": 0.8000000000000002,
+            "max_abs_kinematic_lateral_accel_mps2": 1.7863958243981464,
+            "p99_abs_kinematic_lateral_accel_mps2": 1.7748861170637493,
+            "time_to_goal_s": 16.150000000000002
+          }
+        },
+        {
+          "seed": 15,
+          "metrics": {
+            "steps": 357,
+            "duration_s": 17.85,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 40.40771096255148,
+            "mean_abs_cte_m": 0.19791275251710455,
+            "max_abs_cte_m": 0.510127023664112,
+            "mean_abs_heading_error_rad": 0.09822829091787702,
+            "speed_rmse_mps": 0.4885522148277124,
+            "max_overspeed_mps": 1.3867780010137518,
+            "mean_abs_steering_rate_radps": 0.13733883177866787,
+            "max_abs_steering_rate_radps": 0.8000000000000002,
+            "max_abs_kinematic_lateral_accel_mps2": 1.764070654982594,
+            "p99_abs_kinematic_lateral_accel_mps2": 1.750928572710038,
+            "time_to_goal_s": 17.85
+          }
+        },
+        {
+          "seed": 16,
+          "metrics": {
+            "steps": 318,
+            "duration_s": 15.9,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 37.75436005623641,
+            "mean_abs_cte_m": 0.22525828864283454,
+            "max_abs_cte_m": 0.501241779877581,
+            "mean_abs_heading_error_rad": 0.09656617790639946,
+            "speed_rmse_mps": 0.465991511166696,
+            "max_overspeed_mps": 1.349420742631203,
+            "mean_abs_steering_rate_radps": 0.14934285969104408,
+            "max_abs_steering_rate_radps": 0.8000000000000002,
+            "max_abs_kinematic_lateral_accel_mps2": 1.6351403705814285,
+            "p99_abs_kinematic_lateral_accel_mps2": 1.6216524021115961,
+            "time_to_goal_s": 15.9
+          }
+        },
+        {
+          "seed": 17,
+          "metrics": {
+            "steps": 353,
+            "duration_s": 17.650000000000002,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 39.94913555771576,
+            "mean_abs_cte_m": 0.19623914125223196,
+            "max_abs_cte_m": 0.5055725121807361,
+            "mean_abs_heading_error_rad": 0.09771869661277084,
+            "speed_rmse_mps": 0.49520896203281933,
+            "max_overspeed_mps": 1.3544802013853197,
+            "mean_abs_steering_rate_radps": 0.13463028564669255,
+            "max_abs_steering_rate_radps": 0.8000000000000002,
+            "max_abs_kinematic_lateral_accel_mps2": 1.7068478865538252,
+            "p99_abs_kinematic_lateral_accel_mps2": 1.6932659487254516,
+            "time_to_goal_s": 17.650000000000002
+          }
+        },
+        {
+          "seed": 18,
+          "metrics": {
+            "steps": 320,
+            "duration_s": 16.0,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 38.17837365120148,
+            "mean_abs_cte_m": 0.2265588497538978,
+            "max_abs_cte_m": 0.5021814591101676,
+            "mean_abs_heading_error_rad": 0.09621217701382638,
+            "speed_rmse_mps": 0.4721702900720124,
+            "max_overspeed_mps": 1.3591808060276531,
+            "mean_abs_steering_rate_radps": 0.1509973663080018,
+            "max_abs_steering_rate_radps": 0.8000000000000002,
+            "max_abs_kinematic_lateral_accel_mps2": 1.6618943335045497,
+            "p99_abs_kinematic_lateral_accel_mps2": 1.6461634604107263,
+            "time_to_goal_s": 16.0
+          }
+        },
+        {
+          "seed": 19,
+          "metrics": {
+            "steps": 317,
+            "duration_s": 15.850000000000001,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 37.75560383596993,
+            "mean_abs_cte_m": 0.2213626369331637,
+            "max_abs_cte_m": 0.49364278057181254,
+            "mean_abs_heading_error_rad": 0.09503539006342747,
+            "speed_rmse_mps": 0.4675084497859808,
+            "max_overspeed_mps": 1.3666902184911314,
+            "mean_abs_steering_rate_radps": 0.14696631791534295,
+            "max_abs_steering_rate_radps": 0.8000000000000002,
+            "max_abs_kinematic_lateral_accel_mps2": 1.5641325307689031,
+            "p99_abs_kinematic_lateral_accel_mps2": 1.5467587147678226,
+            "time_to_goal_s": 15.850000000000001
+          }
+        }
+      ],
+      "summary": {
+        "episodes": 20,
+        "successes": 20,
+        "success_rate": 1.0,
+        "collision_rate": 0.0,
+        "timeout_rate": 0.0,
+        "quality_all_rollouts": {
+          "mean_abs_cte_m": 0.2112493654311795,
+          "max_abs_cte_m": 0.5040718426736007,
+          "speed_rmse_mps": 0.47968368840030273,
+          "max_overspeed_mps": 1.3605993947729127,
+          "max_abs_kinematic_lateral_accel_mps2": 1.6832133275287107,
+          "p99_abs_kinematic_lateral_accel_mps2": 1.6676251350322855,
+          "final_progress_m": 38.94729382547982
+        },
+        "quality_success_only": {
+          "mean_abs_cte_m": 0.2112493654311795,
+          "max_abs_cte_m": 0.5040718426736007,
+          "speed_rmse_mps": 0.47968368840030273,
+          "max_overspeed_mps": 1.3605993947729127,
+          "max_abs_kinematic_lateral_accel_mps2": 1.6832133275287107,
+          "p99_abs_kinematic_lateral_accel_mps2": 1.6676251350322855,
+          "final_progress_m": 38.94729382547982
+        },
+        "mean_time_to_goal_s_success_only": 16.82
+      }
+    },
+    "stanley": {
+      "episodes": [
+        {
+          "seed": 0,
+          "metrics": {
+            "steps": 52,
+            "duration_s": 2.6,
+            "success": false,
+            "collision": true,
+            "termination_reason": "collision",
+            "final_progress_m": 4.0883458131343815,
+            "mean_abs_cte_m": 0.015666167579984257,
+            "max_abs_cte_m": 0.1496318271642767,
+            "mean_abs_heading_error_rad": 0.03139354848348112,
+            "speed_rmse_mps": 0.458387700677846,
+            "max_overspeed_mps": 1.3207984850272165,
+            "mean_abs_steering_rate_radps": 0.19831469494562895,
+            "max_abs_steering_rate_radps": 0.8000000000000007,
+            "max_abs_kinematic_lateral_accel_mps2": 0.8103291338950293,
+            "p99_abs_kinematic_lateral_accel_mps2": 0.7641290610917959,
+            "time_to_goal_s": null
+          }
+        },
+        {
+          "seed": 1,
+          "metrics": {
+            "steps": 371,
+            "duration_s": 18.55,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 39.70354808797317,
+            "mean_abs_cte_m": 0.33609395107864815,
+            "max_abs_cte_m": 0.8875692629698512,
+            "mean_abs_heading_error_rad": 0.08836740051219659,
+            "speed_rmse_mps": 0.4897033790576142,
+            "max_overspeed_mps": 1.3750014456905069,
+            "mean_abs_steering_rate_radps": 0.2672895488412072,
+            "max_abs_steering_rate_radps": 0.8000000000000007,
+            "max_abs_kinematic_lateral_accel_mps2": 2.2546353227291798,
+            "p99_abs_kinematic_lateral_accel_mps2": 2.186060194689178,
+            "time_to_goal_s": 18.55
+          }
+        },
+        {
+          "seed": 2,
+          "metrics": {
+            "steps": 52,
+            "duration_s": 2.6,
+            "success": false,
+            "collision": true,
+            "termination_reason": "collision",
+            "final_progress_m": 4.051233323373078,
+            "mean_abs_cte_m": 0.016602240926332206,
+            "max_abs_cte_m": 0.1559398843805475,
+            "mean_abs_heading_error_rad": 0.03220942950253746,
+            "speed_rmse_mps": 0.4495804251607327,
+            "max_overspeed_mps": 1.2583703533635915,
+            "mean_abs_steering_rate_radps": 0.20289008101594228,
+            "max_abs_steering_rate_radps": 0.8000000000000007,
+            "max_abs_kinematic_lateral_accel_mps2": 0.855099441355701,
+            "p99_abs_kinematic_lateral_accel_mps2": 0.8067266683023466,
+            "time_to_goal_s": null
+          }
+        },
+        {
+          "seed": 3,
+          "metrics": {
+            "steps": 337,
+            "duration_s": 16.85,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 38.10552845916127,
+            "mean_abs_cte_m": 0.33455376624868777,
+            "max_abs_cte_m": 0.9025670544918645,
+            "mean_abs_heading_error_rad": 0.09579849514217491,
+            "speed_rmse_mps": 0.46456820367273377,
+            "max_overspeed_mps": 1.3780780161156012,
+            "mean_abs_steering_rate_radps": 0.2322032767491697,
+            "max_abs_steering_rate_radps": 0.8000000000000007,
+            "max_abs_kinematic_lateral_accel_mps2": 2.2714601932504914,
+            "p99_abs_kinematic_lateral_accel_mps2": 2.2140201270541424,
+            "time_to_goal_s": 16.85
+          }
+        },
+        {
+          "seed": 4,
+          "metrics": {
+            "steps": 53,
+            "duration_s": 2.6500000000000004,
+            "success": false,
+            "collision": true,
+            "termination_reason": "collision",
+            "final_progress_m": 4.13819217970487,
+            "mean_abs_cte_m": 0.018306679056297393,
+            "max_abs_cte_m": 0.16634852075119225,
+            "mean_abs_heading_error_rad": 0.033817489026868236,
+            "speed_rmse_mps": 0.4433895855171796,
+            "max_overspeed_mps": 1.2821488081242758,
+            "mean_abs_steering_rate_radps": 0.2011840298490704,
+            "max_abs_steering_rate_radps": 0.8000000000000007,
+            "max_abs_kinematic_lateral_accel_mps2": 0.8658054676417881,
+            "p99_abs_kinematic_lateral_accel_mps2": 0.8362738010875629,
+            "time_to_goal_s": null
+          }
+        },
+        {
+          "seed": 5,
+          "metrics": {
+            "steps": 369,
+            "duration_s": 18.45,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 39.19317093767246,
+            "mean_abs_cte_m": 0.3360843602274824,
+            "max_abs_cte_m": 0.901792472297847,
+            "mean_abs_heading_error_rad": 0.08991178401514446,
+            "speed_rmse_mps": 0.492381226240913,
+            "max_overspeed_mps": 1.3583926079572706,
+            "mean_abs_steering_rate_radps": 0.2697669483903203,
+            "max_abs_steering_rate_radps": 0.8000000000000007,
+            "max_abs_kinematic_lateral_accel_mps2": 2.270194695765796,
+            "p99_abs_kinematic_lateral_accel_mps2": 2.2129562234599316,
+            "time_to_goal_s": 18.45
+          }
+        },
+        {
+          "seed": 6,
+          "metrics": {
+            "steps": 333,
+            "duration_s": 16.650000000000002,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 37.531062622237684,
+            "mean_abs_cte_m": 0.3189877270465957,
+            "max_abs_cte_m": 0.8735070672658948,
+            "mean_abs_heading_error_rad": 0.09387268527696899,
+            "speed_rmse_mps": 0.46140300375751897,
+            "max_overspeed_mps": 1.3466806614438271,
+            "mean_abs_steering_rate_radps": 0.2326686491876178,
+            "max_abs_steering_rate_radps": 0.8000000000000007,
+            "max_abs_kinematic_lateral_accel_mps2": 2.2360690242286503,
+            "p99_abs_kinematic_lateral_accel_mps2": 2.1681768992814425,
+            "time_to_goal_s": 16.650000000000002
+          }
+        },
+        {
+          "seed": 7,
+          "metrics": {
+            "steps": 52,
+            "duration_s": 2.6,
+            "success": false,
+            "collision": true,
+            "termination_reason": "collision",
+            "final_progress_m": 4.055757986664094,
+            "mean_abs_cte_m": 0.017029187165312813,
+            "max_abs_cte_m": 0.1588340303778853,
+            "mean_abs_heading_error_rad": 0.03261605878736536,
+            "speed_rmse_mps": 0.45208548142130733,
+            "max_overspeed_mps": 1.2736852172251418,
+            "mean_abs_steering_rate_radps": 0.202879236294673,
+            "max_abs_steering_rate_radps": 0.8000000000000007,
+            "max_abs_kinematic_lateral_accel_mps2": 0.8637244852148307,
+            "p99_abs_kinematic_lateral_accel_mps2": 0.8184703286772321,
+            "time_to_goal_s": null
+          }
+        },
+        {
+          "seed": 8,
+          "metrics": {
+            "steps": 52,
+            "duration_s": 2.6,
+            "success": false,
+            "collision": true,
+            "termination_reason": "collision",
+            "final_progress_m": 4.057549265768564,
+            "mean_abs_cte_m": 0.017971724945579637,
+            "max_abs_cte_m": 0.1660455022847666,
+            "mean_abs_heading_error_rad": 0.03351543432966208,
+            "speed_rmse_mps": 0.45608648883286146,
+            "max_overspeed_mps": 1.3335952980510746,
+            "mean_abs_steering_rate_radps": 0.20309770565766555,
+            "max_abs_steering_rate_radps": 0.8000000000000007,
+            "max_abs_kinematic_lateral_accel_mps2": 0.9046786070298518,
+            "p99_abs_kinematic_lateral_accel_mps2": 0.8663894572896585,
+            "time_to_goal_s": null
+          }
+        },
+        {
+          "seed": 9,
+          "metrics": {
+            "steps": 337,
+            "duration_s": 16.85,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 38.06704514838637,
+            "mean_abs_cte_m": 0.33492618694660115,
+            "max_abs_cte_m": 0.9017986469979855,
+            "mean_abs_heading_error_rad": 0.09586152729795165,
+            "speed_rmse_mps": 0.46145864290229993,
+            "max_overspeed_mps": 1.3438386078682638,
+            "mean_abs_steering_rate_radps": 0.2315731157427204,
+            "max_abs_steering_rate_radps": 0.8000000000000007,
+            "max_abs_kinematic_lateral_accel_mps2": 2.2696828827281372,
+            "p99_abs_kinematic_lateral_accel_mps2": 2.2135486104405904,
+            "time_to_goal_s": 16.85
+          }
+        },
+        {
+          "seed": 10,
+          "metrics": {
+            "steps": 52,
+            "duration_s": 2.6,
+            "success": false,
+            "collision": true,
+            "termination_reason": "collision",
+            "final_progress_m": 4.050110783625203,
+            "mean_abs_cte_m": 0.01578032004317121,
+            "max_abs_cte_m": 0.15066722525019105,
+            "mean_abs_heading_error_rad": 0.03138705366033333,
+            "speed_rmse_mps": 0.4457298167049651,
+            "max_overspeed_mps": 1.272949658172283,
+            "mean_abs_steering_rate_radps": 0.19956775078406713,
+            "max_abs_steering_rate_radps": 0.8000000000000007,
+            "max_abs_kinematic_lateral_accel_mps2": 0.8224191122454482,
+            "p99_abs_kinematic_lateral_accel_mps2": 0.7756712371925731,
+            "time_to_goal_s": null
+          }
+        },
+        {
+          "seed": 11,
+          "metrics": {
+            "steps": 365,
+            "duration_s": 18.25,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 38.81082572226149,
+            "mean_abs_cte_m": 0.32422506021411485,
+            "max_abs_cte_m": 0.8730176783067163,
+            "mean_abs_heading_error_rad": 0.08795639677139296,
+            "speed_rmse_mps": 0.4925258680477981,
+            "max_overspeed_mps": 1.362778111383784,
+            "mean_abs_steering_rate_radps": 0.27166942077345024,
+            "max_abs_steering_rate_radps": 0.8000000000000007,
+            "max_abs_kinematic_lateral_accel_mps2": 2.2378050461480097,
+            "p99_abs_kinematic_lateral_accel_mps2": 2.149198319404225,
+            "time_to_goal_s": 18.25
+          }
+        },
+        {
+          "seed": 12,
+          "metrics": {
+            "steps": 334,
+            "duration_s": 16.7,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 37.655442309316804,
+            "mean_abs_cte_m": 0.3191301988113358,
+            "max_abs_cte_m": 0.8669713649706887,
+            "mean_abs_heading_error_rad": 0.09349964213008903,
+            "speed_rmse_mps": 0.45888274703407894,
+            "max_overspeed_mps": 1.3380598728262454,
+            "mean_abs_steering_rate_radps": 0.23230421904636223,
+            "max_abs_steering_rate_radps": 0.8000000000000007,
+            "max_abs_kinematic_lateral_accel_mps2": 2.2283655162249096,
+            "p99_abs_kinematic_lateral_accel_mps2": 2.154178550330061,
+            "time_to_goal_s": 16.7
+          }
+        },
+        {
+          "seed": 13,
+          "metrics": {
+            "steps": 52,
+            "duration_s": 2.6,
+            "success": false,
+            "collision": true,
+            "termination_reason": "collision",
+            "final_progress_m": 4.052308838441851,
+            "mean_abs_cte_m": 0.016814043484712216,
+            "max_abs_cte_m": 0.15735400495445942,
+            "mean_abs_heading_error_rad": 0.03241676571796547,
+            "speed_rmse_mps": 0.4504057187003107,
+            "max_overspeed_mps": 1.2592526501697847,
+            "mean_abs_steering_rate_radps": 0.20321883146594055,
+            "max_abs_steering_rate_radps": 0.8000000000000007,
+            "max_abs_kinematic_lateral_accel_mps2": 0.8612976502875742,
+            "p99_abs_kinematic_lateral_accel_mps2": 0.813779797139322,
+            "time_to_goal_s": null
+          }
+        },
+        {
+          "seed": 14,
+          "metrics": {
+            "steps": 52,
+            "duration_s": 2.6,
+            "success": false,
+            "collision": true,
+            "termination_reason": "collision",
+            "final_progress_m": 4.055864169265521,
+            "mean_abs_cte_m": 0.017068670273892216,
+            "max_abs_cte_m": 0.1591006361072347,
+            "mean_abs_heading_error_rad": 0.03265286970547429,
+            "speed_rmse_mps": 0.45218209911538526,
+            "max_overspeed_mps": 1.2758768852634699,
+            "mean_abs_steering_rate_radps": 0.20288897477676812,
+            "max_abs_steering_rate_radps": 0.8000000000000007,
+            "max_abs_kinematic_lateral_accel_mps2": 0.86476927069385,
+            "p99_abs_kinematic_lateral_accel_mps2": 0.8198413194384904,
+            "time_to_goal_s": null
+          }
+        },
+        {
+          "seed": 15,
+          "metrics": {
+            "steps": 53,
+            "duration_s": 2.6500000000000004,
+            "success": false,
+            "collision": true,
+            "termination_reason": "collision",
+            "final_progress_m": 4.134811312501891,
+            "mean_abs_cte_m": 0.017789695918548766,
+            "max_abs_cte_m": 0.1629694647388432,
+            "mean_abs_heading_error_rad": 0.03332743987167945,
+            "speed_rmse_mps": 0.44266116753267065,
+            "max_overspeed_mps": 1.2952004470038818,
+            "mean_abs_steering_rate_radps": 0.20076754857922144,
+            "max_abs_steering_rate_radps": 0.8000000000000007,
+            "max_abs_kinematic_lateral_accel_mps2": 0.8529708703989132,
+            "p99_abs_kinematic_lateral_accel_mps2": 0.8199830678592989,
+            "time_to_goal_s": null
+          }
+        },
+        {
+          "seed": 16,
+          "metrics": {
+            "steps": 335,
+            "duration_s": 16.75,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 37.78579505261136,
+            "mean_abs_cte_m": 0.32989035629317687,
+            "max_abs_cte_m": 0.8953697637461289,
+            "mean_abs_heading_error_rad": 0.09576616686027713,
+            "speed_rmse_mps": 0.4650913346787102,
+            "max_overspeed_mps": 1.3604395821055462,
+            "mean_abs_steering_rate_radps": 0.23233829561740546,
+            "max_abs_steering_rate_radps": 0.8000000000000007,
+            "max_abs_kinematic_lateral_accel_mps2": 2.259247270541443,
+            "p99_abs_kinematic_lateral_accel_mps2": 2.2077232946305614,
+            "time_to_goal_s": 16.75
+          }
+        },
+        {
+          "seed": 17,
+          "metrics": {
+            "steps": 373,
+            "duration_s": 18.650000000000002,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 39.98441630405827,
+            "mean_abs_cte_m": 0.34914118868550836,
+            "max_abs_cte_m": 0.9236491968126561,
+            "mean_abs_heading_error_rad": 0.09067215816814944,
+            "speed_rmse_mps": 0.49161222744240224,
+            "max_overspeed_mps": 1.3561303599494994,
+            "mean_abs_steering_rate_radps": 0.2666277073713309,
+            "max_abs_steering_rate_radps": 0.8000000000000007,
+            "max_abs_kinematic_lateral_accel_mps2": 2.286885700851527,
+            "p99_abs_kinematic_lateral_accel_mps2": 2.2438782414496763,
+            "time_to_goal_s": 18.650000000000002
+          }
+        },
+        {
+          "seed": 18,
+          "metrics": {
+            "steps": 337,
+            "duration_s": 16.85,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 38.18993905265012,
+            "mean_abs_cte_m": 0.3391963758120959,
+            "max_abs_cte_m": 0.907304246265307,
+            "mean_abs_heading_error_rad": 0.09642466608517601,
+            "speed_rmse_mps": 0.46560914337414716,
+            "max_overspeed_mps": 1.3553630229919393,
+            "mean_abs_steering_rate_radps": 0.23194819560222416,
+            "max_abs_steering_rate_radps": 0.8000000000000007,
+            "max_abs_kinematic_lateral_accel_mps2": 2.2779425980312658,
+            "p99_abs_kinematic_lateral_accel_mps2": 2.2285059041229096,
+            "time_to_goal_s": 16.85
+          }
+        },
+        {
+          "seed": 19,
+          "metrics": {
+            "steps": 334,
+            "duration_s": 16.7,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 37.78742393831779,
+            "mean_abs_cte_m": 0.3236622239727374,
+            "max_abs_cte_m": 0.8794973121409346,
+            "mean_abs_heading_error_rad": 0.09416862325032145,
+            "speed_rmse_mps": 0.4639682987663415,
+            "max_overspeed_mps": 1.3644658105121623,
+            "mean_abs_steering_rate_radps": 0.2329075418365283,
+            "max_abs_steering_rate_radps": 0.8000000000000007,
+            "max_abs_kinematic_lateral_accel_mps2": 2.2365961608280793,
+            "p99_abs_kinematic_lateral_accel_mps2": 2.1949586061306343,
+            "time_to_goal_s": 16.7
+          }
+        }
+      ],
+      "summary": {
+        "episodes": 20,
+        "successes": 11,
+        "success_rate": 0.55,
+        "collision_rate": 0.45,
+        "timeout_rate": 0.0,
+        "quality_all_rollouts": {
+          "mean_abs_cte_m": 0.18994600623654076,
+          "max_abs_cte_m": 0.5619967581137635,
+          "speed_rmse_mps": 0.4628856279318908,
+          "max_overspeed_mps": 1.325555295062268,
+          "max_abs_kinematic_lateral_accel_mps2": 1.6264989225045237,
+          "p99_abs_kinematic_lateral_accel_mps2": 1.5747234854535814,
+          "final_progress_m": 22.97491856535631
+        },
+        "quality_success_only": {
+          "mean_abs_cte_m": 0.3314446723033622,
+          "max_abs_cte_m": 0.8920949151150794,
+          "speed_rmse_mps": 0.47338218863405074,
+          "max_overspeed_mps": 1.3581116453495135,
+          "max_abs_kinematic_lateral_accel_mps2": 2.2571713101206807,
+          "p99_abs_kinematic_lateral_accel_mps2": 2.197564088272123,
+          "final_progress_m": 38.43765433042244
+        },
+        "mean_time_to_goal_s_success_only": 17.386363636363637
+      }
+    },
+    "pid": {
+      "episodes": [
+        {
+          "seed": 0,
+          "metrics": {
+            "steps": 53,
+            "duration_s": 2.6500000000000004,
+            "success": false,
+            "collision": true,
+            "termination_reason": "collision",
+            "final_progress_m": 4.173099746476216,
+            "mean_abs_cte_m": 0.020158591829538972,
+            "max_abs_cte_m": 0.18787013882442669,
+            "mean_abs_heading_error_rad": 0.03921516170437434,
+            "speed_rmse_mps": 0.45598788742460733,
+            "max_overspeed_mps": 1.3207986136209031,
+            "mean_abs_steering_rate_radps": 0.1493173545261599,
+            "max_abs_steering_rate_radps": 0.664266765117645,
+            "max_abs_kinematic_lateral_accel_mps2": 0.6131379723512225,
+            "p99_abs_kinematic_lateral_accel_mps2": 0.5825831840080166,
+            "time_to_goal_s": null
+          }
+        },
+        {
+          "seed": 1,
+          "metrics": {
+            "steps": 375,
+            "duration_s": 18.75,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 39.70354808797317,
+            "mean_abs_cte_m": 0.36992995330553274,
+            "max_abs_cte_m": 1.0884972813416027,
+            "mean_abs_heading_error_rad": 0.11582925742570613,
+            "speed_rmse_mps": 0.48913573313470016,
+            "max_overspeed_mps": 1.3688703549614634,
+            "mean_abs_steering_rate_radps": 0.2660548954606056,
+            "max_abs_steering_rate_radps": 0.8000000000000007,
+            "max_abs_kinematic_lateral_accel_mps2": 2.44317492429962,
+            "p99_abs_kinematic_lateral_accel_mps2": 2.3573054275631313,
+            "time_to_goal_s": 18.75
+          }
+        },
+        {
+          "seed": 2,
+          "metrics": {
+            "steps": 53,
+            "duration_s": 2.6500000000000004,
+            "success": false,
+            "collision": true,
+            "termination_reason": "collision",
+            "final_progress_m": 4.136444713138493,
+            "mean_abs_cte_m": 0.021390490186799452,
+            "max_abs_cte_m": 0.19648373622082477,
+            "mean_abs_heading_error_rad": 0.04040733891373667,
+            "speed_rmse_mps": 0.44815675976583425,
+            "max_overspeed_mps": 1.2583705944702932,
+            "mean_abs_steering_rate_radps": 0.15315491748306925,
+            "max_abs_steering_rate_radps": 0.6614329218864442,
+            "max_abs_kinematic_lateral_accel_mps2": 0.6474834364690303,
+            "p99_abs_kinematic_lateral_accel_mps2": 0.6154948182997365,
+            "time_to_goal_s": null
+          }
+        },
+        {
+          "seed": 3,
+          "metrics": {
+            "steps": 341,
+            "duration_s": 17.05,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 38.09031656114303,
+            "mean_abs_cte_m": 0.3711786642162643,
+            "max_abs_cte_m": 1.088690622931677,
+            "mean_abs_heading_error_rad": 0.11829188155007135,
+            "speed_rmse_mps": 0.46494335001160153,
+            "max_overspeed_mps": 1.3829677658411403,
+            "mean_abs_steering_rate_radps": 0.2511050857581701,
+            "max_abs_steering_rate_radps": 0.8000000000000007,
+            "max_abs_kinematic_lateral_accel_mps2": 2.4689098926255535,
+            "p99_abs_kinematic_lateral_accel_mps2": 2.3859016212693875,
+            "time_to_goal_s": 17.05
+          }
+        },
+        {
+          "seed": 4,
+          "metrics": {
+            "steps": 53,
+            "duration_s": 2.6500000000000004,
+            "success": false,
+            "collision": true,
+            "termination_reason": "collision",
+            "final_progress_m": 4.132311771137297,
+            "mean_abs_cte_m": 0.019972349329918402,
+            "max_abs_cte_m": 0.1869411837312613,
+            "mean_abs_heading_error_rad": 0.03896392533761282,
+            "speed_rmse_mps": 0.4433294764555974,
+            "max_overspeed_mps": 1.2821489426350459,
+            "mean_abs_steering_rate_radps": 0.14864876585186654,
+            "max_abs_steering_rate_radps": 0.6610976457595824,
+            "max_abs_kinematic_lateral_accel_mps2": 0.6092968313129551,
+            "p99_abs_kinematic_lateral_accel_mps2": 0.5789920408586393,
+            "time_to_goal_s": null
+          }
+        },
+        {
+          "seed": 5,
+          "metrics": {
+            "steps": 372,
+            "duration_s": 18.6,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 39.19317093767246,
+            "mean_abs_cte_m": 0.370577947642317,
+            "max_abs_cte_m": 1.0860956588410406,
+            "mean_abs_heading_error_rad": 0.11750733818695529,
+            "speed_rmse_mps": 0.4941391489029688,
+            "max_overspeed_mps": 1.3746538159295103,
+            "mean_abs_steering_rate_radps": 0.26986814037927503,
+            "max_abs_steering_rate_radps": 0.8000000000000007,
+            "max_abs_kinematic_lateral_accel_mps2": 2.4671246098338484,
+            "p99_abs_kinematic_lateral_accel_mps2": 2.3746715332717807,
+            "time_to_goal_s": 18.6
+          }
+        },
+        {
+          "seed": 6,
+          "metrics": {
+            "steps": 337,
+            "duration_s": 16.85,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 37.52032639808404,
+            "mean_abs_cte_m": 0.3603912974542737,
+            "max_abs_cte_m": 1.0709154538090602,
+            "mean_abs_heading_error_rad": 0.11766916162236847,
+            "speed_rmse_mps": 0.46314846369374396,
+            "max_overspeed_mps": 1.3674654822299648,
+            "mean_abs_steering_rate_radps": 0.2506794129506594,
+            "max_abs_steering_rate_radps": 0.8000000000000007,
+            "max_abs_kinematic_lateral_accel_mps2": 2.4210399841999957,
+            "p99_abs_kinematic_lateral_accel_mps2": 2.3316768770398233,
+            "time_to_goal_s": 16.85
+          }
+        },
+        {
+          "seed": 7,
+          "metrics": {
+            "steps": 53,
+            "duration_s": 2.6500000000000004,
+            "success": false,
+            "collision": true,
+            "termination_reason": "collision",
+            "final_progress_m": 4.141267591755227,
+            "mean_abs_cte_m": 0.02190841643884811,
+            "max_abs_cte_m": 0.19995958253155585,
+            "mean_abs_heading_error_rad": 0.040895364988843504,
+            "speed_rmse_mps": 0.45068674906297607,
+            "max_overspeed_mps": 1.2736852172251418,
+            "mean_abs_steering_rate_radps": 0.1546673594780688,
+            "max_abs_steering_rate_radps": 0.6645687818527221,
+            "max_abs_kinematic_lateral_accel_mps2": 0.6615926469717652,
+            "p99_abs_kinematic_lateral_accel_mps2": 0.6286863777218912,
+            "time_to_goal_s": null
+          }
+        },
+        {
+          "seed": 8,
+          "metrics": {
+            "steps": 53,
+            "duration_s": 2.6500000000000004,
+            "success": false,
+            "collision": true,
+            "termination_reason": "collision",
+            "final_progress_m": 4.1440491578286975,
+            "mean_abs_cte_m": 0.023095898093108736,
+            "max_abs_cte_m": 0.2088455085154797,
+            "mean_abs_heading_error_rad": 0.04195982846369247,
+            "speed_rmse_mps": 0.4541040316704278,
+            "max_overspeed_mps": 1.3335952980510746,
+            "mean_abs_steering_rate_radps": 0.15815706522959583,
+            "max_abs_steering_rate_radps": 0.66679322719574,
+            "max_abs_kinematic_lateral_accel_mps2": 0.707931854884198,
+            "p99_abs_kinematic_lateral_accel_mps2": 0.6742869293928483,
+            "time_to_goal_s": null
+          }
+        },
+        {
+          "seed": 9,
+          "metrics": {
+            "steps": 342,
+            "duration_s": 17.1,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 38.069955787482414,
+            "mean_abs_cte_m": 0.37083871133948354,
+            "max_abs_cte_m": 1.0880090047405415,
+            "mean_abs_heading_error_rad": 0.11804844444921024,
+            "speed_rmse_mps": 0.4632131808685116,
+            "max_overspeed_mps": 1.3672629663605351,
+            "mean_abs_steering_rate_radps": 0.2503110508254775,
+            "max_abs_steering_rate_radps": 0.8000000000000007,
+            "max_abs_kinematic_lateral_accel_mps2": 2.4673568505235464,
+            "p99_abs_kinematic_lateral_accel_mps2": 2.3840840598178383,
+            "time_to_goal_s": 17.1
+          }
+        },
+        {
+          "seed": 10,
+          "metrics": {
+            "steps": 53,
+            "duration_s": 2.6500000000000004,
+            "success": false,
+            "collision": true,
+            "termination_reason": "collision",
+            "final_progress_m": 4.134282415700603,
+            "mean_abs_cte_m": 0.020375400179770922,
+            "max_abs_cte_m": 0.18970047827650977,
+            "mean_abs_heading_error_rad": 0.03937738776491771,
+            "speed_rmse_mps": 0.44401461203421666,
+            "max_overspeed_mps": 1.2729498268157071,
+            "mean_abs_steering_rate_radps": 0.14985866816538684,
+            "max_abs_steering_rate_radps": 0.6580293774604797,
+            "max_abs_kinematic_lateral_accel_mps2": 0.6199410047791808,
+            "p99_abs_kinematic_lateral_accel_mps2": 0.5892561027069472,
+            "time_to_goal_s": null
+          }
+        },
+        {
+          "seed": 11,
+          "metrics": {
+            "steps": 370,
+            "duration_s": 18.5,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 38.81082572226149,
+            "mean_abs_cte_m": 0.36001803527823006,
+            "max_abs_cte_m": 1.071178935967656,
+            "mean_abs_heading_error_rad": 0.11618211384690309,
+            "speed_rmse_mps": 0.4919629129901754,
+            "max_overspeed_mps": 1.3469604573032026,
+            "mean_abs_steering_rate_radps": 0.2681780814721801,
+            "max_abs_steering_rate_radps": 0.8000000000000007,
+            "max_abs_kinematic_lateral_accel_mps2": 2.412859860612167,
+            "p99_abs_kinematic_lateral_accel_mps2": 2.3075843758147734,
+            "time_to_goal_s": 18.5
+          }
+        },
+        {
+          "seed": 12,
+          "metrics": {
+            "steps": 337,
+            "duration_s": 16.85,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 37.64725544626481,
+            "mean_abs_cte_m": 0.35864334153068134,
+            "max_abs_cte_m": 1.0698091960518286,
+            "mean_abs_heading_error_rad": 0.11691650080611973,
+            "speed_rmse_mps": 0.4644331218643028,
+            "max_overspeed_mps": 1.3846274892782222,
+            "mean_abs_steering_rate_radps": 0.24954797365102993,
+            "max_abs_steering_rate_radps": 0.8000000000000007,
+            "max_abs_kinematic_lateral_accel_mps2": 2.404341506095723,
+            "p99_abs_kinematic_lateral_accel_mps2": 2.325182881664677,
+            "time_to_goal_s": 16.85
+          }
+        },
+        {
+          "seed": 13,
+          "metrics": {
+            "steps": 53,
+            "duration_s": 2.6500000000000004,
+            "success": false,
+            "collision": true,
+            "termination_reason": "collision",
+            "final_progress_m": 4.137628052442992,
+            "mean_abs_cte_m": 0.021653099165618243,
+            "max_abs_cte_m": 0.19824199014635444,
+            "mean_abs_heading_error_rad": 0.04066145877326021,
+            "speed_rmse_mps": 0.44898577701739323,
+            "max_overspeed_mps": 1.2592526501697847,
+            "mean_abs_steering_rate_radps": 0.15391408722360406,
+            "max_abs_steering_rate_radps": 0.662398874759674,
+            "max_abs_kinematic_lateral_accel_mps2": 0.6545214804008668,
+            "p99_abs_kinematic_lateral_accel_mps2": 0.6221575767301465,
+            "time_to_goal_s": null
+          }
+        },
+        {
+          "seed": 14,
+          "metrics": {
+            "steps": 53,
+            "duration_s": 2.6500000000000004,
+            "success": false,
+            "collision": true,
+            "termination_reason": "collision",
+            "final_progress_m": 4.141397328598319,
+            "mean_abs_cte_m": 0.021958192827414805,
+            "max_abs_cte_m": 0.20030058261621583,
+            "mean_abs_heading_error_rad": 0.040942179470493424,
+            "speed_rmse_mps": 0.45078255044835597,
+            "max_overspeed_mps": 1.2758768852634699,
+            "mean_abs_steering_rate_radps": 0.15481193560478582,
+            "max_abs_steering_rate_radps": 0.6646599769592287,
+            "max_abs_kinematic_lateral_accel_mps2": 0.6630437192377479,
+            "p99_abs_kinematic_lateral_accel_mps2": 0.6300472254953474,
+            "time_to_goal_s": null
+          }
+        },
+        {
+          "seed": 15,
+          "metrics": {
+            "steps": 53,
+            "duration_s": 2.6500000000000004,
+            "success": false,
+            "collision": true,
+            "termination_reason": "collision",
+            "final_progress_m": 4.129160898003404,
+            "mean_abs_cte_m": 0.019388748830638784,
+            "max_abs_cte_m": 0.18289210516421137,
+            "mean_abs_heading_error_rad": 0.03834598557258484,
+            "speed_rmse_mps": 0.44260523295204374,
+            "max_overspeed_mps": 1.2952005341407018,
+            "mean_abs_steering_rate_radps": 0.14685664536822343,
+            "max_abs_steering_rate_radps": 0.6651783585548401,
+            "max_abs_kinematic_lateral_accel_mps2": 0.5937478917220753,
+            "p99_abs_kinematic_lateral_accel_mps2": 0.564005437078102,
+            "time_to_goal_s": null
+          }
+        },
+        {
+          "seed": 16,
+          "metrics": {
+            "steps": 340,
+            "duration_s": 17.0,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 37.772280872582364,
+            "mean_abs_cte_m": 0.36895212403579997,
+            "max_abs_cte_m": 1.079998883036783,
+            "mean_abs_heading_error_rad": 0.11833837207662008,
+            "speed_rmse_mps": 0.4626940263077296,
+            "max_overspeed_mps": 1.342773638220978,
+            "mean_abs_steering_rate_radps": 0.25145930100013736,
+            "max_abs_steering_rate_radps": 0.8000000000000007,
+            "max_abs_kinematic_lateral_accel_mps2": 2.4580022666686085,
+            "p99_abs_kinematic_lateral_accel_mps2": 2.3638098999003696,
+            "time_to_goal_s": 17.0
+          }
+        },
+        {
+          "seed": 17,
+          "metrics": {
+            "steps": 378,
+            "duration_s": 18.900000000000002,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 39.98441630405827,
+            "mean_abs_cte_m": 0.38073542704557956,
+            "max_abs_cte_m": 1.1008823245407748,
+            "mean_abs_heading_error_rad": 0.11749009729387555,
+            "speed_rmse_mps": 0.49122301463503665,
+            "max_overspeed_mps": 1.365833026575617,
+            "mean_abs_steering_rate_radps": 0.2665107860747338,
+            "max_abs_steering_rate_radps": 0.8000000000000007,
+            "max_abs_kinematic_lateral_accel_mps2": 2.5006607066381834,
+            "p99_abs_kinematic_lateral_accel_mps2": 2.4100441069333285,
+            "time_to_goal_s": 18.900000000000002
+          }
+        },
+        {
+          "seed": 18,
+          "metrics": {
+            "steps": 343,
+            "duration_s": 17.150000000000002,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 38.191473656900556,
+            "mean_abs_cte_m": 0.37193517791058256,
+            "max_abs_cte_m": 1.0932147118894808,
+            "mean_abs_heading_error_rad": 0.11832563567996657,
+            "speed_rmse_mps": 0.46280999954830465,
+            "max_overspeed_mps": 1.3553630229919393,
+            "mean_abs_steering_rate_radps": 0.2504333363351789,
+            "max_abs_steering_rate_radps": 0.8000000000000007,
+            "max_abs_kinematic_lateral_accel_mps2": 2.4833010012301915,
+            "p99_abs_kinematic_lateral_accel_mps2": 2.4066031499622986,
+            "time_to_goal_s": 17.150000000000002
+          }
+        },
+        {
+          "seed": 19,
+          "metrics": {
+            "steps": 339,
+            "duration_s": 16.95,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 37.77928404972368,
+            "mean_abs_cte_m": 0.3630679313994728,
+            "max_abs_cte_m": 1.0756479847392333,
+            "mean_abs_heading_error_rad": 0.11712250535114137,
+            "speed_rmse_mps": 0.462391756542639,
+            "max_overspeed_mps": 1.3561490708808126,
+            "mean_abs_steering_rate_radps": 0.24938977687759736,
+            "max_abs_steering_rate_radps": 0.8000000000000007,
+            "max_abs_kinematic_lateral_accel_mps2": 2.4194389178272564,
+            "p99_abs_kinematic_lateral_accel_mps2": 2.3300941123301695,
+            "time_to_goal_s": 16.95
+          }
+        }
+      ],
+      "summary": {
+        "episodes": 20,
+        "successes": 11,
+        "success_rate": 0.55,
+        "collision_rate": 0.45,
+        "timeout_rate": 0.0,
+        "quality_all_rollouts": {
+          "mean_abs_cte_m": 0.2118084899019937,
+          "max_abs_cte_m": 0.683208768195826,
+          "speed_rmse_mps": 0.46243738926655836,
+          "max_overspeed_mps": 1.3292402826482754,
+          "max_abs_kinematic_lateral_accel_mps2": 1.6358453679341867,
+          "p99_abs_kinematic_lateral_accel_mps2": 1.5731233868929626,
+          "final_progress_m": 23.001624774961375
+        },
+        "quality_success_only": {
+          "mean_abs_cte_m": 0.36784260101438343,
+          "max_abs_cte_m": 1.0829945507172434,
+          "speed_rmse_mps": 0.473644973499974,
+          "max_overspeed_mps": 1.3648115536884897,
+          "max_abs_kinematic_lateral_accel_mps2": 2.4496555018686084,
+          "p99_abs_kinematic_lateral_accel_mps2": 2.361541640506143,
+          "final_progress_m": 38.43298671128603
+        },
+        "mean_time_to_goal_s_success_only": 17.60909090909091
+      }
+    },
+    "lqr": {
+      "episodes": [
+        {
+          "seed": 0,
+          "metrics": {
+            "steps": 363,
+            "duration_s": 18.150000000000002,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 40.42968532420055,
+            "mean_abs_cte_m": 0.045490214956124174,
+            "max_abs_cte_m": 0.11352334597610059,
+            "mean_abs_heading_error_rad": 0.034195210356429626,
+            "speed_rmse_mps": 0.48605827401190077,
+            "max_overspeed_mps": 1.3272355889759802,
+            "mean_abs_steering_rate_radps": 0.3779751046045015,
+            "max_abs_steering_rate_radps": 0.8000000000000007,
+            "max_abs_kinematic_lateral_accel_mps2": 2.390056536322726,
+            "p99_abs_kinematic_lateral_accel_mps2": 2.294666215148496,
+            "time_to_goal_s": 18.150000000000002
+          }
+        },
+        {
+          "seed": 1,
+          "metrics": {
+            "steps": 358,
+            "duration_s": 17.900000000000002,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 39.66229520834718,
+            "mean_abs_cte_m": 0.04546363158372179,
+            "max_abs_cte_m": 0.11796335817473022,
+            "mean_abs_heading_error_rad": 0.03504469914519277,
+            "speed_rmse_mps": 0.4873981262365176,
+            "max_overspeed_mps": 1.3601847201015667,
+            "mean_abs_steering_rate_radps": 0.38125912485613017,
+            "max_abs_steering_rate_radps": 0.8000000000000007,
+            "max_abs_kinematic_lateral_accel_mps2": 2.305362380960725,
+            "p99_abs_kinematic_lateral_accel_mps2": 2.2025739397990587,
+            "time_to_goal_s": 17.900000000000002
+          }
+        },
+        {
+          "seed": 2,
+          "metrics": {
+            "steps": 328,
+            "duration_s": 16.400000000000002,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 38.13938195175227,
+            "mean_abs_cte_m": 0.04334269700132629,
+            "max_abs_cte_m": 0.12100146551947619,
+            "mean_abs_heading_error_rad": 0.027515596514251485,
+            "speed_rmse_mps": 0.4597905511970667,
+            "max_overspeed_mps": 1.3502105061326968,
+            "mean_abs_steering_rate_radps": 0.32338117334948474,
+            "max_abs_steering_rate_radps": 0.8000000000000007,
+            "max_abs_kinematic_lateral_accel_mps2": 2.3832447121317495,
+            "p99_abs_kinematic_lateral_accel_mps2": 2.2829457865807696,
+            "time_to_goal_s": 16.400000000000002
+          }
+        },
+        {
+          "seed": 3,
+          "metrics": {
+            "steps": 326,
+            "duration_s": 16.3,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 38.070212871115906,
+            "mean_abs_cte_m": 0.04267169055181735,
+            "max_abs_cte_m": 0.12163657680137663,
+            "mean_abs_heading_error_rad": 0.027385213932700523,
+            "speed_rmse_mps": 0.4635791568330886,
+            "max_overspeed_mps": 1.3531563448063797,
+            "mean_abs_steering_rate_radps": 0.32264549643589774,
+            "max_abs_steering_rate_radps": 0.8000000000000007,
+            "max_abs_kinematic_lateral_accel_mps2": 2.3322800024990658,
+            "p99_abs_kinematic_lateral_accel_mps2": 2.253828198185575,
+            "time_to_goal_s": 16.3
+          }
+        },
+        {
+          "seed": 4,
+          "metrics": {
+            "steps": 361,
+            "duration_s": 18.05,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 40.11511242235106,
+            "mean_abs_cte_m": 0.045971367243407425,
+            "max_abs_cte_m": 0.11782729994282173,
+            "mean_abs_heading_error_rad": 0.034510956423281426,
+            "speed_rmse_mps": 0.48579152503343254,
+            "max_overspeed_mps": 1.3293742237824278,
+            "mean_abs_steering_rate_radps": 0.38242267568562177,
+            "max_abs_steering_rate_radps": 0.8000000000000007,
+            "max_abs_kinematic_lateral_accel_mps2": 2.395658746833542,
+            "p99_abs_kinematic_lateral_accel_mps2": 2.28959368219213,
+            "time_to_goal_s": 18.05
+          }
+        },
+        {
+          "seed": 5,
+          "metrics": {
+            "steps": 355,
+            "duration_s": 17.75,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 39.16233504636646,
+            "mean_abs_cte_m": 0.04604492332798589,
+            "max_abs_cte_m": 0.12016908895429633,
+            "mean_abs_heading_error_rad": 0.035038952046256996,
+            "speed_rmse_mps": 0.4922438797199093,
+            "max_overspeed_mps": 1.359553929323527,
+            "mean_abs_steering_rate_radps": 0.385369877500475,
+            "max_abs_steering_rate_radps": 0.8000000000000007,
+            "max_abs_kinematic_lateral_accel_mps2": 2.3302957461017098,
+            "p99_abs_kinematic_lateral_accel_mps2": 2.24464885385027,
+            "time_to_goal_s": 17.75
+          }
+        },
+        {
+          "seed": 6,
+          "metrics": {
+            "steps": 323,
+            "duration_s": 16.150000000000002,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 37.51690674990118,
+            "mean_abs_cte_m": 0.04267289770260546,
+            "max_abs_cte_m": 0.11795504819811835,
+            "mean_abs_heading_error_rad": 0.028164388940838874,
+            "speed_rmse_mps": 0.46293503202649006,
+            "max_overspeed_mps": 1.3315508862770655,
+            "mean_abs_steering_rate_radps": 0.3226432956332751,
+            "max_abs_steering_rate_radps": 0.8000000000000007,
+            "max_abs_kinematic_lateral_accel_mps2": 2.2802029747330086,
+            "p99_abs_kinematic_lateral_accel_mps2": 2.1808221604185807,
+            "time_to_goal_s": 16.150000000000002
+          }
+        },
+        {
+          "seed": 7,
+          "metrics": {
+            "steps": 359,
+            "duration_s": 17.95,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 39.57381176797266,
+            "mean_abs_cte_m": 0.04653604830264178,
+            "max_abs_cte_m": 0.12154096077544971,
+            "mean_abs_heading_error_rad": 0.0348715768684144,
+            "speed_rmse_mps": 0.48687637487114294,
+            "max_overspeed_mps": 1.3514903978343997,
+            "mean_abs_steering_rate_radps": 0.3830494442378745,
+            "max_abs_steering_rate_radps": 0.8000000000000007,
+            "max_abs_kinematic_lateral_accel_mps2": 2.398147011472483,
+            "p99_abs_kinematic_lateral_accel_mps2": 2.2857541393673273,
+            "time_to_goal_s": 17.95
+          }
+        },
+        {
+          "seed": 8,
+          "metrics": {
+            "steps": 364,
+            "duration_s": 18.2,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 40.50843015130879,
+            "mean_abs_cte_m": 0.045654170851600694,
+            "max_abs_cte_m": 0.11191487183820165,
+            "mean_abs_heading_error_rad": 0.03397304100653104,
+            "speed_rmse_mps": 0.4868002288247884,
+            "max_overspeed_mps": 1.3731269418199383,
+            "mean_abs_steering_rate_radps": 0.3770089006041188,
+            "max_abs_steering_rate_radps": 0.8000000000000007,
+            "max_abs_kinematic_lateral_accel_mps2": 2.4355544734159063,
+            "p99_abs_kinematic_lateral_accel_mps2": 2.3440182815329207,
+            "time_to_goal_s": 18.2
+          }
+        },
+        {
+          "seed": 9,
+          "metrics": {
+            "steps": 327,
+            "duration_s": 16.35,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 38.050608896644725,
+            "mean_abs_cte_m": 0.04260152853039557,
+            "max_abs_cte_m": 0.12141273641802253,
+            "mean_abs_heading_error_rad": 0.027404400533113236,
+            "speed_rmse_mps": 0.4625632633661908,
+            "max_overspeed_mps": 1.3314112339325586,
+            "mean_abs_steering_rate_radps": 0.3231306476473184,
+            "max_abs_steering_rate_radps": 0.8000000000000007,
+            "max_abs_kinematic_lateral_accel_mps2": 2.3311807599549867,
+            "p99_abs_kinematic_lateral_accel_mps2": 2.2514482593820793,
+            "time_to_goal_s": 16.35
+          }
+        },
+        {
+          "seed": 10,
+          "metrics": {
+            "steps": 327,
+            "duration_s": 16.35,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 38.09360304767766,
+            "mean_abs_cte_m": 0.04289127139071295,
+            "max_abs_cte_m": 0.11827089870973162,
+            "mean_abs_heading_error_rad": 0.027309368888482326,
+            "speed_rmse_mps": 0.46097368804816174,
+            "max_overspeed_mps": 1.3480044270433793,
+            "mean_abs_steering_rate_radps": 0.3222277359061502,
+            "max_abs_steering_rate_radps": 0.8000000000000007,
+            "max_abs_kinematic_lateral_accel_mps2": 2.371513020112837,
+            "p99_abs_kinematic_lateral_accel_mps2": 2.2922923133453397,
+            "time_to_goal_s": 16.35
+          }
+        },
+        {
+          "seed": 11,
+          "metrics": {
+            "steps": 353,
+            "duration_s": 17.650000000000002,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 38.77326666057623,
+            "mean_abs_cte_m": 0.04663872701928491,
+            "max_abs_cte_m": 0.11810090414181171,
+            "mean_abs_heading_error_rad": 0.03626644614402242,
+            "speed_rmse_mps": 0.4891092212959976,
+            "max_overspeed_mps": 1.3534648561905882,
+            "mean_abs_steering_rate_radps": 0.39321181210599493,
+            "max_abs_steering_rate_radps": 0.8000000000000007,
+            "max_abs_kinematic_lateral_accel_mps2": 2.2710811288429587,
+            "p99_abs_kinematic_lateral_accel_mps2": 2.1834263513191,
+            "time_to_goal_s": 17.650000000000002
+          }
+        },
+        {
+          "seed": 12,
+          "metrics": {
+            "steps": 324,
+            "duration_s": 16.2,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 37.64250116215382,
+            "mean_abs_cte_m": 0.042357511829421414,
+            "max_abs_cte_m": 0.11601820700787789,
+            "mean_abs_heading_error_rad": 0.02808423269754348,
+            "speed_rmse_mps": 0.45929994943579455,
+            "max_overspeed_mps": 1.3365500760056652,
+            "mean_abs_steering_rate_radps": 0.324620561337064,
+            "max_abs_steering_rate_radps": 0.8000000000000007,
+            "max_abs_kinematic_lateral_accel_mps2": 2.2644711559002846,
+            "p99_abs_kinematic_lateral_accel_mps2": 2.166861606375177,
+            "time_to_goal_s": 16.2
+          }
+        },
+        {
+          "seed": 13,
+          "metrics": {
+            "steps": 364,
+            "duration_s": 18.2,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 40.597918841800684,
+            "mean_abs_cte_m": 0.04584839498113772,
+            "max_abs_cte_m": 0.11720522011015855,
+            "mean_abs_heading_error_rad": 0.034200075548846756,
+            "speed_rmse_mps": 0.4864831231368567,
+            "max_overspeed_mps": 1.35634587232265,
+            "mean_abs_steering_rate_radps": 0.38411855258482414,
+            "max_abs_steering_rate_radps": 0.8000000000000007,
+            "max_abs_kinematic_lateral_accel_mps2": 2.4255980398014847,
+            "p99_abs_kinematic_lateral_accel_mps2": 2.3224058571413067,
+            "time_to_goal_s": 18.2
+          }
+        },
+        {
+          "seed": 14,
+          "metrics": {
+            "steps": 330,
+            "duration_s": 16.5,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 38.61542113903895,
+            "mean_abs_cte_m": 0.043092082793202736,
+            "max_abs_cte_m": 0.11872754840976728,
+            "mean_abs_heading_error_rad": 0.026789483876932498,
+            "speed_rmse_mps": 0.4613492426895502,
+            "max_overspeed_mps": 1.37127127439118,
+            "mean_abs_steering_rate_radps": 0.3182975873951276,
+            "max_abs_steering_rate_radps": 0.8000000000000007,
+            "max_abs_kinematic_lateral_accel_mps2": 2.408758426382879,
+            "p99_abs_kinematic_lateral_accel_mps2": 2.3141415285141047,
+            "time_to_goal_s": 16.5
+          }
+        },
+        {
+          "seed": 15,
+          "metrics": {
+            "steps": 364,
+            "duration_s": 18.2,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 40.41153205321491,
+            "mean_abs_cte_m": 0.04527926093512651,
+            "max_abs_cte_m": 0.11978057059354735,
+            "mean_abs_heading_error_rad": 0.0338832408585986,
+            "speed_rmse_mps": 0.48396092810513214,
+            "max_overspeed_mps": 1.3379476179373817,
+            "mean_abs_steering_rate_radps": 0.3747629461851318,
+            "max_abs_steering_rate_radps": 0.8000000000000007,
+            "max_abs_kinematic_lateral_accel_mps2": 2.398068484118703,
+            "p99_abs_kinematic_lateral_accel_mps2": 2.2805765521859507,
+            "time_to_goal_s": 18.2
+          }
+        },
+        {
+          "seed": 16,
+          "metrics": {
+            "steps": 324,
+            "duration_s": 16.2,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 37.75252345663595,
+            "mean_abs_cte_m": 0.04191572446607524,
+            "max_abs_cte_m": 0.11370431339534837,
+            "mean_abs_heading_error_rad": 0.027151731910991513,
+            "speed_rmse_mps": 0.4650399990667765,
+            "max_overspeed_mps": 1.3401497479329818,
+            "mean_abs_steering_rate_radps": 0.3228565567249614,
+            "max_abs_steering_rate_radps": 0.8000000000000007,
+            "max_abs_kinematic_lateral_accel_mps2": 2.3258708552751317,
+            "p99_abs_kinematic_lateral_accel_mps2": 2.2343412605992703,
+            "time_to_goal_s": 16.2
+          }
+        },
+        {
+          "seed": 17,
+          "metrics": {
+            "steps": 361,
+            "duration_s": 18.05,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 39.94967603509607,
+            "mean_abs_cte_m": 0.045924827418656756,
+            "max_abs_cte_m": 0.1222015540943883,
+            "mean_abs_heading_error_rad": 0.034753561404899484,
+            "speed_rmse_mps": 0.4855117114393168,
+            "max_overspeed_mps": 1.348171636115976,
+            "mean_abs_steering_rate_radps": 0.38122359530646993,
+            "max_abs_steering_rate_radps": 0.8000000000000007,
+            "max_abs_kinematic_lateral_accel_mps2": 2.366884880734857,
+            "p99_abs_kinematic_lateral_accel_mps2": 2.24829227651336,
+            "time_to_goal_s": 18.05
+          }
+        },
+        {
+          "seed": 18,
+          "metrics": {
+            "steps": 328,
+            "duration_s": 16.400000000000002,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 38.183663855596166,
+            "mean_abs_cte_m": 0.04278975872213664,
+            "max_abs_cte_m": 0.11801577240727612,
+            "mean_abs_heading_error_rad": 0.027317129300322367,
+            "speed_rmse_mps": 0.4629844987280863,
+            "max_overspeed_mps": 1.3565444180080157,
+            "mean_abs_steering_rate_radps": 0.32133790876437024,
+            "max_abs_steering_rate_radps": 0.8000000000000007,
+            "max_abs_kinematic_lateral_accel_mps2": 2.342402106717806,
+            "p99_abs_kinematic_lateral_accel_mps2": 2.2448828028374113,
+            "time_to_goal_s": 16.400000000000002
+          }
+        },
+        {
+          "seed": 19,
+          "metrics": {
+            "steps": 325,
+            "duration_s": 16.25,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 37.77578949038582,
+            "mean_abs_cte_m": 0.04248746484166715,
+            "max_abs_cte_m": 0.118947402426335,
+            "mean_abs_heading_error_rad": 0.027906410181942252,
+            "speed_rmse_mps": 0.46025972229988465,
+            "max_overspeed_mps": 1.3395470383552528,
+            "mean_abs_steering_rate_radps": 0.32036810563590673,
+            "max_abs_steering_rate_radps": 0.8000000000000007,
+            "max_abs_kinematic_lateral_accel_mps2": 2.282448111727703,
+            "p99_abs_kinematic_lateral_accel_mps2": 2.2068546967920724,
+            "time_to_goal_s": 16.25
+          }
+        }
+      ],
+      "summary": {
+        "episodes": 20,
+        "successes": 20,
+        "success_rate": 1.0,
+        "collision_rate": 0.0,
+        "timeout_rate": 0.0,
+        "quality_all_rollouts": {
+          "mean_abs_cte_m": 0.04428370972245242,
+          "max_abs_cte_m": 0.11829585719474178,
+          "speed_rmse_mps": 0.4744504248183043,
+          "max_overspeed_mps": 1.3477645868644808,
+          "max_abs_kinematic_lateral_accel_mps2": 2.3519539777020277,
+          "p99_abs_kinematic_lateral_accel_mps2": 2.256218738104015,
+          "final_progress_m": 38.95123380660685
+        },
+        "quality_success_only": {
+          "mean_abs_cte_m": 0.04428370972245242,
+          "max_abs_cte_m": 0.11829585719474178,
+          "speed_rmse_mps": 0.4744504248183043,
+          "max_overspeed_mps": 1.3477645868644808,
+          "max_abs_kinematic_lateral_accel_mps2": 2.3519539777020277,
+          "p99_abs_kinematic_lateral_accel_mps2": 2.256218738104015,
+          "final_progress_m": 38.95123380660685
+        },
+        "mean_time_to_goal_s_success_only": 17.16
+      }
+    },
+    "lqr_rate": {
+      "episodes": [
+        {
+          "seed": 0,
+          "metrics": {
+            "steps": 364,
+            "duration_s": 18.2,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 40.43764501193726,
+            "mean_abs_cte_m": 0.06365813515785812,
+            "max_abs_cte_m": 0.187749666545645,
+            "mean_abs_heading_error_rad": 0.03883596642556841,
+            "speed_rmse_mps": 0.48672045671934533,
+            "max_overspeed_mps": 1.3523268388206673,
+            "mean_abs_steering_rate_radps": 0.2191168514418078,
+            "max_abs_steering_rate_radps": 0.8000000000000007,
+            "max_abs_kinematic_lateral_accel_mps2": 2.3932573079064032,
+            "p99_abs_kinematic_lateral_accel_mps2": 2.2951227939399654,
+            "time_to_goal_s": 18.2
+          }
+        },
+        {
+          "seed": 1,
+          "metrics": {
+            "steps": 358,
+            "duration_s": 17.900000000000002,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 39.66220132943692,
+            "mean_abs_cte_m": 0.06279445727025228,
+            "max_abs_cte_m": 0.18593721368440513,
+            "mean_abs_heading_error_rad": 0.03950883935395026,
+            "speed_rmse_mps": 0.4874402249037379,
+            "max_overspeed_mps": 1.3507242153892327,
+            "mean_abs_steering_rate_radps": 0.2192735397699159,
+            "max_abs_steering_rate_radps": 0.8000000000000007,
+            "max_abs_kinematic_lateral_accel_mps2": 2.305943973651285,
+            "p99_abs_kinematic_lateral_accel_mps2": 2.2137064620539335,
+            "time_to_goal_s": 17.900000000000002
+          }
+        },
+        {
+          "seed": 2,
+          "metrics": {
+            "steps": 328,
+            "duration_s": 16.400000000000002,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 38.13584695618414,
+            "mean_abs_cte_m": 0.06348725959212308,
+            "max_abs_cte_m": 0.18243408751414603,
+            "mean_abs_heading_error_rad": 0.03166161662981063,
+            "speed_rmse_mps": 0.46144065748167773,
+            "max_overspeed_mps": 1.3320899966439192,
+            "mean_abs_steering_rate_radps": 0.2097138243545693,
+            "max_abs_steering_rate_radps": 0.8000000000000007,
+            "max_abs_kinematic_lateral_accel_mps2": 2.385926274498729,
+            "p99_abs_kinematic_lateral_accel_mps2": 2.2836130991766437,
+            "time_to_goal_s": 16.400000000000002
+          }
+        },
+        {
+          "seed": 3,
+          "metrics": {
+            "steps": 327,
+            "duration_s": 16.35,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 38.083145759566655,
+            "mean_abs_cte_m": 0.06260078552343463,
+            "max_abs_cte_m": 0.1830244438550201,
+            "mean_abs_heading_error_rad": 0.031445886020462895,
+            "speed_rmse_mps": 0.4648343140646746,
+            "max_overspeed_mps": 1.35300980571061,
+            "mean_abs_steering_rate_radps": 0.20860869570746335,
+            "max_abs_steering_rate_radps": 0.8000000000000007,
+            "max_abs_kinematic_lateral_accel_mps2": 2.335877168616042,
+            "p99_abs_kinematic_lateral_accel_mps2": 2.253965526724577,
+            "time_to_goal_s": 16.35
+          }
+        },
+        {
+          "seed": 4,
+          "metrics": {
+            "steps": 361,
+            "duration_s": 18.05,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 40.10549095035098,
+            "mean_abs_cte_m": 0.06386325139153227,
+            "max_abs_cte_m": 0.18593745163221637,
+            "mean_abs_heading_error_rad": 0.038948066663623014,
+            "speed_rmse_mps": 0.48631115772807215,
+            "max_overspeed_mps": 1.3450624730378047,
+            "mean_abs_steering_rate_radps": 0.22030914077468194,
+            "max_abs_steering_rate_radps": 0.8000000000000007,
+            "max_abs_kinematic_lateral_accel_mps2": 2.3988103110431735,
+            "p99_abs_kinematic_lateral_accel_mps2": 2.2886046711800856,
+            "time_to_goal_s": 18.05
+          }
+        },
+        {
+          "seed": 5,
+          "metrics": {
+            "steps": 356,
+            "duration_s": 17.8,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 39.149967713172366,
+            "mean_abs_cte_m": 0.06372867928786122,
+            "max_abs_cte_m": 0.18290144088728658,
+            "mean_abs_heading_error_rad": 0.03962762775724468,
+            "speed_rmse_mps": 0.4902251196516861,
+            "max_overspeed_mps": 1.3589401374742707,
+            "mean_abs_steering_rate_radps": 0.2200040915206636,
+            "max_abs_steering_rate_radps": 0.8000000000000007,
+            "max_abs_kinematic_lateral_accel_mps2": 2.3341823464996923,
+            "p99_abs_kinematic_lateral_accel_mps2": 2.2440089638844327,
+            "time_to_goal_s": 17.8
+          }
+        },
+        {
+          "seed": 6,
+          "metrics": {
+            "steps": 324,
+            "duration_s": 16.2,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 37.51546729570031,
+            "mean_abs_cte_m": 0.06184459530778746,
+            "max_abs_cte_m": 0.18279404620611783,
+            "mean_abs_heading_error_rad": 0.03216003606798635,
+            "speed_rmse_mps": 0.46298197003812036,
+            "max_overspeed_mps": 1.3538352878121254,
+            "mean_abs_steering_rate_radps": 0.20941319135535094,
+            "max_abs_steering_rate_radps": 0.8000000000000007,
+            "max_abs_kinematic_lateral_accel_mps2": 2.2821785290711647,
+            "p99_abs_kinematic_lateral_accel_mps2": 2.181285912347361,
+            "time_to_goal_s": 16.2
+          }
+        },
+        {
+          "seed": 7,
+          "metrics": {
+            "steps": 359,
+            "duration_s": 17.95,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 39.55950970154404,
+            "mean_abs_cte_m": 0.06415838724967934,
+            "max_abs_cte_m": 0.1820884042017025,
+            "mean_abs_heading_error_rad": 0.03900479998869861,
+            "speed_rmse_mps": 0.4904262306560463,
+            "max_overspeed_mps": 1.3523620993916394,
+            "mean_abs_steering_rate_radps": 0.22086256381362926,
+            "max_abs_steering_rate_radps": 0.8000000000000007,
+            "max_abs_kinematic_lateral_accel_mps2": 2.401155871921013,
+            "p99_abs_kinematic_lateral_accel_mps2": 2.28321333591797,
+            "time_to_goal_s": 17.95
+          }
+        },
+        {
+          "seed": 8,
+          "metrics": {
+            "steps": 364,
+            "duration_s": 18.2,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 40.509300730258396,
+            "mean_abs_cte_m": 0.06393655365794865,
+            "max_abs_cte_m": 0.18361778472437124,
+            "mean_abs_heading_error_rad": 0.038322439597286345,
+            "speed_rmse_mps": 0.4888410824139019,
+            "max_overspeed_mps": 1.3771881919195579,
+            "mean_abs_steering_rate_radps": 0.22016643028665375,
+            "max_abs_steering_rate_radps": 0.8000000000000007,
+            "max_abs_kinematic_lateral_accel_mps2": 2.4393734171586323,
+            "p99_abs_kinematic_lateral_accel_mps2": 2.343968936084058,
+            "time_to_goal_s": 18.2
+          }
+        },
+        {
+          "seed": 9,
+          "metrics": {
+            "steps": 326,
+            "duration_s": 16.3,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 38.042386648438885,
+            "mean_abs_cte_m": 0.06257868476570387,
+            "max_abs_cte_m": 0.1828190537357956,
+            "mean_abs_heading_error_rad": 0.031484777055386375,
+            "speed_rmse_mps": 0.4648729463238252,
+            "max_overspeed_mps": 1.3521351022937946,
+            "mean_abs_steering_rate_radps": 0.20923950401437852,
+            "max_abs_steering_rate_radps": 0.8000000000000007,
+            "max_abs_kinematic_lateral_accel_mps2": 2.3347772262731086,
+            "p99_abs_kinematic_lateral_accel_mps2": 2.252363774712202,
+            "time_to_goal_s": 16.3
+          }
+        },
+        {
+          "seed": 10,
+          "metrics": {
+            "steps": 327,
+            "duration_s": 16.35,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 38.08711614319904,
+            "mean_abs_cte_m": 0.06311872113489789,
+            "max_abs_cte_m": 0.18080981680708264,
+            "mean_abs_heading_error_rad": 0.03157871178623884,
+            "speed_rmse_mps": 0.4627002148124384,
+            "max_overspeed_mps": 1.3264031643429925,
+            "mean_abs_steering_rate_radps": 0.20982365269179737,
+            "max_abs_steering_rate_radps": 0.8000000000000007,
+            "max_abs_kinematic_lateral_accel_mps2": 2.3743522060740467,
+            "p99_abs_kinematic_lateral_accel_mps2": 2.2930181665489195,
+            "time_to_goal_s": 16.35
+          }
+        },
+        {
+          "seed": 11,
+          "metrics": {
+            "steps": 354,
+            "duration_s": 17.7,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 38.78357366927708,
+            "mean_abs_cte_m": 0.06299599684451043,
+            "max_abs_cte_m": 0.18358218456749917,
+            "mean_abs_heading_error_rad": 0.0399223055638821,
+            "speed_rmse_mps": 0.4888669193109046,
+            "max_overspeed_mps": 1.3406155605479435,
+            "mean_abs_steering_rate_radps": 0.2197403888833769,
+            "max_abs_steering_rate_radps": 0.8000000000000007,
+            "max_abs_kinematic_lateral_accel_mps2": 2.2738728418302854,
+            "p99_abs_kinematic_lateral_accel_mps2": 2.1842206863010363,
+            "time_to_goal_s": 17.7
+          }
+        },
+        {
+          "seed": 12,
+          "metrics": {
+            "steps": 324,
+            "duration_s": 16.2,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 37.643448296019706,
+            "mean_abs_cte_m": 0.06185263983831194,
+            "max_abs_cte_m": 0.18275471740993438,
+            "mean_abs_heading_error_rad": 0.03201101964930695,
+            "speed_rmse_mps": 0.46160148815850066,
+            "max_overspeed_mps": 1.3409863804058415,
+            "mean_abs_steering_rate_radps": 0.20871762560542534,
+            "max_abs_steering_rate_radps": 0.8000000000000007,
+            "max_abs_kinematic_lateral_accel_mps2": 2.2687819414831543,
+            "p99_abs_kinematic_lateral_accel_mps2": 2.177707330499664,
+            "time_to_goal_s": 16.2
+          }
+        },
+        {
+          "seed": 13,
+          "metrics": {
+            "steps": 365,
+            "duration_s": 18.25,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 40.59354050792307,
+            "mean_abs_cte_m": 0.06407162312570011,
+            "max_abs_cte_m": 0.1851658503249457,
+            "mean_abs_heading_error_rad": 0.03861050299114315,
+            "speed_rmse_mps": 0.4856803728425396,
+            "max_overspeed_mps": 1.305876974606251,
+            "mean_abs_steering_rate_radps": 0.21902574647779988,
+            "max_abs_steering_rate_radps": 0.8000000000000007,
+            "max_abs_kinematic_lateral_accel_mps2": 2.42911834230751,
+            "p99_abs_kinematic_lateral_accel_mps2": 2.3227404914301126,
+            "time_to_goal_s": 18.25
+          }
+        },
+        {
+          "seed": 14,
+          "metrics": {
+            "steps": 331,
+            "duration_s": 16.55,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 38.612673871597565,
+            "mean_abs_cte_m": 0.06376576223145536,
+            "max_abs_cte_m": 0.1832597204437803,
+            "mean_abs_heading_error_rad": 0.031034177259294072,
+            "speed_rmse_mps": 0.4596962134086825,
+            "max_overspeed_mps": 1.3484704067157787,
+            "mean_abs_steering_rate_radps": 0.208155641838735,
+            "max_abs_steering_rate_radps": 0.8000000000000007,
+            "max_abs_kinematic_lateral_accel_mps2": 2.411981274197988,
+            "p99_abs_kinematic_lateral_accel_mps2": 2.314381525382008,
+            "time_to_goal_s": 16.55
+          }
+        },
+        {
+          "seed": 15,
+          "metrics": {
+            "steps": 364,
+            "duration_s": 18.2,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 40.38812283383981,
+            "mean_abs_cte_m": 0.06397439006809054,
+            "max_abs_cte_m": 0.18639159406438865,
+            "mean_abs_heading_error_rad": 0.039006765683814545,
+            "speed_rmse_mps": 0.4842107995384199,
+            "max_overspeed_mps": 1.3296714522133064,
+            "mean_abs_steering_rate_radps": 0.2184661074981641,
+            "max_abs_steering_rate_radps": 0.8000000000000007,
+            "max_abs_kinematic_lateral_accel_mps2": 2.4011582167476417,
+            "p99_abs_kinematic_lateral_accel_mps2": 2.286559000781834,
+            "time_to_goal_s": 18.2
+          }
+        },
+        {
+          "seed": 16,
+          "metrics": {
+            "steps": 325,
+            "duration_s": 16.25,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 37.74974768922352,
+            "mean_abs_cte_m": 0.06266920377821708,
+            "max_abs_cte_m": 0.18285090934567816,
+            "mean_abs_heading_error_rad": 0.03196818858062543,
+            "speed_rmse_mps": 0.46442199582889615,
+            "max_overspeed_mps": 1.3419199506965065,
+            "mean_abs_steering_rate_radps": 0.21026598995695495,
+            "max_abs_steering_rate_radps": 0.8000000000000007,
+            "max_abs_kinematic_lateral_accel_mps2": 2.32805967826197,
+            "p99_abs_kinematic_lateral_accel_mps2": 2.23257273845954,
+            "time_to_goal_s": 16.25
+          }
+        },
+        {
+          "seed": 17,
+          "metrics": {
+            "steps": 362,
+            "duration_s": 18.1,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 39.956470688261206,
+            "mean_abs_cte_m": 0.06365680602317332,
+            "max_abs_cte_m": 0.18554572155386342,
+            "mean_abs_heading_error_rad": 0.03914705943975271,
+            "speed_rmse_mps": 0.484393261949581,
+            "max_overspeed_mps": 1.3383819535316537,
+            "mean_abs_steering_rate_radps": 0.21884894124052595,
+            "max_abs_steering_rate_radps": 0.8000000000000007,
+            "max_abs_kinematic_lateral_accel_mps2": 2.369231464030088,
+            "p99_abs_kinematic_lateral_accel_mps2": 2.2483251285230574,
+            "time_to_goal_s": 18.1
+          }
+        },
+        {
+          "seed": 18,
+          "metrics": {
+            "steps": 327,
+            "duration_s": 16.35,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 38.1745928940731,
+            "mean_abs_cte_m": 0.06291817936424425,
+            "max_abs_cte_m": 0.18321253070414845,
+            "mean_abs_heading_error_rad": 0.031404922162952216,
+            "speed_rmse_mps": 0.46439322960835566,
+            "max_overspeed_mps": 1.3559198754395745,
+            "mean_abs_steering_rate_radps": 0.20888023801284905,
+            "max_abs_steering_rate_radps": 0.8000000000000007,
+            "max_abs_kinematic_lateral_accel_mps2": 2.3461741497136304,
+            "p99_abs_kinematic_lateral_accel_mps2": 2.2655390163605817,
+            "time_to_goal_s": 16.35
+          }
+        },
+        {
+          "seed": 19,
+          "metrics": {
+            "steps": 325,
+            "duration_s": 16.25,
+            "success": true,
+            "collision": false,
+            "termination_reason": "success",
+            "final_progress_m": 37.766759613671475,
+            "mean_abs_cte_m": 0.06232103536005663,
+            "max_abs_cte_m": 0.18404645313760465,
+            "mean_abs_heading_error_rad": 0.0319776193857539,
+            "speed_rmse_mps": 0.45832623946315826,
+            "max_overspeed_mps": 1.323676340864535,
+            "mean_abs_steering_rate_radps": 0.20850605177191586,
+            "max_abs_steering_rate_radps": 0.8000000000000007,
+            "max_abs_kinematic_lateral_accel_mps2": 2.28541549582888,
+            "p99_abs_kinematic_lateral_accel_mps2": 2.208789713737922,
+            "time_to_goal_s": 16.25
+          }
+        }
+      ],
+      "summary": {
+        "episodes": 20,
+        "successes": 20,
+        "success_rate": 1.0,
+        "collision_rate": 0.0,
+        "timeout_rate": 0.0,
+        "quality_all_rollouts": {
+          "mean_abs_cte_m": 0.06319975734864192,
+          "max_abs_cte_m": 0.1838461545672816,
+          "speed_rmse_mps": 0.47491924474512814,
+          "max_overspeed_mps": 1.3439798103929002,
+          "max_abs_kinematic_lateral_accel_mps2": 2.3549814018557216,
+          "p99_abs_kinematic_lateral_accel_mps2": 2.2586853637022952,
+          "final_progress_m": 38.94785041518379
+        },
+        "quality_success_only": {
+          "mean_abs_cte_m": 0.06319975734864192,
+          "max_abs_cte_m": 0.1838461545672816,
+          "speed_rmse_mps": 0.47491924474512814,
+          "max_overspeed_mps": 1.3439798103929002,
+          "max_abs_kinematic_lateral_accel_mps2": 2.3549814018557216,
+          "p99_abs_kinematic_lateral_accel_mps2": 2.2586853637022952,
+          "final_progress_m": 38.94785041518379
+        },
+        "mean_time_to_goal_s_success_only": 17.177500000000002
+      }
+    }
+  }
+}

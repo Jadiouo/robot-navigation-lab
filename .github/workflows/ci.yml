@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install --upgrade pip
+      - run: python -m pip install '.[dev]'
+      - run: python -m pytest
+      - run: python -m navlab demo --scenario open --planner astar --controller pure_pursuit --seed 0 --max-steps 300 --output ci-output
+      - run: test -s ci-output/run.json && test -s ci-output/trace.csv && test -s ci-output/overview.png && test -s ci-output/replay.gif
+  rl-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install --upgrade pip
+      - run: python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+      - run: python -m pip install '.[dev,rl]'
+      - run: python -m pytest tests/test_learning.py
+      - run: python -c "from navlab.learning.ppo import PPOConfig, train_ppo; train_ppo('ci-ppo', 0, 512, PPOConfig(rollout_steps=512, update_epochs=1), validation_episodes=1)"
+  showcase-ui:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install --upgrade pip
+      - run: python -m pip install '.[dev,ui-test]'
+      - run: google-chrome --version
+      - run: python -m pytest tests/test_showcase_data.py tests/test_showcase_build.py tests/test_showcase_browser.py

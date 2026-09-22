@@ -1,0 +1,2 @@
+# Raw experimental records: preserve their original CSV bytes across checkouts.
+docs/results/*.csv -text

@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Robot Navigation Lab 的離線實驗紀錄回放與結果比較。">
+  <title>Robot Navigation Lab｜實驗回放</title>
+  <style>
+<!-- NAVLAB_STYLE -->
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">跳至主要內容</a>
+  <header class="site-header">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">↗</span>
+      <div>
+        <p class="eyebrow">OFFLINE EXPERIMENT REPLAY</p>
+        <h1>Robot Navigation Lab</h1>
+      </div>
+    </div>
+    <p class="header-note">固定實驗紀錄回放，並不會即時計算新的控制結果。</p>
+  </header>
+
+  <main id="main-content">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <p class="kicker">從路徑到控制，再到可重現的量測</p>
+        <h2 id="hero-title">用同一條參考軌跡，檢視導航系統在每一步做了什麼。</h2>
+        <p>選擇已封存的案例，查看地圖、實際車身、速度和橫向誤差；也可在同一路線上並排比較古典控制與學習型策略。</p>
+        <div class="hero-actions">
+          <button class="primary-button" type="button" data-jump="replay">開始看案例 <span aria-hidden="true">↓</span></button>
+          <button class="text-button" type="button" data-jump="compare">比較同一路線 <span aria-hidden="true">→</span></button>
+        </div>
+      </div>
+      <aside class="reliability-card" aria-label="PPO held-out 結果摘要">
+        <p class="card-label">學習型策略的 held-out 結果</p>
+        <div class="seed-results" id="seed-results">
+          <p>正在讀取封存結果…</p>
+        </div>
+        <p class="card-footnote">所有三個訓練 seed 與固定 20 條測試路線一併顯示；成功案例不代表整體表現。</p>
+      </aside>
+    </section>
+
+    <nav class="mode-tabs" aria-label="展示區段">
+      <button type="button" class="mode-tab is-active" data-mode="replay" aria-selected="true">導航與失敗回放</button>
+      <button type="button" class="mode-tab" data-mode="compare" aria-selected="false">同路線策略比較</button>
+      <button type="button" class="mode-tab" data-mode="results" aria-selected="false">完整結果與重現</button>
+    </nav>
+
+    <section class="mode-panel" id="replay-panel" data-panel="replay" aria-labelledby="replay-heading">
+      <div class="section-heading">
+        <div>
+          <p class="kicker">CASE REPLAY</p>
+          <h2 id="replay-heading">導航與失敗案例回放</h2>
+        </div>
+        <p>實線是記錄到的車輛位置；虛線是輸入控制器的參考軌跡。</p>
+      </div>
+      <div class="selector-row">
+        <label>案例類別
+          <select id="case-group" aria-label="案例類別"></select>
+        </label>
+        <label class="wide-select">案例
+          <select id="case-select" aria-label="案例"></select>
+        </label>
+        <div class="case-status" id="case-status" aria-live="polite"></div>
+      </div>
+      <div class="replay-layout">
+        <section class="map-card" aria-label="案例地圖與車輛回放">
+          <div class="map-card-header">
+            <div>
+              <h3 id="case-title">載入中</h3>
+              <p id="case-subtitle">—</p>
+            </div>
+            <div class="frame-readout" id="case-readout" aria-live="polite">t = 0.00 s</div>
+          </div>
+          <div class="canvas-wrap">
+            <canvas id="replay-canvas" tabindex="0" aria-label="導航回放地圖。空白鍵播放或暫停，左右方向鍵移動一個記錄樣本。"></canvas>
+            <div class="map-legend" aria-label="地圖圖例">
+              <span><i class="legend-ref"></i>參考軌跡</span>
+              <span><i class="legend-actual"></i>實際軌跡</span>
+              <span><i class="legend-car"></i>車身（後軸基準）</span>
+            </div>
+          </div>
+          <div class="playback-controls" id="replay-controls">
+            <button type="button" class="icon-button" id="play-button" aria-label="播放回放" title="播放／暫停（空白鍵）">▶</button>
+            <button type="button" class="icon-button" id="restart-button" aria-label="從頭播放" title="從頭播放">↺</button>
+            <label class="timeline-label" for="timeline">時間軸
+              <input id="timeline" type="range" min="0" max="0" value="0" step="any" aria-label="回放時間軸">
+            </label>
+            <output id="timeline-output" for="timeline">0.00 s</output>
+            <fieldset class="rate-control" aria-label="播放速度">
+              <legend>播放速度</legend>
+              <button type="button" data-rate="0.5">0.5×</button>
+              <button type="button" data-rate="1" class="is-active">1×</button>
+              <button type="button" data-rate="2">2×</button>
+            </fieldset>
+          </div>
+          <p class="keyboard-hint">鍵盤：空白鍵播放／暫停；← → 在記錄樣本間移動。</p>
+        </section>
+        <aside class="metrics-card" aria-labelledby="case-metrics-heading">
+          <div class="metric-heading">
+            <p class="kicker">RECORDED STATE</p>
+            <h3 id="case-metrics-heading">這一刻的車輛狀態</h3>
+          </div>
+          <dl class="live-metrics" id="live-metrics"></dl>
+          <div class="chart-stack">
+            <figure class="chart-card">
+              <figcaption>實際速度與目標速度 <span>m/s</span></figcaption>
+              <svg id="speed-chart" viewBox="0 0 320 112" role="img" aria-label="實際速度與目標速度曲線"></svg>
+              <div class="chart-key"><span><i class="line-actual"></i>實際</span><span><i class="line-ref"></i>目標</span></div>
+            </figure>
+            <figure class="chart-card">
+              <figcaption>橫向誤差 CTE <span>m</span></figcaption>
+              <svg id="cte-chart" viewBox="0 0 320 112" role="img" aria-label="橫向誤差曲線"></svg>
+            </figure>
+          </div>
+          <details class="case-details">
+            <summary>案例資料與來源</summary>
+            <div id="case-detail-content"></div>
+            <div class="download-row" id="case-downloads"></div>
+          </details>
+        </aside>
+      </div>
+    </section>
+
+    <section class="mode-panel is-hidden" id="compare-panel" data-panel="compare" aria-labelledby="compare-heading" hidden>
+      <div class="section-heading">
+        <div>
+          <p class="kicker">CONTROL COMPARISON</p>
+          <h2 id="compare-heading">同一路線、同一時鐘的策略比較</h2>
+        </div>
+        <p>兩側共用同一張地圖與參考軌跡。先結束的一側停在最後記錄位置並保留終止原因。</p>
+      </div>
+      <div class="selector-row compare-selectors">
+        <label>固定測試路線
+          <select id="route-select" aria-label="固定測試路線"></select>
+        </label>
+        <label>策略 A
+          <select id="compare-a" aria-label="策略 A"></select>
+        </label>
+        <label>策略 B
+          <select id="compare-b" aria-label="策略 B"></select>
+        </label>
+        <div class="case-status" id="compare-status" aria-live="polite"></div>
+      </div>
+      <div class="compare-controls playback-controls">
+        <button type="button" class="icon-button" id="compare-play" aria-label="播放比較回放">▶</button>
+        <button type="button" class="icon-button" id="compare-restart" aria-label="從頭播放比較回放">↺</button>
+        <label class="timeline-label" for="compare-timeline">共同時間軸
+          <input id="compare-timeline" type="range" min="0" max="0" value="0" step="any" aria-label="比較回放時間軸">
+        </label>
+        <output id="compare-timeline-output" for="compare-timeline">0.00 s</output>
+        <fieldset class="rate-control" aria-label="比較播放速度">
+          <legend>播放速度</legend>
+          <button type="button" data-compare-rate="0.5">0.5×</button>
+          <button type="button" data-compare-rate="1" class="is-active">1×</button>
+          <button type="button" data-compare-rate="2">2×</button>
+        </fieldset>
+      </div>
+      <div class="compare-grid">
+        <section class="compare-map-card">
+          <div class="compare-card-header"><h3 id="compare-a-title">策略 A</h3><span id="compare-a-reason"></span></div>
+          <canvas id="compare-a-canvas" tabindex="0" aria-label="策略 A 地圖回放"></canvas>
+          <dl class="compact-metrics" id="compare-a-metrics"></dl>
+        </section>
+        <section class="compare-map-card">
+          <div class="compare-card-header"><h3 id="compare-b-title">策略 B</h3><span id="compare-b-reason"></span></div>
+          <canvas id="compare-b-canvas" tabindex="0" aria-label="策略 B 地圖回放"></canvas>
+          <dl class="compact-metrics" id="compare-b-metrics"></dl>
+        </section>
+      </div>
+      <section class="summary-table-card" aria-labelledby="summary-heading">
+        <div class="table-heading"><div><p class="kicker">ALL 20 HELD-OUT ROUTES</p><h3 id="summary-heading">八種策略的完整彙總</h3></div><p>CTE 包含全部 rollout；到達時間只計成功案例。</p></div>
+        <div class="table-scroll"><table id="policy-summary"><thead><tr><th>策略</th><th>成功</th><th>CTE（全部）</th><th>到達時間（僅成功）</th></tr></thead><tbody></tbody></table></div>
+      </section>
+    </section>
+
+    <section class="mode-panel is-hidden" id="results-panel" data-panel="results" aria-labelledby="results-heading" hidden>
+      <div class="section-heading">
+        <div><p class="kicker">REPRODUCIBLE RECORDS</p><h2 id="results-heading">完整結果與重現</h2></div>
+        <p>展示只讀取封存的 rollout、軌跡和原始輸出；每個下載項目都保留其來源。</p>
+      </div>
+      <div class="results-grid">
+        <article class="repro-card"><p class="kicker">HOW TO REBUILD</p><h3>產生離線展示</h3><pre><code>navlab showcase --results docs/results \
+  --output outputs/showcase</code></pre><p>此命令只整理及驗證既有結果，不訓練模型，也不執行新的控制 rollout。</p></article>
+        <article class="repro-card"><p class="kicker">WHAT IS INCLUDED</p><h3>案例內容</h3><ul><li>地圖 occupancy、參考軌跡與逐步 trace</li><li>原始 <code>run.json</code>、<code>trace.csv</code>、<code>trajectory.csv</code></li><li>固定20條 held-out 路線的完整分母</li></ul></article>
+        <article class="repro-card provenance-card"><p class="kicker">FROZEN INPUTS</p><h3>來源 archive</h3><div id="archive-downloads" class="archive-downloads"></div><details><summary>驗證與匯出說明</summary><div id="provenance-notes"></div></details></article>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Robot Navigation Lab · 靜態、可攜的實驗回放</p>
+    <p id="catalog-footnote"></p>
+  </footer>
+
+<!-- NAVLAB_DATA -->
+  <script>
+<!-- NAVLAB_SCRIPT -->
+  </script>
+</body>
+</html>
