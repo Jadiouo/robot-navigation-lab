@@ -6,4 +6,4 @@
 
 HW3-2 的 Proly/Unity 遊戲未包含在此作品。其公開散布權限在本 workspace 沒有可驗證證據，因此它既不是依賴也不是展示素材；checkpoint progress、死亡 transition 和 reward-hacking 防護等觀察僅可能在日後、自建環境且有明確研究問題時重新驗證。
 
-本次重製採多 agent 分工：planning/trajectory、simulation/control、delivery/evaluation。所有公開發布前仍需由擁有者確認要上傳的素材、來源與授權狀態；本 repo 尚未選擇法律授權條款。
+本次重製採多 agent 分工：planning/trajectory、simulation/control、delivery/evaluation。所有公開發布前仍由擁有者確認要上傳的素材與來源狀態；本 repo 以 [MIT License](../LICENSE) 發布。

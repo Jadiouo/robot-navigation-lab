@@ -7,6 +7,7 @@ name = "robot-navigation-lab"
 version = "0.1.0"
 description = "Reproducible planning, trajectory validation, and tracking-control experiments."
 readme = "README.md"
+license = {file = "LICENSE"}
 requires-python = ">=3.10"
 dependencies = [
   "numpy>=1.24",

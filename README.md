@@ -85,3 +85,7 @@ cases.
 規劃與軌跡的可審查設計在 [Planning design](docs/planning-design.md)；控制模型與限制見 [Control design](docs/control-design.md)。
 
 失敗案例：[為什麼可行路徑仍會撞](docs/failure-case.md)。
+
+## 授權
+
+本作品以 [MIT License](LICENSE) 發布。
