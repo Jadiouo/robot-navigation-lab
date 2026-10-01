@@ -27,28 +27,18 @@ from typing import Any
 import numpy as np
 
 from navlab.core import VehicleConfig, VehicleState
-from navlab.local import (DWAConfig, DWAPlanner, LocalObservation, LocalPlanner, MPPIConfig, MPPIPlanner,
-                          PurePursuitTracker)
+from navlab.local import LocalObservation, LocalPlanner
 from navlab.navigation.global_layer import GlobalConfig, GlobalLayer
+from navlab.navigation.registry import make_planner
 from navlab.perception.lidar import Lidar, LidarConfig
 from navlab.perception.mcl import MCLConfig, MonteCarloLocalizer
 from navlab.perception.odometry import OdometryModel, OdometryReading
 from navlab.sim.bicycle import BicycleModel, wrap_angle
 from navlab.world import DynamicScenario, make_dynamic_scenario
 
-PLANNERS = ("pure_pursuit", "dwa", "mppi")
+PLANNERS = ("pure_pursuit", "dwa", "mppi")   # the P2 smoke set; the registry (navlab.navigation.registry) has the full list
 OUTCOMES = ("success", "collision_static", "collision_dynamic", "timeout", "stuck")
 DEFAULT_LIDAR = LidarConfig(n_beams=120)  # denser than the localisation default; MCL sub-samples to 36 beams anyway
-
-
-def make_planner(name: str, vehicle: VehicleConfig, v_pref: float = 4.0, seed: int = 0, **overrides) -> LocalPlanner:
-    if name == "pure_pursuit":
-        return PurePursuitTracker(vehicle, v_pref)
-    if name == "dwa":
-        return DWAPlanner(vehicle, DWAConfig(v_pref=v_pref, **overrides))
-    if name == "mppi":
-        return MPPIPlanner(vehicle, MPPIConfig(v_pref=v_pref, seed=seed, **overrides))
-    raise ValueError(f"planner must be one of {PLANNERS}")
 
 
 @dataclass
@@ -94,7 +84,7 @@ def run_episode(
     if isinstance(planner, str):
         planner = make_planner(planner, vehicle, dyn.v_pref, seed, **(planner_overrides or {}))
     planner.reset()
-    use_global = planner.name != "pure_pursuit"
+    use_global = getattr(planner, "uses_global_layer", True)
     gcfg = global_config or GlobalConfig()
     if not use_global:  # the baseline has no scan-based global layer: plan once, never replan, never recover
         gcfg = replace(gcfg, enable_replanning=False, enable_recovery=False)
@@ -192,11 +182,15 @@ def run_episode(
 def _summarize(dyn, planner, pose_source, seed, outcome, trace, t_goal, path_len, min_clear, plan_ms, glob, ess, fallbacks) -> dict[str, Any]:
     loc = np.array([r["loc_err"] for r in trace]) if trace else np.zeros(1)
     yaw = np.array([r["yaw_err"] for r in trace]) if trace else np.zeros(1)
+    last = max(1, int(round(10.0 / 0.05)))  # the final 10 s: the window in which a localization error can have caused the failure
+    goal = dyn.scenario.goal
     return {
         "scenario": dyn.name, "planner": planner, "pose_source": pose_source, "seed": seed, "outcome": outcome,
         "success": outcome == "success", "time_to_goal_s": t_goal if t_goal is not None else float("nan"),
         "duration_s": len(trace) * 0.05, "path_length_m": path_len, "min_clearance_m": min_clear if math.isfinite(min_clear) else float("nan"),
         "loc_rmse_m": float(np.sqrt(np.mean(loc ** 2))), "loc_max_m": float(loc.max()), "yaw_rmse_rad": float(np.sqrt(np.mean(yaw ** 2))),
+        "loc_last10_max_m": float(loc[-last:].max()), "yaw_last10_max_rad": float(yaw[-last:].max()),
+        "end_goal_dist_m": math.hypot(trace[-1]["x"] - goal[0], trace[-1]["y"] - goal[1]) if trace else float("nan"),
         "n_replans": len(glob.events.replans), "n_recoveries": glob.events.recoveries,
         "plan_ms_mean": float(np.mean(plan_ms)) if plan_ms else float("nan"),
         "plan_ms_p95": float(np.percentile(plan_ms, 95)) if plan_ms else float("nan"),

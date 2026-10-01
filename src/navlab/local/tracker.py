@@ -23,6 +23,7 @@ _PREVIEW = np.array([1.0, 2.0, 4.0, 6.0, 8.0, 12.0, 16.0])
 
 class PurePursuitTracker:
     name = "pure_pursuit"
+    uses_global_layer = False   # the episode runner turns replanning / recovery off for a planner that sets this to False
 
     def __init__(self, vehicle: VehicleConfig, v_pref: float = 4.0) -> None:
         self.vehicle, self.v_pref = vehicle, v_pref
@@ -58,5 +59,5 @@ class PurePursuitTracker:
         steer = float(self.policy.act(np.zeros(1), {"policy_input": pi})[0]) * self.vehicle.max_steer
         accel = self.longitudinal.acceleration(pi)
         rate = float(np.clip((steer - st.delta) / obs.dt, -self.vehicle.max_steer_rate, self.vehicle.max_steer_rate))
-        self._diag = {"cte": cte}
+        self._diag = {"cte": cte, "steer_target": steer}
         return Command(accel, rate)

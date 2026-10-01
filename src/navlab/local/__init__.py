@@ -4,10 +4,11 @@ from .costmap import CostmapConfig, LocalCostmap, PathField
 from .dwa import DWAConfig, DWAPlanner
 from .interface import Command, LocalObservation, LocalPlanner
 from .mppi import MPPIConfig, MPPIPlanner, mppi_weights
+from .pp_stop import PPStopConfig, PPStopPlanner
 from .tracker import PurePursuitTracker
 
 __all__ = [
     "Command", "LocalObservation", "LocalPlanner",
     "CostmapConfig", "LocalCostmap", "PathField",
-    "DWAConfig", "DWAPlanner", "MPPIConfig", "MPPIPlanner", "mppi_weights", "PurePursuitTracker",
+    "DWAConfig", "DWAPlanner", "MPPIConfig", "MPPIPlanner", "mppi_weights", "PurePursuitTracker", "PPStopConfig", "PPStopPlanner",
 ]
