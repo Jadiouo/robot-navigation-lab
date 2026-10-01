@@ -40,3 +40,4 @@ where = ["src"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-ra"
+markers = ["slow: multi-episode closed-loop tests (seconds each); deselect with -m 'not slow'"]
