@@ -33,6 +33,7 @@ where = ["src"]
 
 [tool.setuptools.package-data]
 "navlab.showcase" = ["web/index.html", "web/style.css", "web/app.js"]
+"navlab.rl" = ["weights/*.npz"]
 
 [tool.setuptools.exclude-package-data]
 "navlab.showcase" = ["web/app.test.js"]

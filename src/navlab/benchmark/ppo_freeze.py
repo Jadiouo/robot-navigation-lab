@@ -37,8 +37,13 @@ def rl_code_digest() -> str:
 def freeze_ppo(baseline_path: Path, out_path: Path, seeds: tuple[int, ...], selection: dict[int, dict[str, Any]], training: dict[str, Any]) -> dict:
     base = load_frozen(baseline_path)          # raises if the baseline is stale: never chain to a broken freeze
     from navlab.rl import env as _env
+    mean_sel = {s: (selection[s]["sel_gt"] + selection[s]["sel_mcl"]) / 2 for s in seeds}
+    median_seed = sorted(seeds, key=lambda s: (mean_sel[s], s))[len(seeds) // 2]
     art = {
         "version": PPO_FREEZE_VERSION,
+        # Headline planner "ppo" in the report: the seed with the MEDIAN tuning-split selection score (decided before any test episode;
+        # all three seeds are always reported and tested individually as well).
+        "headline": {"planner": f"ppo_s{median_seed}", "rule": "median over seeds of the mean (GT, MCL) success of the selected checkpoint on tuning seeds 500-659"},
         "baseline": {"hash": base["hash"], "code_digest": base["code_digest"]},
         "weights": {f"ppo_s{s}": {"file": f"ppo_seed{s}.npz", "sha256": file_digest(WEIGHTS_DIR / f"ppo_seed{s}.npz"), **{k: v for k, v in selection[s].items()}} for s in seeds},
         "obs_spec": ObsSpec().to_json(),
