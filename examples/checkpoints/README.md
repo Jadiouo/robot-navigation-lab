@@ -26,5 +26,5 @@ python3 -m venv .venv
 ```
 
 The archived successful example is held-out test episode 6 in
-[`docs/results`](../../docs/results/README.md).  The complete final comparison
+[`docs/legacy/results`](../../docs/legacy/results/README.md).  The complete final comparison
 is also retained there.

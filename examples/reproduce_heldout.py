@@ -1,7 +1,7 @@
 """Recreate the evaluation-only 3-PPO + 5-classical held-out raw records.
 
 This writes CSV, trajectory, and manifest evidence only; representative media
-is already checked into ``docs/assets``.  It never trains or selects a model.
+is already checked into ``docs/legacy/assets``.  It never trains or selects a model.
 Run after ``pip install -e '.[rl]'`` from the repository root.
 """
 

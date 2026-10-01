@@ -1,3 +1,5 @@
+> **Legacy.** These are the results of the original course-derived project (five tracking controllers with ground-truth localisation, 2x2 braking ablation, path-tracking PPO). They are kept for provenance and are not the current result; the current benchmark is `docs/results/benchmark/README.md`. Relative links to `examples/` still point at the (retained) scripts and checkpoints. Commands below write to `artifacts/` and `outputs/`, which are git-ignored.
+
 # Reproduced results
 
 This directory contains small, reviewable outputs from the final local runs.
@@ -46,7 +48,7 @@ reported only for successes.
 The selected PPO seed has a reproducible successful rollout, but the three
 seed result has high variance and does not establish superiority over the
 classical controllers.  The checkpoint distributed in
-[`examples/checkpoints`](../../examples/checkpoints/) is seed 0's
+[`examples/checkpoints`](../../../examples/checkpoints/) is seed 0's
 validation-selected checkpoint; it was selected before test evaluation.  The
 complete original summaries for all seeds and all test episodes are in
 [`ppo-training-comparison.json`](ppo-training-comparison.json). During the
@@ -60,9 +62,10 @@ routes. It did not alter a model, training budget, or selection. Its updated
 all-policy summary is [`ppo-heldout-reevaluation.json`](ppo-heldout-reevaluation.json).
 
 All 160 replay episodes (3 PPO checkpoints + 5 classical policies × 20 fixed
-routes) are versioned as [`heldout-raw-records.zip`](heldout-raw-records.zip)
-with [SHA-256](heldout-raw-records.zip.sha256). The included
-[`examples/reproduce_heldout.py`](../../examples/reproduce_heldout.py) recreates
+routes) were once versioned as `heldout-raw-records.zip` (6.5 MB; removed from
+the tree, regenerate with the script below, SHA-256 of the removed archive in
+git history). The included
+[`examples/reproduce_heldout.py`](../../../examples/reproduce_heldout.py) recreates
 the same raw CSV/trajectory/manifest layout without training or selection.
 
 ## Classical benchmark
@@ -78,8 +81,8 @@ both produced a collision, with 8.00 m/s maximum overspeed versus 0.31--0.35
 m/s when either guard is enabled.
 
 All 15 benchmark case manifests, traces and reference trajectories are also
-versioned as [`classical-raw-records.zip`](classical-raw-records.zip) with
-[SHA-256](classical-raw-records.zip.sha256). PNG/GIF assets are intentionally
+versioned as `classical-raw-records.zip` (0.6 MB; removed from the tree,
+regenerate with the `navlab benchmark` command above). PNG/GIF assets are intentionally
 kept only for the representative cases below.
 
 `max_overspeed_mps` is the largest positive `(v - v_ref)`.  The lateral
