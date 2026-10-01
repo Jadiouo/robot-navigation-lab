@@ -440,8 +440,8 @@ def _readme(rows, idx, tests, cfg, meta, tune_path, quick, ppo_extra: str = "", 
       "distance and an A* route at the global planner's clearance; hidden (unmapped) boxes are accepted only if such a route still exists on the *true* map.")
     A("* **Strict split by seed.** Tuning set = seeds 0-999; test set = seeds >= 100000 (`navlab.benchmark.splits` refuses anything else). "
       "Planner parameters were looked at on the tuning set only (see *Tuning*). The five hand-made P2 scenarios (`examples/dynamic_obstacle_navigation.py`) are *illustrative cases*, not evidence, and are not used here.")
-    A("* **Freeze before test.** All planner / global-layer / sensor / MCL configs are written to `frozen_config.json` together with a SHA-256 of its "
-      "contents and of the source files of the stack under test. The test suites refuse to run if the file is missing, edited, or stale.")
+    A("* **Freeze before test.** All planner / global-layer / sensor / MCL configs are written to `frozen_config.json` together with a `hash` field (the SHA-256 of the "
+      "canonical JSON of the config without that field, i.e. not the SHA-256 of the file bytes) and a `code_digest` (SHA-256 over the source files of the stack under test). The test suites refuse to run if the file is missing, edited, or stale.")
     if cfg:
         A(f"* **Frozen config hash:** `{cfg['hash']}`  (code digest `{cfg['code_digest'][:16]}...`).")
     if ppo_art:
@@ -461,7 +461,7 @@ def _readme(rows, idx, tests, cfg, meta, tune_path, quick, ppo_extra: str = "", 
       f"and **`loc_induced`**: a *failed* MCL episode whose position error exceeded {LOC_THRESHOLD:g} m at some time during its last 10 s (the raw outcome is kept in the CSV). "
       "This is a correlational label (a planner that crashes for another reason while MCL happens to be off is mislabeled); the GT-rescue rate below is the "
       "counterfactual check.")
-    A("* **Dynamics of the world.** A pedestrian does not walk into a car that is (nearly) stationary (speed < 0.3 m/s): its step is skipped. A moving robot never gets this courtesy.\n")
+    A("* **Dynamics of the world.** A pedestrian does not walk into a car that is (nearly) stationary (speed < 0.3 m/s): its step is skipped. A moving robot never gets this courtesy. This favours planners that stop (pp_stop, DWA, MPPI can brake to a halt and be passed safely); `pp` has no replanning or recovery by design, so its gap to the others partly reflects that design, not only reactive avoidance.\n")
     # ---------------- run metadata
     A("## Run\n")
     tot_wall = sum(meta[k]["wall_s"] for k in ("nominal", "stress", "mclbreak") if isinstance(meta.get(k), dict) and "wall_s" in meta[k])
@@ -583,7 +583,7 @@ def _stress_tests(tests) -> str:
 
 
 def _break_matrix(idx) -> str:
-    out = [f"## Where does each stack break?\n", f"For each axis and planner (MCL pose): the first level whose success is >= {BREAK_DROP * 100:.0f} points below the planner's own level 0, and the success change from level 0 to the worst level (points). "
+    out = [f"## Where does each stack break?\n", "**Exploratory:** this section was added after the results were seen; the 15-point threshold and the layout were not pre-declared.\n", f"For each axis and planner (MCL pose): the first level whose success is >= {BREAK_DROP * 100:.0f} points below the planner's own level 0, and the success change from level 0 to the worst level (points). "
            "`-` = no level qualified.\n"]
     body = []
     for axis, (_, vals) in AXES.items():
@@ -601,7 +601,7 @@ def _break_matrix(idx) -> str:
 
 
 def _loc_by_condition(rows) -> str:
-    out = ["**Does the localizer degrade along each axis?** MCL episodes pooled over the four planners; cell = median of the per-episode max position error in the last 10 s (m) / share of episodes above "
+    out = ["**Does the localizer degrade along each axis? (exploratory, added after seeing results)** MCL episodes pooled over the four planners; cell = median of the per-episode max position error in the last 10 s (m) / share of episodes above "
            f"{LOC_THRESHOLD:g} m. (The pose error does not depend on the planner except through where the robot drives.)\n"]
     by = defaultdict(list)
     for r in rows:
@@ -673,7 +673,7 @@ def _loc_section(rows, idx, tests, quick) -> str:
                 fails = [r["end_goal"] for r in mr if not r["success"]]
                 body.append([c.name, p] + [f"{cats.count(k) / len(mr):.2f}" for k in CATEGORIES] + [f"{np.median(fails):.1f}" if fails else "-"])
     if body:
-        out.append("**How MCL-break failures look (MCL pose; outcome fractions; median final distance to the goal of the failures, m):**\n")
+        out.append("**How MCL-break failures look (exploratory, added after seeing results; MCL pose; outcome fractions; median final distance to the goal of the failures, m):**\n")
         out.append(_md_table(["condition", "planner"] + list(CATEGORIES) + ["fail: end-goal dist (m)"], body) + "\n")
     allmax = [r["loc_max"] for r in mcl]
     out.append(f"Overall, MCL position error: median of the per-episode maximum {np.median(allmax):.2f} m, 95th percentile {np.percentile(allmax, 95):.2f} m, maximum {np.max(allmax):.2f} m over {len(mcl)} MCL episodes; "
@@ -685,7 +685,7 @@ def _tuning_section(tune_path: Path, cfg: dict) -> str:
     with tune_path.open() as fh:
         log = list(csv.DictReader(fh))
     out = ["Planner parameters were searched on tuning-set seeds only (log: `tuning_log.csv`; each candidate evaluated on the same tuning scenarios, MCL pose; objective = success rate, ties broken by time-to-goal). "
-           "Parameters not listed keep the P2 defaults.\n"]
+           "Parameters not listed keep the P2 defaults. **Tuning effort was asymmetric:** pp_stop got 37 candidates, DWA and MPPI 9 each, pp none (it is a reference). Claims about which planner is best are therefore hedged; in particular nominal DWA vs pp_stop is not significant (F1).\n"]
     body = []
     for p in sorted({r["planner"] for r in log}):
         rs = [r for r in log if r["planner"] == p]

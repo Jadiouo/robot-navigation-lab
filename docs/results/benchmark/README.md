@@ -8,13 +8,13 @@
 
 * **Procedural scenarios** (`navlab.world.generator`): four seeded families (corridor network, rooms + doors, cluttered field, and a featureless hall used only for the MCL-break suite). A scenario is fully determined by `(family, seed, stress parameters)`. Start/goal are sampled with a minimum distance and an A* route at the global planner's clearance; hidden (unmapped) boxes are accepted only if such a route still exists on the *true* map.
 * **Strict split by seed.** Tuning set = seeds 0-999; test set = seeds >= 100000 (`navlab.benchmark.splits` refuses anything else). Planner parameters were looked at on the tuning set only (see *Tuning*). The five hand-made P2 scenarios (`examples/dynamic_obstacle_navigation.py`) are *illustrative cases*, not evidence, and are not used here.
-* **Freeze before test.** All planner / global-layer / sensor / MCL configs are written to `frozen_config.json` together with a SHA-256 of its contents and of the source files of the stack under test. The test suites refuse to run if the file is missing, edited, or stale.
+* **Freeze before test.** All planner / global-layer / sensor / MCL configs are written to `frozen_config.json` together with a `hash` field (the SHA-256 of the canonical JSON of the config without that field, i.e. not the SHA-256 of the file bytes) and a `code_digest` (SHA-256 over the source files of the stack under test). The test suites refuse to run if the file is missing, edited, or stale.
 * **Frozen config hash:** `de26663d705a2af16fc982bed3e23930158354f644d4633adbf397e834200fff`  (code digest `89ef94496adeeb0c...`).
 * **PPO freeze (P4).** The learned planner has its own artifact, `ppo_frozen.json` (hash `93a21bec4faa1eba...`): per-seed weights SHA-256, observation / action / reward specification, selection record, and the baseline freeze it is chained to (hash `de26663d705a2af1...`, code digest `89ef94496adeeb0c...` = the P3 values, unchanged: `navlab/rl` is outside the hashed sources and no baseline file was edited). PPO training seeds are generator seeds 1000-99999; checkpoints were selected on tuning seeds only; PPO episodes live in `episodes_ppo.csv`. The PPO comparisons are pre-declared in `report.py` (`PPO_PREDECLARED`) and Holm-corrected within their own families, leaving the baseline families F1-F5 untouched: F6 each PPO seed vs DWA and vs pp_stop, nominal, GT and MCL (confirmatory); F7 headline PPO vs DWA / pp_stop at the worst level of each axis, F8 in each MCL-break condition (exploratory).
 * **Paired design.** For a given condition every planner and pose source is run on the *same* `(family, seed)` scenarios (same agents, same hidden boxes). Stress levels share the map, route and the first-n hidden/agent candidates with the nominal scenario (nested, common random numbers), so a stress curve compares like with like. Planner randomness (MPPI sampling, sensor noise, MCL) is seeded from the scenario seed.
 * **Statistics.** Success rates carry Wilson 95 % intervals. Planner comparisons on identical scenarios use the exact McNemar test (and a paired bootstrap of the success difference; a paired bootstrap of time-to-goal over jointly successful episodes). The tested comparisons are pre-declared in `report.py` (`PREDECLARED`: F1 nominal planner pairs x {GT, MCL}, F2 GT vs MCL per planner, F3 planner pairs at the worst level of each axis, F4 nominal vs worst level per planner and axis, F5 GT vs MCL in the MCL-break suite) and Holm-corrected within each family. F3-F5 are exploratory; F1-F2 are the confirmatory family.
 * **Outcome taxonomy.** `collision_static`, `collision_dynamic`, `timeout` (45-80 s budget by route length), `stuck` (global layer gave up after 3 recoveries), and **`loc_induced`**: a *failed* MCL episode whose position error exceeded 1 m at some time during its last 10 s (the raw outcome is kept in the CSV). This is a correlational label (a planner that crashes for another reason while MCL happens to be off is mislabeled); the GT-rescue rate below is the counterfactual check.
-* **Dynamics of the world.** A pedestrian does not walk into a car that is (nearly) stationary (speed < 0.3 m/s): its step is skipped. A moving robot never gets this courtesy.
+* **Dynamics of the world.** A pedestrian does not walk into a car that is (nearly) stationary (speed < 0.3 m/s): its step is skipped. A moving robot never gets this courtesy. This favours planners that stop (pp_stop, DWA, MPPI can brake to a halt and be passed safely); `pp` has no replanning or recovery by design, so its gap to the others partly reflects that design, not only reactive avoidance.
 
 ## Run
 
@@ -29,7 +29,7 @@
 
 ## Tuning (tuning set only)
 
-Planner parameters were searched on tuning-set seeds only (log: `tuning_log.csv`; each candidate evaluated on the same tuning scenarios, MCL pose; objective = success rate, ties broken by time-to-goal). Parameters not listed keep the P2 defaults.
+Planner parameters were searched on tuning-set seeds only (log: `tuning_log.csv`; each candidate evaluated on the same tuning scenarios, MCL pose; objective = success rate, ties broken by time-to-goal). Parameters not listed keep the P2 defaults. **Tuning effort was asymmetric:** pp_stop got 37 candidates, DWA and MPPI 9 each, pp none (it is a reference). Claims about which planner is best are therefore hedged; in particular nominal DWA vs pp_stop is not significant (F1).
 
 | planner | candidates | tuning episodes/candidate | default success | chosen success | frozen overrides |
 |---|---|---|---|---|---|
@@ -209,6 +209,8 @@ Level 0 is the nominal condition on the same scenarios as the other levels. Cell
 
 ## Where does each stack break?
 
+**Exploratory:** this section was added after the results were seen; the 15-point threshold and the layout were not pre-declared.
+
 For each axis and planner (MCL pose): the first level whose success is >= 15 points below the planner's own level 0, and the success change from level 0 to the worst level (points). `-` = no level qualified.
 
 | axis (nominal -> worst) | pp | pp_stop | dwa | mppi | ppo |
@@ -222,7 +224,7 @@ For each axis and planner (MCL pose): the first level whose success is >= 15 poi
 | agent_speed (1 -> 3) | 3 (-17) | 1.5 (-42) | 2 (-22) | 2.5 (-18) | 3 (-17) |
 | hidden_density (1 -> 10) | - (-12) | - (-7) | - (-2) | - (+3) | - (-7) |
 
-**Does the localizer degrade along each axis?** MCL episodes pooled over the four planners; cell = median of the per-episode max position error in the last 10 s (m) / share of episodes above 1 m. (The pose error does not depend on the planner except through where the robot drives.)
+**Does the localizer degrade along each axis? (exploratory, added after seeing results)** MCL episodes pooled over the four planners; cell = median of the per-episode max position error in the last 10 s (m) / share of episodes above 1 m. (The pose error does not depend on the planner except through where the robot drives.)
 
 | axis | level 0 | level 1 | level 2 | level 3 | level 4 |
 |---|---|---|---|---|---|
@@ -549,7 +551,7 @@ Nominal GT vs MCL for each PPO seed (descriptive, not part of a pre-declared fam
 | rooms/crowd+outliers: dwa gt vs mcl | 60 | 1/2 | -0.017 [-0.083, +0.033] | 1.000 | 1.000 |
 | rooms/crowd+outliers: mppi gt vs mcl | 60 | 0/0 | +0.000 [+0.000, +0.000] | 1.000 | 1.000 |
 
-**How MCL-break failures look (MCL pose; outcome fractions; median final distance to the goal of the failures, m):**
+**How MCL-break failures look (exploratory, added after seeing results; MCL pose; outcome fractions; median final distance to the goal of the failures, m):**
 
 | condition | planner | success | loc_induced | collision_static | collision_dynamic | timeout | stuck | fail: end-goal dist (m) |
 |---|---|---|---|---|---|---|---|---|
