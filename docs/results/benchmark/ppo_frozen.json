@@ -4,7 +4,7 @@
     "code_digest": "89ef94496adeeb0c839a15c8a91671478e076879b43f66103ec378808cd1f617",
     "hash": "de26663d705a2af16fc982bed3e23930158354f644d4633adbf397e834200fff"
   },
-  "hash": "93a21bec4faa1eba00dc8d58dc1f3695cd257fad5951ae3e93d652ed969d0d3d",
+  "hash": "f7be3e1dee2fc523b85dca401d395e0620b081237171bfa4b1278dc9578ccccf",
   "headline": {
     "planner": "ppo_s1",
     "rule": "median over seeds of the mean (GT, MCL) success of the selected checkpoint on tuning seeds 500-659"
@@ -45,7 +45,7 @@
   },
   "rl_code_digest": "d12cb1f49f8a76392a91b8eff074d73de36edc2592314ff5e014626688f02eaf",
   "training": {
-    "hardware": "16 logical CPU cores (shared with unrelated jobs), NVIDIA GeForce RTX 5070 Ti learner (torch 2.12+cu130), env workers on CPU",
+    "hardware": "single consumer NVIDIA GPU for the learner (CUDA), multi-core CPU for env workers",
     "per_seed": {
       "0": {
         "device": "cuda",
