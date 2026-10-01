@@ -28,6 +28,14 @@ def _benchmark(arguments: argparse.Namespace) -> int:
     return 0
 
 
+def _benchmark_uncertainty(arguments: argparse.Namespace) -> int:
+    from navlab.benchmark.suites import run_suites
+
+    meta = run_suites(arguments.suite, arguments.output, workers=arguments.workers, quick=arguments.quick, config_path=arguments.config)
+    print(json.dumps(meta, indent=2))
+    return 0
+
+
 def _train(arguments: argparse.Namespace) -> int:
     try:
         from navlab.learning.ppo import PPOConfig, train_three_seeds
@@ -97,6 +105,17 @@ def build_parser() -> argparse.ArgumentParser:
     benchmark.add_argument("--quick", action="store_true", help="smaller matrix; recorded in benchmark.json")
     benchmark.add_argument("--seed", type=int, default=0)
     benchmark.set_defaults(handler=_benchmark)
+    bu = subparsers.add_parser(
+        "benchmark-uncertainty",
+        help="navigation-under-uncertainty benchmark (procedural scenarios, frozen config, stress axes, statistics, report)")
+    bu.add_argument("--suite", choices=("tune", "nominal", "stress", "mclbreak", "test", "all", "report"), default="all",
+                    help="tune: tuning set -> frozen config; nominal/stress/mclbreak: the test set on the frozen config; "
+                         "test = nominal+stress+mclbreak; all = tune (if no frozen config) + test + report; report: regenerate tables/figures only")
+    bu.add_argument("--workers", type=int, default=0, help="worker processes (default: all cores)")
+    bu.add_argument("--quick", action="store_true", help="tiny smoke run on the tuning split with the default config (not evidence)")
+    bu.add_argument("--output", type=Path, default=Path("docs/results/benchmark"))
+    bu.add_argument("--config", type=Path, default=None, help="frozen config path (default: <output>/frozen_config.json)")
+    bu.set_defaults(handler=_benchmark_uncertainty)
     train = subparsers.add_parser("train", help="train bounded PPO steering runs on CPU")
     train.add_argument("--output", type=Path, required=True)
     train.add_argument("--seeds", nargs=3, type=int, default=[0, 1, 2])
