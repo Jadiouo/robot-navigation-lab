@@ -95,7 +95,7 @@ def run_jobs(jobs: list[Job], cfg: dict[str, Any], out_csv: Path, workers: int, 
                 if n % 200 == 0:
                     fh.flush()
                     log(f"  {n}/{len(todo)} episodes, {time.time() - t0:.0f}s")
-    return {"episodes_run": n, "episodes_skipped_resume": len(done), "wall_s": time.time() - t0, "workers": workers}
+    return {"episodes_run": n, "episodes_skipped_resume": len(jobs) - len(todo), "wall_s": time.time() - t0, "workers": workers}
 
 
 def load_rows_for_tuning(path: Path) -> list[dict[str, Any]]:

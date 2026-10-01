@@ -269,9 +269,10 @@ def fig_taxonomy(idx, path: Path) -> None:
         if groups:
             _stack(ax, groups, labels)
         ax.set_title(("nominal" if title == "nominal" else f"{title} @ worst level ({worst_level(title)[0].split('=')[1]})"), fontsize=9)
-    axs[0, 0].legend(fontsize=7, loc="lower left")
+    handles = [plt.Rectangle((0, 0), 1, 1, color=CAT_COLORS[c]) for c in CATEGORIES]
+    fig.legend(handles, CATEGORIES, loc="lower center", ncol=len(CATEGORIES), fontsize=9, frameon=False)
     fig.suptitle("Outcome taxonomy (loc_induced = failed MCL episode with pose error > %.1f m in its last 10 s)" % LOC_THRESHOLD)
-    fig.tight_layout()
+    fig.tight_layout(rect=(0, 0.03, 1, 1))
     fig.savefig(path, dpi=100)
     plt.close(fig)
 
@@ -404,12 +405,13 @@ def _readme(rows, idx, tests, cfg, meta, tune_path, quick) -> str:
     A("* **Dynamics of the world.** A pedestrian does not walk into a car that is (nearly) stationary (speed < 0.3 m/s): its step is skipped. A moving robot never gets this courtesy.\n")
     # ---------------- run metadata
     A("## Run\n")
-    tot_wall = sum(m.get("wall_s", 0.0) for k, m in meta.items() if isinstance(m, dict) and "wall_s" in m)
-    A(f"* Episodes in `{ 'episodes_quick.csv' if quick else 'episodes.csv'}`: **{n_ep}**" + (f"; benchmark wall time **{tot_wall / 60:.1f} min** (test suites, {max((m.get('workers', 0) for m in meta.values() if isinstance(m, dict)), default=0)} worker processes)." if tot_wall else "."))
+    tot_wall = sum(meta[k]["wall_s"] for k in ("nominal", "stress", "mclbreak") if isinstance(meta.get(k), dict) and "wall_s" in meta[k])
+    tune_wall = meta["tune"]["wall_s"] if isinstance(meta.get("tune"), dict) and "wall_s" in meta["tune"] else 0.0
+    A(f"* Episodes in `{ 'episodes_quick.csv' if quick else 'episodes.csv'}`: **{n_ep}** (test split)" + (f"; test-suite wall time **{tot_wall / 60:.1f} min** on {max((m.get('workers', 0) for m in meta.values() if isinstance(m, dict)), default=0)} worker processes" if tot_wall else "") + (f", plus {tune_wall / 60:.1f} min for tuning ({meta['tune'].get('n_jobs', '?')} tuning-split episodes)." if tune_wall else "."))
     for k in ("tune", "nominal", "stress", "mclbreak"):
         m = meta.get(k)
         if isinstance(m, dict) and "wall_s" in m:
-            A(f"  * `{k}`: {m.get('n_jobs', m.get('episodes_run', '?'))} episodes, {m['wall_s'] / 60:.1f} min wall" + (f" (resumed: {m['episodes_skipped_resume']} already done)" if m.get("episodes_skipped_resume") else ""))
+            A(f"  * `{k}`: {m.get('n_jobs', m.get('episodes_run', '?'))} episodes, {m['wall_s'] / 60:.1f} min wall" + (f" (resumed: {m['n_jobs'] - m['episodes_run']} of its episodes were already done)" if m.get("n_jobs", 0) != m.get("episodes_run", 0) else ""))
     pm = defaultdict(list)
     for r in rows:
         pm[r["planner"]].append(r["plan_ms"])
@@ -477,6 +479,8 @@ def _readme(rows, idx, tests, cfg, meta, tune_path, quick) -> str:
             if body:
                 A(f"**{axis}** (n = {stress_series(idx, axis, 'dwa', 'mcl')[0][4] if stress_series(idx, axis, 'dwa', 'mcl') else '?'} scenarios per cell)\n")
                 A(_md_table(["planner"] + [f"{v:g}" for v in vals] + [f"break level (>= {BREAK_DROP * 100:.0f} pt drop)"], body) + "\n")
+        A(_break_matrix(idx))
+        A(_loc_by_condition(rows))
         A(_stress_tests(tests))
     # ---------------- taxonomy and localization
     A("## Outcome taxonomy\n")
@@ -487,6 +491,9 @@ def _readme(rows, idx, tests, cfg, meta, tune_path, quick) -> str:
       "* `pp_stop`, DWA and MPPI share the same global layer (A* on the known map, overlay replanning, reverse-and-replan recovery) and the same goal tolerance (2 m); they differ only in the local planner.\n"
       "* A success is judged on the true pose; the planner only sees the MCL estimate (or GT in the ablation arm).\n"
       "* Planner time is measured inside busy parallel workers; use it for ranking, not as an embedded-hardware estimate.\n"
+      "* The odometry speed-scale axis enters twice: through the filter's motion model (pose lag) and through the speed fed back to the controllers; the GT-pose arm bypasses both, so the two paths are not separated here. "
+      "The gyro-bias axis only enters through the filter (the scan corrects heading).\n"
+      "* A pose error is measured against the true pose at every simulation step; `loc_induced` uses the last 10 s only, so an early, recovered error is not blamed.\n"
       "* Limitations: 2-D point-cloud-free LiDAR with a ray-disc dynamic model; agents are non-reactive except for the stationary-car courtesy; one vehicle model; "
       "scenario families are synthetic and small (60 m x 36 m); conditions are one-factor-at-a-time (interactions are only probed in the MCL-break suite); "
       "confidence intervals describe scenario sampling, not seed-to-seed planner variance within a scenario.\n")
@@ -511,6 +518,44 @@ def _stress_tests(tests) -> str:
         if body:
             out.append(f"*{fam}*\n")
             out.append(_md_table(["comparison", "pairs", "only A ok / only B ok", "success diff", "p (McNemar)", "p (Holm)"], body) + "\n")
+    return "\n".join(out)
+
+
+def _break_matrix(idx) -> str:
+    out = [f"## Where does each stack break?\n", f"For each axis and planner (MCL pose): the first level whose success is >= {BREAK_DROP * 100:.0f} points below the planner's own level 0, and the success change from level 0 to the worst level (points). "
+           "`-` = no level qualified.\n"]
+    body = []
+    for axis, (_, vals) in AXES.items():
+        row = [f"{axis} ({vals[0]:g} -> {vals[-1]:g})"]
+        for p in PLANNERS:
+            s = stress_series(idx, axis, p, "mcl")
+            if len(s) < 2:
+                row.append("n/a")
+                continue
+            bl = break_level(s, s[0][1])
+            row.append(f"{'-' if bl == 'not within range' else bl} ({(s[-1][1] - s[0][1]) * 100:+.0f})")
+        body.append(row)
+    out.append(_md_table(["axis (nominal -> worst)"] + list(PLANNERS), body) + "\n")
+    return "\n".join(out)
+
+
+def _loc_by_condition(rows) -> str:
+    out = ["**Does the localizer degrade along each axis?** MCL episodes pooled over the four planners; cell = median of the per-episode max position error in the last 10 s (m) / share of episodes above "
+           f"{LOC_THRESHOLD:g} m. (The pose error does not depend on the planner except through where the robot drives.)\n"]
+    by = defaultdict(list)
+    for r in rows:
+        if r["pose"] == "mcl":
+            by[(r["suite"], r["cond"])].append(r["loc_last10"])
+    body = []
+    for axis, (_, vals) in AXES.items():
+        cells = []
+        for i, v in enumerate(vals):
+            key = ("nominal", "nominal") if i == 0 else ("stress", f"{axis}={v:g}")
+            e = by.get(key, [])
+            cells.append(f"{np.median(e):.2f} / {np.mean(np.array(e) > LOC_THRESHOLD):.2f}" if e else "n/a")
+        body.append([axis] + cells)
+    out.append(_md_table(["axis", "level 0", "level 1", "level 2", "level 3", "level 4"], body) + "\n")
+    out.append("(level values as in the tables above; level 0 pools all 240 nominal scenarios.)\n")
     return "\n".join(out)
 
 
@@ -558,6 +603,17 @@ def _loc_section(rows, idx, tests, quick) -> str:
         body = [[t["comparison"], str(t["n_pairs"]), f"{t['only_A_ok']}/{t['only_B_ok']}", f"{t['diff']:+.3f} [{t['diff_lo']:+.3f}, {t['diff_hi']:+.3f}]", _fmt_p(t["mcnemar_p"]), _fmt_p(t["p_holm"])] for t in tests if t["family"] == "F5 MCL-break suite: GT vs MCL"]
         out.append("*F5: GT vs MCL on identical scenarios (A = GT, B = MCL)*\n")
         out.append(_md_table(["comparison", "pairs", "only GT ok / only MCL ok", "success diff (GT - MCL)", "p (McNemar)", "p (Holm)"], body) + "\n")
+    body = []
+    for _, c in MCL_BREAK:
+        for p in PLANNERS:
+            mr = list(idx.get(("mclbreak", c.name, "mcl", p), {}).values())
+            if mr:
+                cats = [category(r) for r in mr]
+                fails = [r["end_goal"] for r in mr if not r["success"]]
+                body.append([c.name, p] + [f"{cats.count(k) / len(mr):.2f}" for k in CATEGORIES] + [f"{np.median(fails):.1f}" if fails else "-"])
+    if body:
+        out.append("**How MCL-break failures look (MCL pose; outcome fractions; median final distance to the goal of the failures, m):**\n")
+        out.append(_md_table(["condition", "planner"] + list(CATEGORIES) + ["fail: end-goal dist (m)"], body) + "\n")
     allmax = [r["loc_max"] for r in mcl]
     out.append(f"Overall, MCL position error: median of the per-episode maximum {np.median(allmax):.2f} m, 95th percentile {np.percentile(allmax, 95):.2f} m, maximum {np.max(allmax):.2f} m over {len(mcl)} MCL episodes; "
                f"{np.mean([r['loc_max'] > LOC_THRESHOLD for r in mcl]) * 100:.1f} % of MCL episodes exceed {LOC_THRESHOLD:g} m at some time.\n")

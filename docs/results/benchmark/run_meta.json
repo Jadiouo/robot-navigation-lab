@@ -17,5 +17,29 @@
       }
     },
     "hash": "de26663d705a2af16fc982bed3e23930158354f644d4633adbf397e834200fff"
+  },
+  "nominal": {
+    "episodes_run": 1920,
+    "episodes_skipped_resume": 0,
+    "wall_s": 502.8000957965851,
+    "workers": 14,
+    "n_scenarios": 240,
+    "n_jobs": 1920
+  },
+  "stress": {
+    "episodes_run": 11520,
+    "episodes_skipped_resume": 1920,
+    "wall_s": 3368.6687054634094,
+    "workers": 14,
+    "n_scenarios": 60,
+    "n_jobs": 11520
+  },
+  "mclbreak": {
+    "episodes_run": 1920,
+    "episodes_skipped_resume": 13440,
+    "wall_s": 450.70058369636536,
+    "workers": 14,
+    "n_scenarios": 60,
+    "n_jobs": 1920
   }
 }
