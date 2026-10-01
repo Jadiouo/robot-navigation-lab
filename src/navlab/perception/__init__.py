@@ -1,11 +1,11 @@
 """Noisy sensing and probabilistic localization on the shared occupancy map."""
 
-from .lidar import Lidar, LidarConfig, cast_rays
+from .lidar import Lidar, LidarConfig, cast_rays, ray_disc_ranges
 from .mcl import MCLConfig, MonteCarloLocalizer, PoseEstimate
 from .odometry import MotionNoise, OdometryModel, OdometryReading
 
 __all__ = [
-    "Lidar", "LidarConfig", "cast_rays",
+    "Lidar", "LidarConfig", "cast_rays", "ray_disc_ranges",
     "MCLConfig", "MonteCarloLocalizer", "PoseEstimate",
     "MotionNoise", "OdometryModel", "OdometryReading",
 ]

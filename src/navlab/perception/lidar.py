@@ -110,20 +110,55 @@ def cast_rays(grid: GridMap, x: float, y: float, world_angles: np.ndarray, max_r
     return np.minimum(ranges, max_range)
 
 
+def ray_disc_ranges(x: float, y: float, world_angles: np.ndarray, discs: np.ndarray, max_range: float) -> np.ndarray:
+    """Analytic first-hit ranges of rays from ``(x, y)`` against discs ``[[cx, cy, r], ...]``.
+
+    For a unit direction ``d`` and centre offset ``f``: ``t_ca = f.d`` is the closest-approach
+    parameter, ``h^2 = |f|^2 - t_ca^2`` the squared miss distance, and the entry/exit are
+    ``t_ca -+ sqrt(r^2 - h^2)``.  A ray whose origin is inside a disc reports 0; discs behind
+    the origin or beyond ``max_range`` are ignored.  Returns ``max_range`` where nothing is hit.
+    """
+    angles = np.asarray(world_angles, dtype=float)
+    discs = np.asarray(discs, dtype=float).reshape(-1, 3)
+    if not len(discs):
+        return np.full(angles.shape, float(max_range))
+    d = np.stack((np.cos(angles), np.sin(angles)), axis=-1)             # (B, 2)
+    f = discs[None, :, :2] - np.array([x, y])                            # (1, M, 2)
+    t_ca = np.einsum("bk,mk->bm", d, f[0])                               # (B, M)
+    h2 = np.sum(f[0] ** 2, axis=1)[None, :] - t_ca ** 2
+    r2 = discs[None, :, 2] ** 2
+    inside = np.sum(f[0] ** 2, axis=1)[None, :] <= r2
+    half = np.sqrt(np.maximum(r2 - h2, 0.0))
+    t_enter = t_ca - half
+    t_exit = t_ca + half
+    t = np.where(h2 <= r2, np.where(t_enter >= 0.0, t_enter, np.where(t_exit >= 0.0, 0.0, np.inf)), np.inf)
+    t = np.where(inside, 0.0, t)
+    return np.minimum(t.min(axis=1), max_range)
+
+
 class Lidar:
-    """Noisy planar range finder mounted at the rear-axle reference point."""
+    """Noisy planar range finder mounted at the rear-axle reference point.
+
+    ``grid`` is the *true* occupancy.  Optional moving discs (dynamic obstacles that are
+    not part of any map) are merged by taking the per-beam minimum of the DDA grid range
+    and the analytic ray-disc range.
+    """
 
     def __init__(self, grid: GridMap, config: LidarConfig | None = None) -> None:
         self.grid = grid
         self.config = config or LidarConfig()
         self.angles = self.config.angles
 
-    def true_ranges(self, state: VehicleState) -> np.ndarray:
-        return cast_rays(self.grid, state.x, state.y, state.yaw + self.angles, self.config.max_range)
+    def true_ranges(self, state: VehicleState, discs: np.ndarray | None = None) -> np.ndarray:
+        world_angles = state.yaw + self.angles
+        ranges = cast_rays(self.grid, state.x, state.y, world_angles, self.config.max_range)
+        if discs is not None and len(discs):
+            ranges = np.minimum(ranges, ray_disc_ranges(state.x, state.y, world_angles, discs, self.config.max_range))
+        return ranges
 
-    def scan(self, state: VehicleState, rng: np.random.Generator) -> np.ndarray:
+    def scan(self, state: VehicleState, rng: np.random.Generator, discs: np.ndarray | None = None) -> np.ndarray:
         cfg = self.config
-        true = self.true_ranges(state)
+        true = self.true_ranges(state, discs)
         n = len(true)
         no_hit = true >= cfg.max_range
         u = rng.random(n)

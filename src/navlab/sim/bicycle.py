@@ -19,8 +19,13 @@ class BicycleModel:
     steering dynamics.
     """
 
-    def __init__(self, vehicle: VehicleConfig):
+    def __init__(self, vehicle: VehicleConfig, max_reverse_speed: float = 0.0):
+        if max_reverse_speed < 0.0:
+            raise ValueError("max_reverse_speed must be non-negative")
         self.vehicle = vehicle
+        # 0 (default) keeps the original forward-only model; a positive value
+        # lets recovery behaviours back up at a creep (same steering geometry).
+        self.max_reverse_speed = float(max_reverse_speed)
 
     def step(self, state: VehicleState, steer_cmd: float, acceleration: float) -> VehicleState:
         cfg = self.vehicle
@@ -28,7 +33,7 @@ class BicycleModel:
         max_change = cfg.max_steer_rate * cfg.dt
         delta = min(max(target_delta, state.delta - max_change), state.delta + max_change)
         acceleration = min(max(float(acceleration), -cfg.max_decel), cfg.max_accel)
-        v = min(max(state.v + acceleration * cfg.dt, 0.0), cfg.max_speed)
+        v = min(max(state.v + acceleration * cfg.dt, -self.max_reverse_speed), cfg.max_speed)
 
         # Semi-implicit Euler makes an acceleration command affect this interval,
         # while retaining one straightforward, reproducible integration rule.
