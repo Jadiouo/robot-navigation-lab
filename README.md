@@ -1,3 +1,5 @@
+> **Status:** being repositioned toward *navigation under uncertainty* (noisy sensing, probabilistic localization, dynamic obstacles, local planners) on branch `uncertainty-nav`. The classical controllers below stay as components of that pipeline; this README has not yet been rewritten.
+
 # Robot Navigation Lab
 
 從靜態地圖規劃一條車輛可追蹤的軌跡，並在同一個 kinematic bicycle 模擬器中比較傳統控制與 PPO 的可重現實驗平台。第一版使用真值定位；它展示規劃、控制與實驗如何串接，並不宣稱包含感知、SLAM 或實車部署。
