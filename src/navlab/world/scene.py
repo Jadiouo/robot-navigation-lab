@@ -54,6 +54,7 @@ class DynamicWorld:
         # border is a wall (as for the LiDAR), hence the occupied one-cell frame.
         self._edt = ndimage.distance_transform_edt(~np.pad(self.true_grid.occupancy, 1, constant_values=True))[1:-1, 1:-1] * known_grid.resolution
         self.robot_xy = (0.0, 0.0)
+        self.yield_speed, self.yield_distance = 0.3, 0.4
 
     # ---- agents ---------------------------------------------------------
     def reset(self) -> None:
@@ -69,9 +70,16 @@ class DynamicWorld:
         return float(self._edt[row, col]) - 0.5 * self.true_grid.resolution
 
     def step(self, dt: float, robot: VehicleState) -> None:
+        """Advance the agents.  A pedestrian does not walk into a (nearly) stationary car: an agent whose step
+        would bring it within ``yield_distance`` of a robot that is slower than ``yield_speed`` stays where it was
+        (the world's behaviour, identical for every planner; a *moving* robot is never given this courtesy)."""
         self.robot_xy = (robot.x, robot.y)
+        yielding = abs(robot.v) < self.yield_speed
         for a in self.agents:
+            before = {k: (v.copy() if isinstance(v, np.ndarray) else v) for k, v in a.__dict__.items()} if yielding else None
             a.step(dt, self.robot_xy, self.free_clearance)
+            if yielding and rect_disc_distance(robot, self.vehicle, np.array([a.as_row()]), margin=0.0)[0] <= self.yield_distance:
+                a.__dict__.update(before)
         self.t += dt
 
     def discs(self) -> np.ndarray:

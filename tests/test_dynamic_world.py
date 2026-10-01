@@ -126,3 +126,21 @@ def test_hidden_obstacles_are_not_in_the_known_map_but_are_seen_by_the_lidar():
     st = VehicleState(10.0, 12.0, 0.0)
     assert lidar.true_ranges(st)[0] == pytest.approx(10.0, abs=0.01)    # hidden wall face at x = 20
     assert known.true_ranges(st)[0] > 25.0                              # the map border instead
+
+
+def test_agents_yield_to_a_stationary_car_but_not_to_a_moving_one():
+    veh = VehicleConfig()
+    free = GridMap(np.zeros((52, 84), dtype=bool), 0.5)
+    car = VehicleState(10.0, 13.0, 0.0, v=0.0)
+    ahead = [ConstantVelocityAgent(pos=[16.0, 13.0], radius=0.4, vel=[-1.0, 0.0])]       # walks straight at the car's nose
+    world = DynamicWorld(free, None, ahead, veh)
+    world.reset()
+    for _ in range(400):                                                                   # 20 s: it would reach the car in ~3 s
+        world.step(0.05, car)
+    assert rect_disc_distance(car, veh, world.discs(), margin=0.0)[0] > 0.3 and not world.dynamic_collision(car, car)
+    moving = VehicleState(10.0, 13.0, 0.0, v=1.0)
+    world2 = DynamicWorld(free, None, [ConstantVelocityAgent(pos=[16.0, 13.0], radius=0.4, vel=[-1.0, 0.0])], veh)
+    world2.reset()
+    for _ in range(400):
+        world2.step(0.05, moving)                                                          # a moving car gets no courtesy
+    assert world2.discs()[0, 0] < 10.0                                                     # the agent walked straight through the spot
