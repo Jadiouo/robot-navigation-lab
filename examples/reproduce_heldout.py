@@ -19,7 +19,7 @@ import torch
 from navlab.control import make_controller
 from navlab.evaluation.metrics import aggregate_runs, trace_metrics
 from navlab.evaluation.runner import _scenario_manifest, _trajectory_rows, _write_csv, environment_manifest
-from navlab.learning.ppo import _tracking_env, load_policy
+from navlab.experimental.learning.ppo import _tracking_env, load_policy
 
 
 TEST_SEEDS = list(range(20))

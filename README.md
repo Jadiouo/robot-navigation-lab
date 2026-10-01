@@ -40,6 +40,8 @@ python3 -m venv .venv
 
 `--quick` 只跑縮小矩陣以驗證管線；`benchmark.json` 明確記錄它和完整矩陣的差異。完整 benchmark 保留：端到端漏斗、相同 reference trajectory 下的 controller 比較、以及 backward speed pass × lookahead braking 2×2 消融。
 
+> **Legacy / experimental.** 下面的 PPO 是早期的「路徑追蹤」PPO（單維轉向、真值定位、無障礙物），現位於 `navlab.experimental.learning`，不屬於 headline 結果。Headline 的學習式方法是 `navlab.rl` 的 RL 區域規劃器（與 DWA / MPPI 在同一個凍結的不確定性 benchmark 上比較）。
+
 PPO 是選裝功能（`pip install -e '.[rl]'`）。它固定讀取 40 維 observation 與一維 tanh-bounded steering action，並用共用縱向控制；legacy HW3 checkpoint 與此 contract 不相容，不會載入。
 
 ```bash

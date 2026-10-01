@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from navlab.learning.ppo import PPOConfig, Rollout
+from navlab.experimental.learning.ppo import PPOConfig, Rollout
 from navlab.evaluation.metrics import aggregate_runs
 
 
@@ -43,7 +43,7 @@ def test_ppo_config_is_explicitly_bounded_for_cpu_runs():
 
 def test_checkpoint_refuses_an_observation_contract_mismatch(tmp_path):
     torch = pytest.importorskip("torch")
-    from navlab.learning.ppo import checkpoint_payload, load_policy, make_actor_critic
+    from navlab.experimental.learning.ppo import checkpoint_payload, load_policy, make_actor_critic
 
     model = make_actor_critic(40)
     optimizer = torch.optim.Adam(model.parameters())

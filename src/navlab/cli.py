@@ -38,7 +38,7 @@ def _benchmark_uncertainty(arguments: argparse.Namespace) -> int:
 
 def _train(arguments: argparse.Namespace) -> int:
     try:
-        from navlab.learning.ppo import PPOConfig, train_three_seeds
+        from navlab.experimental.learning.ppo import PPOConfig, train_three_seeds
         result = train_three_seeds(
             arguments.output, arguments.seeds, arguments.steps,
             PPOConfig(
@@ -59,7 +59,7 @@ def _train(arguments: argparse.Namespace) -> int:
 def _evaluate(arguments: argparse.Namespace) -> int:
     try:
         from navlab.evaluation.metrics import aggregate_runs
-        from navlab.learning.ppo import evaluate_policy, load_policy
+        from navlab.experimental.learning.ppo import evaluate_policy, load_policy
         model, _ = load_policy(arguments.checkpoint)
         rows = evaluate_policy(
             model, arguments.split, list(range(arguments.seed_start, arguments.seed_start + arguments.episodes)),
