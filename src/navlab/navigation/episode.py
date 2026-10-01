@@ -122,6 +122,8 @@ def run_episode(
     v_meas, cmd, outcome, reversing = 0.0, None, "timeout", False
     max_steps = int(round(dyn.max_time / dt))
     plan_ms: list[float] = []
+    ess: list[float] = []
+    fallbacks = 0
     path_len, min_clear = 0.0, math.inf
     t_goal = None
     for step in range(max_steps):
@@ -141,6 +143,10 @@ def run_episode(
                 t0 = time.perf_counter()
                 cmd = planner.act(obs)
                 plan_ms.append((time.perf_counter() - t0) * 1e3)
+                diag = planner.diagnostics
+                fallbacks += bool(diag.get("fallback", False))
+                if "ess" in diag:
+                    ess.append(diag["ess"])
         accel = cmd.accel
         if not reversing:  # only the recovery behaviour may drive backwards; a brake command stops at v = 0
             accel = max(accel, -max(true.v, 0.0) / dt)
@@ -179,11 +185,11 @@ def run_episode(
         if math.hypot(true.x - known.goal[0], true.y - known.goal[1]) <= goal_tolerance and abs(true.v) <= goal_speed:
             outcome, t_goal = "success", (step + 1) * dt
             break
-    result.summary = _summarize(dyn, planner.name, pose_source, seed, outcome, result.trace, t_goal, path_len, min_clear, plan_ms, glob)
+    result.summary = _summarize(dyn, planner.name, pose_source, seed, outcome, result.trace, t_goal, path_len, min_clear, plan_ms, glob, ess, fallbacks)
     return result
 
 
-def _summarize(dyn, planner, pose_source, seed, outcome, trace, t_goal, path_len, min_clear, plan_ms, glob) -> dict[str, Any]:
+def _summarize(dyn, planner, pose_source, seed, outcome, trace, t_goal, path_len, min_clear, plan_ms, glob, ess, fallbacks) -> dict[str, Any]:
     loc = np.array([r["loc_err"] for r in trace]) if trace else np.zeros(1)
     yaw = np.array([r["yaw_err"] for r in trace]) if trace else np.zeros(1)
     return {
@@ -194,4 +200,6 @@ def _summarize(dyn, planner, pose_source, seed, outcome, trace, t_goal, path_len
         "n_replans": len(glob.events.replans), "n_recoveries": glob.events.recoveries,
         "plan_ms_mean": float(np.mean(plan_ms)) if plan_ms else float("nan"),
         "plan_ms_p95": float(np.percentile(plan_ms, 95)) if plan_ms else float("nan"),
+        "fallback_frac": fallbacks / len(plan_ms) if plan_ms else float("nan"),   # control ticks with no admissible / non-colliding candidate
+        "mppi_ess_mean": float(np.mean(ess)) if ess else float("nan"),
     }
