@@ -1,0 +1,89 @@
+{
+  "code_digest": "89ef94496adeeb0c839a15c8a91671478e076879b43f66103ec378808cd1f617",
+  "episode": {
+    "control_every": 2,
+    "goal_speed": 0.6,
+    "goal_tolerance": 2.0,
+    "prior_std": [
+      0.3,
+      0.1
+    ]
+  },
+  "generator_version": 1,
+  "global": {
+    "blocked_lookahead": 15.0,
+    "blocked_persist_s": 0.2,
+    "clearance_pull": 2.0,
+    "deviation_m": 3.0,
+    "enable_recovery": true,
+    "enable_replanning": true,
+    "goal_tolerance": 1.25,
+    "max_recoveries": 3,
+    "overlay_ttl": 0.5,
+    "plan_radius": 2.2,
+    "replan_cooldown_s": 2.0,
+    "reverse_distance": 1.5,
+    "reverse_speed": 1.0,
+    "stuck_speed": 0.1,
+    "stuck_time_s": 4.0
+  },
+  "hash": "de26663d705a2af16fc982bed3e23930158354f644d4633adbf397e834200fff",
+  "lidar": {
+    "fov": 6.283185307179586,
+    "lambda_short": 0.5,
+    "max_range": 20.0,
+    "n_beams": 120,
+    "p_max": 0.02,
+    "p_rand": 0.0,
+    "p_short": 0.04,
+    "sigma_hit": 0.05
+  },
+  "loc_err_threshold_m": 1.0,
+  "mcl": {
+    "alpha_fast": 0.3,
+    "alpha_slow": 0.02,
+    "augmented": false,
+    "ess_fraction": 0.5,
+    "jitter_xy": 0.05,
+    "jitter_yaw": 0.02,
+    "likelihood_exponent": 0.5,
+    "max_beams": 36,
+    "min_ess_fraction": 0.2,
+    "min_free_clearance": 0.5,
+    "motion_noise": {
+      "a1": 0.0009,
+      "a2": 0.0025,
+      "a3": 0.0001,
+      "a4": 0.0025,
+      "a5": 0.0001,
+      "a6": 0.0001
+    },
+    "n_particles": 500,
+    "reinit_on_collapse": true,
+    "sigma_field": 0.8,
+    "z_hit": 0.9,
+    "z_rand": 0.1
+  },
+  "planners": {
+    "dwa": {
+      "w_clear": 2.0
+    },
+    "mppi": {
+      "lam": 2.0
+    },
+    "pp": {},
+    "pp_stop": {
+      "a_brake": 1.5,
+      "lateral_margin": 0.5,
+      "standoff": 0.8
+    }
+  },
+  "protocol": {
+    "test_seed_base": 100000,
+    "tuning_seeds": [
+      0,
+      1000
+    ]
+  },
+  "version": 1
+}

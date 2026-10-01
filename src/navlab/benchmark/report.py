@@ -414,6 +414,8 @@ def _readme(rows, idx, tests, cfg, meta, tune_path, quick) -> str:
     for r in rows:
         pm[r["planner"]].append(r["plan_ms"])
     A("* Mean planner time per control tick (ms, wall-clock inside busy parallel workers, i.e. inflated): " + ", ".join(f"{p} {np.nanmean(pm[p]):.1f}" for p in PLANNERS if p in pm) + ".\n")
+    A("**Reproduce:** `.venv/bin/python -m navlab benchmark-uncertainty --suite all --workers N` (tunes + freezes if `frozen_config.json` is absent, then runs "
+      "nominal, stress and MCL-break on the test split and regenerates this directory); `--suite report` only rebuilds tables and figures; `--quick` is a tiny smoke run on the tuning split.\n")
     # ---------------- tuning
     A("## Tuning (tuning set only)\n")
     if tune_path.exists() and cfg:

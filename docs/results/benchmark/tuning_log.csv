@@ -1,0 +1,56 @@
+planner,params,is_default,n_episodes,success_rate,ttg_mean,collisions,timeouts,chosen
+pp_stop,"{""a_brake"": 2.0, ""closing_speed"": 0.0, ""lateral_margin"": 0.35, ""standoff"": 1.0}",1,120,0.4,14.3729,57,1,0
+pp_stop,"{""a_brake"": 1.5, ""closing_speed"": 0.0, ""lateral_margin"": 0.2, ""standoff"": 0.8}",0,120,0.4083,15.0602,63,1,0
+pp_stop,"{""a_brake"": 1.5, ""closing_speed"": 0.8, ""lateral_margin"": 0.2, ""standoff"": 0.8}",0,120,0.3833,13.9826,61,1,0
+pp_stop,"{""a_brake"": 1.5, ""closing_speed"": 0.0, ""lateral_margin"": 0.5, ""standoff"": 0.8}",0,120,0.45,15.2759,52,0,1
+pp_stop,"{""a_brake"": 1.5, ""closing_speed"": 0.8, ""lateral_margin"": 0.5, ""standoff"": 0.8}",0,120,0.4083,15.1704,57,1,0
+pp_stop,"{""a_brake"": 1.5, ""closing_speed"": 0.0, ""lateral_margin"": 0.2, ""standoff"": 1.2}",0,120,0.4417,14.7887,58,0,0
+pp_stop,"{""a_brake"": 1.5, ""closing_speed"": 0.8, ""lateral_margin"": 0.2, ""standoff"": 1.2}",0,120,0.4083,14.1327,59,3,0
+pp_stop,"{""a_brake"": 1.5, ""closing_speed"": 0.0, ""lateral_margin"": 0.5, ""standoff"": 1.2}",0,120,0.4,14.476,56,0,0
+pp_stop,"{""a_brake"": 1.5, ""closing_speed"": 0.8, ""lateral_margin"": 0.5, ""standoff"": 1.2}",0,120,0.4167,15.51,51,1,0
+pp_stop,"{""a_brake"": 1.5, ""closing_speed"": 0.0, ""lateral_margin"": 0.2, ""standoff"": 1.8}",0,120,0.4417,14.0481,56,1,0
+pp_stop,"{""a_brake"": 1.5, ""closing_speed"": 0.8, ""lateral_margin"": 0.2, ""standoff"": 1.8}",0,120,0.3833,14.475,61,5,0
+pp_stop,"{""a_brake"": 1.5, ""closing_speed"": 0.0, ""lateral_margin"": 0.5, ""standoff"": 1.8}",0,120,0.425,14.752,56,0,0
+pp_stop,"{""a_brake"": 1.5, ""closing_speed"": 0.8, ""lateral_margin"": 0.5, ""standoff"": 1.8}",0,120,0.4333,15.9327,53,1,0
+pp_stop,"{""a_brake"": 2.0, ""closing_speed"": 0.0, ""lateral_margin"": 0.2, ""standoff"": 0.8}",0,120,0.375,13.6867,64,0,0
+pp_stop,"{""a_brake"": 2.0, ""closing_speed"": 0.8, ""lateral_margin"": 0.2, ""standoff"": 0.8}",0,120,0.3917,13.4851,65,0,0
+pp_stop,"{""a_brake"": 2.0, ""closing_speed"": 0.0, ""lateral_margin"": 0.5, ""standoff"": 0.8}",0,120,0.4083,14.5796,56,1,0
+pp_stop,"{""a_brake"": 2.0, ""closing_speed"": 0.8, ""lateral_margin"": 0.5, ""standoff"": 0.8}",0,120,0.4417,15.5208,54,1,0
+pp_stop,"{""a_brake"": 2.0, ""closing_speed"": 0.0, ""lateral_margin"": 0.2, ""standoff"": 1.2}",0,120,0.4083,14.3102,58,1,0
+pp_stop,"{""a_brake"": 2.0, ""closing_speed"": 0.8, ""lateral_margin"": 0.2, ""standoff"": 1.2}",0,120,0.4083,14.0214,61,3,0
+pp_stop,"{""a_brake"": 2.0, ""closing_speed"": 0.0, ""lateral_margin"": 0.5, ""standoff"": 1.2}",0,120,0.4167,14.638,56,2,0
+pp_stop,"{""a_brake"": 2.0, ""closing_speed"": 0.8, ""lateral_margin"": 0.5, ""standoff"": 1.2}",0,120,0.4333,14.9846,53,2,0
+pp_stop,"{""a_brake"": 2.0, ""closing_speed"": 0.0, ""lateral_margin"": 0.2, ""standoff"": 1.8}",0,120,0.4083,13.7898,63,1,0
+pp_stop,"{""a_brake"": 2.0, ""closing_speed"": 0.8, ""lateral_margin"": 0.2, ""standoff"": 1.8}",0,120,0.425,15.0441,62,0,0
+pp_stop,"{""a_brake"": 2.0, ""closing_speed"": 0.0, ""lateral_margin"": 0.5, ""standoff"": 1.8}",0,120,0.4333,14.3394,53,0,0
+pp_stop,"{""a_brake"": 2.0, ""closing_speed"": 0.8, ""lateral_margin"": 0.5, ""standoff"": 1.8}",0,120,0.45,15.8352,52,0,0
+pp_stop,"{""a_brake"": 2.5, ""closing_speed"": 0.0, ""lateral_margin"": 0.2, ""standoff"": 0.8}",0,120,0.3833,13.6685,61,0,0
+pp_stop,"{""a_brake"": 2.5, ""closing_speed"": 0.8, ""lateral_margin"": 0.2, ""standoff"": 0.8}",0,120,0.4,13.7656,62,1,0
+pp_stop,"{""a_brake"": 2.5, ""closing_speed"": 0.0, ""lateral_margin"": 0.5, ""standoff"": 0.8}",0,120,0.4,14.2521,57,0,0
+pp_stop,"{""a_brake"": 2.5, ""closing_speed"": 0.8, ""lateral_margin"": 0.5, ""standoff"": 0.8}",0,120,0.4417,15.1764,56,1,0
+pp_stop,"{""a_brake"": 2.5, ""closing_speed"": 0.0, ""lateral_margin"": 0.2, ""standoff"": 1.2}",0,120,0.4083,14.6796,60,0,0
+pp_stop,"{""a_brake"": 2.5, ""closing_speed"": 0.8, ""lateral_margin"": 0.2, ""standoff"": 1.2}",0,120,0.4167,13.835,61,1,0
+pp_stop,"{""a_brake"": 2.5, ""closing_speed"": 0.0, ""lateral_margin"": 0.5, ""standoff"": 1.2}",0,120,0.4083,14.6633,58,1,0
+pp_stop,"{""a_brake"": 2.5, ""closing_speed"": 0.8, ""lateral_margin"": 0.5, ""standoff"": 1.2}",0,120,0.45,15.3954,53,1,0
+pp_stop,"{""a_brake"": 2.5, ""closing_speed"": 0.0, ""lateral_margin"": 0.2, ""standoff"": 1.8}",0,120,0.4167,13.921,62,1,0
+pp_stop,"{""a_brake"": 2.5, ""closing_speed"": 0.8, ""lateral_margin"": 0.2, ""standoff"": 1.8}",0,120,0.425,14.7402,62,0,0
+pp_stop,"{""a_brake"": 2.5, ""closing_speed"": 0.0, ""lateral_margin"": 0.5, ""standoff"": 1.8}",0,120,0.4083,14.352,61,1,0
+pp_stop,"{""a_brake"": 2.5, ""closing_speed"": 0.8, ""lateral_margin"": 0.5, ""standoff"": 1.8}",0,120,0.425,14.7971,53,3,0
+dwa,"{""clearance_buffer"": 0.6, ""w_clear"": 1.0}",1,120,0.5333,17.1406,27,26,0
+dwa,"{""clearance_buffer"": 0.4, ""w_clear"": 0.5}",0,120,0.5583,17.0888,29,22,0
+dwa,"{""clearance_buffer"": 0.4, ""w_clear"": 1.0}",0,120,0.5583,18.3097,29,20,0
+dwa,"{""clearance_buffer"": 0.4, ""w_clear"": 2.0}",0,120,0.525,17.7222,28,27,0
+dwa,"{""clearance_buffer"": 0.6, ""w_clear"": 0.5}",0,120,0.5333,16.7484,32,23,0
+dwa,"{""clearance_buffer"": 0.6, ""w_clear"": 2.0}",0,120,0.575,17.9138,25,24,1
+dwa,"{""clearance_buffer"": 0.9, ""w_clear"": 0.5}",0,120,0.5417,17.0754,28,24,0
+dwa,"{""clearance_buffer"": 0.9, ""w_clear"": 1.0}",0,120,0.575,18.0203,26,19,0
+dwa,"{""clearance_buffer"": 0.9, ""w_clear"": 2.0}",0,120,0.4833,16.8853,28,32,0
+mppi,"{""clearance_buffer"": 1.0, ""lam"": 4.0}",1,120,0.35,19.9679,47,30,0
+mppi,"{""clearance_buffer"": 0.6, ""lam"": 2.0}",0,120,0.4167,18.537,42,27,0
+mppi,"{""clearance_buffer"": 1.0, ""lam"": 2.0}",0,120,0.4417,19.917,35,31,1
+mppi,"{""clearance_buffer"": 1.4, ""lam"": 2.0}",0,120,0.425,18.2284,44,25,0
+mppi,"{""clearance_buffer"": 0.6, ""lam"": 4.0}",0,120,0.3833,22.0359,38,35,0
+mppi,"{""clearance_buffer"": 1.4, ""lam"": 4.0}",0,120,0.3917,20.7904,37,35,0
+mppi,"{""clearance_buffer"": 0.6, ""lam"": 8.0}",0,120,0.275,23.3742,38,45,0
+mppi,"{""clearance_buffer"": 1.0, ""lam"": 8.0}",0,120,0.2833,24.2235,43,36,0
+mppi,"{""clearance_buffer"": 1.4, ""lam"": 8.0}",0,120,0.325,24.6679,32,40,0

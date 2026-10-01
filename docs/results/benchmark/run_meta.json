@@ -1,0 +1,21 @@
+{
+  "tune": {
+    "wall_s": 1845.367699623108,
+    "n_jobs": 6600,
+    "episodes_run": 6600,
+    "chosen": {
+      "pp_stop": {
+        "a_brake": 1.5,
+        "lateral_margin": 0.5,
+        "standoff": 0.8
+      },
+      "dwa": {
+        "w_clear": 2.0
+      },
+      "mppi": {
+        "lam": 2.0
+      }
+    },
+    "hash": "de26663d705a2af16fc982bed3e23930158354f644d4633adbf397e834200fff"
+  }
+}
