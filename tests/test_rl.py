@@ -189,3 +189,22 @@ def test_baseline_digest_is_unchanged_by_the_learned_planner():
         from navlab.benchmark.ppo_freeze import load_ppo_frozen
         art, base = load_ppo_frozen(ppo, bench / "frozen_config.json")
         assert art["baseline"]["code_digest"] == cfg["code_digest"] == base["code_digest"]
+
+
+def test_ppo_freeze_rejects_tampering(tmp_path):
+    from navlab.benchmark.ppo_freeze import load_ppo_frozen
+    bench = ROOT / "docs/results/benchmark"
+    art, _ = load_ppo_frozen(bench / "ppo_frozen.json", bench / "frozen_config.json")       # intact: loads
+    assert set(art["weights"]) == {"ppo_s0", "ppo_s1", "ppo_s2"} and art["headline"]["planner"] in art["weights"]
+    bad = dict(art)
+    bad["weights"] = {k: dict(v) for k, v in art["weights"].items()}
+    bad["weights"]["ppo_s0"]["sha256"] = "0" * 64                                            # edited after freezing -> hash mismatch
+    (tmp_path / "ppo_frozen.json").write_text(json.dumps(bad))
+    with pytest.raises(ValueError):
+        load_ppo_frozen(tmp_path / "ppo_frozen.json", bench / "frozen_config.json")
+
+
+def test_ppo_suites_use_the_baseline_test_scenarios():
+    """Same scenario list and conditions as the baseline suites => episodes pair by (suite, cond, family, seed, pose)."""
+    from navlab.benchmark import ppo_suites, suites
+    assert (ppo_suites.N_NOMINAL, ppo_suites.N_STRESS, ppo_suites.N_MCLBREAK) == (suites.N_NOMINAL, suites.N_STRESS, suites.N_MCLBREAK)

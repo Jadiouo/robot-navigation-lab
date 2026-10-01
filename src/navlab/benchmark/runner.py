@@ -32,6 +32,7 @@ def run_job(args: tuple[Job, dict[str, Any]]) -> dict[str, Any]:
     from navlab.perception.mcl import MCLConfig
     from navlab.perception.odometry import MotionNoise, OdometryModel
     from navlab.world.generator import generate_scenario
+    import navlab.rl.register  # noqa: F401  (registers the learned planners ppo_s0..2 / ppo; the baseline registry file is not edited)
 
     (suite, cond, family, seed, planner, pose), cfg = args
     dyn = generate_scenario(family, seed, cond.stress)
@@ -64,7 +65,7 @@ def job_key(row_or_job) -> tuple:
 def build_jobs(suite: str, conditions: Iterable[Condition], scenarios: list[tuple[str, int]], planners: Iterable[str], poses: Iterable[str]) -> list[Job]:
     planners, poses = tuple(planners), tuple(poses)
     # expensive planners first: better load balance with imap_unordered
-    cost = {"mppi": 0, "dwa": 1, "pp_stop": 2, "pp": 3}
+    cost = {"mppi": 0, "dwa": 1, "pp_stop": 2, "pp": 3}   # learned planners (ppo_s*) default to 1: mid cost
     jobs = [(suite, c, f, s, p, q) for c in conditions for (f, s) in scenarios for p in planners for q in poses]
     jobs.sort(key=lambda j: cost.get(j[4], 1))
     return jobs

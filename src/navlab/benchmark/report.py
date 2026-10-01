@@ -23,7 +23,9 @@ from navlab.benchmark.conditions import AXES, GT_AXES, MCL_BREAK
 from navlab.benchmark.stats import holm, mcnemar_exact, paired_bootstrap, paired_counts, wilson
 
 PLANNERS = ("pp", "pp_stop", "dwa", "mppi")
-COLORS = {"pp": "#8d99ae", "pp_stop": "#e9a03b", "dwa": "#2a9d8f", "mppi": "#7b4fb0"}
+COLORS = {"pp": "#8d99ae", "pp_stop": "#e9a03b", "dwa": "#2a9d8f", "mppi": "#7b4fb0", "ppo": "#d1495b", "ppo_s0": "#d1495b", "ppo_s1": "#f08a5d", "ppo_s2": "#8c2f39"}
+SHOWN: list[str] = list(PLANNERS)   # planners drawn / tabulated; build_report adds "ppo" when its episodes exist (the pre-declared F1-F5 tests stay on PLANNERS)
+PPO_SEEDS = ("ppo_s0", "ppo_s1", "ppo_s2")
 CATEGORIES = ("success", "loc_induced", "collision_static", "collision_dynamic", "timeout", "stuck")
 CAT_COLORS = {"success": "#2a9d8f", "loc_induced": "#264653", "collision_static": "#e76f51", "collision_dynamic": "#c1121f",
               "timeout": "#e9c46a", "stuck": "#8d99ae"}
@@ -157,6 +159,41 @@ def run_tests(rows) -> list[dict]:
     return out
 
 
+PPO_PREDECLARED = {
+    "F6 PPO seeds vs baselines (nominal)": "each PPO seed vs DWA and vs pp_stop, GT and MCL pose (12 tests); confirmatory for the PPO claim",
+    "F7 PPO headline vs baselines, worst level (MCL)": "headline PPO vs DWA / pp_stop at the worst level of each stress axis (16 tests); exploratory",
+    "F8 PPO headline vs baselines, MCL-break (MCL)": "headline PPO vs DWA / pp_stop in each MCL-break condition (8 tests); exploratory",
+}
+
+
+def run_ppo_tests(idx) -> list[dict]:
+    """Pre-declared PPO comparisons (A = PPO, B = baseline); Holm within each family.  Independent of the baseline families F1-F5."""
+    fams: dict[str, list[dict]] = {k: [] for k in PPO_PREDECLARED}
+    for k in PPO_SEEDS:
+        for pose in ("gt", "mcl"):
+            for b in ("dwa", "pp_stop"):
+                t = _test(f"{k} vs {b} [{pose}]", *_paired(idx, ("nominal", "nominal", pose, k), ("nominal", "nominal", pose, b)), {"pose": pose, "A": k, "B": b})
+                if t:
+                    fams["F6 PPO seeds vs baselines (nominal)"].append(t)
+    for axis in AXES:
+        cond, _ = worst_level(axis)
+        for b in ("dwa", "pp_stop"):
+            t = _test(f"{axis}@worst: ppo vs {b}", *_paired(idx, ("stress", cond, "mcl", "ppo"), ("stress", cond, "mcl", b)), {"axis": axis, "A": "ppo", "B": b})
+            if t:
+                fams["F7 PPO headline vs baselines, worst level (MCL)"].append(t)
+    for _, c in MCL_BREAK:
+        for b in ("dwa", "pp_stop"):
+            t = _test(f"{c.name}: ppo vs {b} [mcl]", *_paired(idx, ("mclbreak", c.name, "mcl", "ppo"), ("mclbreak", c.name, "mcl", b)), {"A": "ppo", "B": b})
+            if t:
+                fams["F8 PPO headline vs baselines, MCL-break (MCL)"].append(t)
+    out = []
+    for fam, tests in fams.items():
+        for t, a in zip(tests, holm([t["mcnemar_p"] for t in tests])):
+            t["family"], t["p_holm"] = fam, a
+            out.append(t)
+    return out
+
+
 # ------------------------------------------------------------------ summaries
 def summarize(rows) -> list[dict]:
     groups = defaultdict(list)
@@ -218,7 +255,7 @@ def fig_stress_curves(idx, path: Path) -> None:
     axes_names = list(AXES)
     fig, axs = plt.subplots(2, 4, figsize=(17, 7.5), sharey=True)
     for ax, name in zip(axs.ravel(), axes_names):
-        for p in PLANNERS:
+        for p in SHOWN:
             s = stress_series(idx, name, p, "mcl")
             if not s:
                 continue
@@ -261,7 +298,7 @@ def fig_taxonomy(idx, path: Path) -> None:
     for ax, (title, key) in zip(axs.ravel(), panels):
         groups, labels = [], []
         for pose in ("gt", "mcl") if title == "nominal" else ("mcl",):
-            for p in PLANNERS:
+            for p in SHOWN:
                 k = (key[0], key[1], pose, p)
                 if idx.get(k):
                     groups.append(list(idx[k].values()))
@@ -294,7 +331,7 @@ def fig_loc_vs_failure(rows, path: Path) -> None:
     # (b) failure probability vs pose-error bin
     edges = [0, 0.15, 0.3, 0.5, 1.0, 2.0, 5.0, 1e9]
     labels = ["<.15", ".15-.3", ".3-.5", ".5-1", "1-2", "2-5", ">5"]
-    for p in PLANNERS:
+    for p in SHOWN:
         xs, ys, lo, hi = [], [], [], []
         for i in range(len(edges) - 1):
             rs = [r for r in mcl if r["planner"] == p and edges[i] <= r["loc_last10"] < edges[i + 1]]
@@ -348,28 +385,44 @@ def break_level(series, nominal_rate) -> str:
 def build_report(out_dir: Path, csv_path: Path | None = None, quick: bool = False) -> dict:
     out_dir = Path(out_dir)
     csv_path = csv_path or out_dir / "episodes.csv"
-    rows = load_rows(csv_path)
-    if not rows:
+    base_rows = load_rows(csv_path)
+    if not base_rows:
         raise ValueError(f"{csv_path} has no episodes")
     cfg_path = out_dir / "frozen_config.json"
     cfg = json.loads(cfg_path.read_text()) if cfg_path.exists() else None
     meta = json.loads((out_dir / "run_meta.json").read_text()) if (out_dir / "run_meta.json").exists() else {}
     tune_path = out_dir / "tuning_log.csv"
-    idx = _index(rows)
     suffix = "_quick" if quick else ""
-    summary = summarize(rows)
-    tests = run_tests(rows)
+    # The learned planner (P4): its own episodes file + freeze artifact; the headline seed is also exposed as planner "ppo".
+    ppo_csv, ppo_art_path = out_dir / "episodes_ppo.csv", out_dir / "ppo_frozen.json"
+    ppo_rows, art = [], None
+    if not quick and ppo_csv.exists() and ppo_art_path.exists():
+        art = json.loads(ppo_art_path.read_text())
+        ppo_rows = load_rows(ppo_csv)
+        head = art["headline"]["planner"]
+        ppo_rows = ppo_rows + [{**r, "planner": "ppo"} for r in ppo_rows if r["planner"] == head]
+    SHOWN[:] = list(PLANNERS) + (["ppo"] if ppo_rows else [])
+    all_rows = base_rows + ppo_rows
+    idx = _index(all_rows)
+    summary = summarize(all_rows)
+    tests = run_tests(base_rows)                  # F1-F5: baselines only, byte-identical to the P3 report
+    ppo_tests = run_ppo_tests(idx) if ppo_rows else []
     _write_csv(out_dir / f"summary{suffix}.csv", summary)
-    _write_csv(out_dir / f"paired_tests{suffix}.csv", tests)
-    if any(r["suite"] == "stress" for r in rows):
+    _write_csv(out_dir / f"paired_tests{suffix}.csv", tests + ppo_tests)
+    if any(r["suite"] == "stress" for r in base_rows):
         fig_stress_curves(idx, out_dir / f"fig_stress_curves{suffix}.png")
     fig_taxonomy(idx, out_dir / f"fig_outcome_taxonomy{suffix}.png")
-    fig_loc_vs_failure(rows, out_dir / f"fig_loc_error_vs_failure{suffix}.png")
-    (out_dir / f"README{suffix}.md").write_text(_readme(rows, idx, tests, cfg, meta, tune_path, quick))
-    return {"episodes": len(rows), "tests": len(tests)}
+    fig_loc_vs_failure(base_rows, out_dir / f"fig_loc_error_vs_failure{suffix}.png")
+    if ppo_rows:
+        from navlab.benchmark.ppo_report import ppo_section
+        extra = ppo_section(out_dir, art, idx, ppo_rows, ppo_tests)
+    else:
+        extra = ""
+    (out_dir / f"README{suffix}.md").write_text(_readme(base_rows, idx, tests, cfg, meta, tune_path, quick, extra, art))
+    return {"episodes": len(base_rows), "ppo_episodes": len(ppo_rows), "tests": len(tests) + len(ppo_tests)}
 
 
-def _readme(rows, idx, tests, cfg, meta, tune_path, quick) -> str:
+def _readme(rows, idx, tests, cfg, meta, tune_path, quick, ppo_extra: str = "", ppo_art: dict | None = None) -> str:
     L: list[str] = []
     A = L.append
     n_ep = len(rows)
@@ -391,6 +444,12 @@ def _readme(rows, idx, tests, cfg, meta, tune_path, quick) -> str:
       "contents and of the source files of the stack under test. The test suites refuse to run if the file is missing, edited, or stale.")
     if cfg:
         A(f"* **Frozen config hash:** `{cfg['hash']}`  (code digest `{cfg['code_digest'][:16]}...`).")
+    if ppo_art:
+        A(f"* **PPO freeze (P4).** The learned planner has its own artifact, `ppo_frozen.json` (hash `{ppo_art['hash'][:16]}...`): per-seed weights SHA-256, observation / action / reward specification, "
+          f"selection record, and the baseline freeze it is chained to (hash `{ppo_art['baseline']['hash'][:16]}...`, code digest `{ppo_art['baseline']['code_digest'][:16]}...` = the P3 values, unchanged: "
+          "`navlab/rl` is outside the hashed sources and no baseline file was edited). PPO training seeds are generator seeds 1000-99999; checkpoints were selected on tuning seeds only; PPO episodes live in `episodes_ppo.csv`. "
+          "The PPO comparisons are pre-declared in `report.py` (`PPO_PREDECLARED`) and Holm-corrected within their own families, leaving the baseline families F1-F5 untouched: "
+          "F6 each PPO seed vs DWA and vs pp_stop, nominal, GT and MCL (confirmatory); F7 headline PPO vs DWA / pp_stop at the worst level of each axis, F8 in each MCL-break condition (exploratory).")
     A("* **Paired design.** For a given condition every planner and pose source is run on the *same* `(family, seed)` scenarios (same agents, same hidden boxes). "
       "Stress levels share the map, route and the first-n hidden/agent candidates with the nominal scenario (nested, common random numbers), so a stress curve "
       "compares like with like. Planner randomness (MPPI sampling, sensor noise, MCL) is seeded from the scenario seed.")
@@ -415,7 +474,7 @@ def _readme(rows, idx, tests, cfg, meta, tune_path, quick) -> str:
     pm = defaultdict(list)
     for r in rows:
         pm[r["planner"]].append(r["plan_ms"])
-    A("* Mean planner time per control tick (ms, wall-clock inside busy parallel workers, i.e. inflated): " + ", ".join(f"{p} {np.nanmean(pm[p]):.1f}" for p in PLANNERS if p in pm) + ".\n")
+    A("* Mean planner time per control tick (ms, wall-clock inside busy parallel workers, i.e. inflated): " + ", ".join(f"{p} {np.nanmean(pm[p]):.1f}" for p in SHOWN if p in pm) + ".\n")
     A("**Reproduce:** `.venv/bin/python -m navlab benchmark-uncertainty --suite all --workers N` (tunes + freezes if `frozen_config.json` is absent, then runs "
       "nominal, stress and MCL-break on the test split and regenerates this directory); `--suite report` only rebuilds tables and figures; `--quick` is a tiny smoke run on the tuning split.\n")
     # ---------------- tuning
@@ -432,7 +491,7 @@ def _readme(rows, idx, tests, cfg, meta, tune_path, quick) -> str:
         A(f"{len(nom_scen)} scenarios ({', '.join(f'{f}: {sum(1 for x in nom_scen if x[0] == f)}' for f in fams)}); nominal stress: 1 agent per 1000 m^2 of free space at 1.0 m/s mean speed, "
           "1 hidden box per 1000 m^2, LiDAR sigma 5 cm / 4 % short / 2 % dropout, gyro bias 0.01 rad/s, speed scale 1.0.\n")
         body = []
-        for p in PLANNERS:
+        for p in SHOWN:
             row = [p]
             for pose in ("gt", "mcl"):
                 rs = list(idx.get(("nominal", "nominal", pose, p), {}).values())
@@ -442,7 +501,7 @@ def _readme(rows, idx, tests, cfg, meta, tune_path, quick) -> str:
         A(_md_table(["planner", "GT pose", "MCL pose"], body) + "\n")
         body = []
         for pose in ("gt", "mcl"):
-            for p in PLANNERS:
+            for p in SHOWN:
                 rs = list(idx.get(("nominal", "nominal", pose, p), {}).values())
                 if not rs:
                     continue
@@ -454,12 +513,12 @@ def _readme(rows, idx, tests, cfg, meta, tune_path, quick) -> str:
         body = []
         for fam in fams:
             row = [fam]
-            for p in PLANNERS:
+            for p in SHOWN:
                 rs = [r for k, r in idx.get(("nominal", "nominal", "mcl", p), {}).items() if k[0] == fam]
                 row.append(_fmt_ci(sum(r["success"] for r in rs), len(rs)) if rs else "n/a")
             body.append(row)
         A("**By family (MCL pose):**\n")
-        A(_md_table(["family"] + list(PLANNERS), body) + "\n")
+        A(_md_table(["family"] + list(SHOWN), body) + "\n")
         A(_nominal_tests(tests))
         A(_gt_rescue(idx))
     # ---------------- stress
@@ -469,7 +528,7 @@ def _readme(rows, idx, tests, cfg, meta, tune_path, quick) -> str:
         A("Level 0 is the nominal condition on the same scenarios as the other levels. Cells are `success [Wilson 95 % CI]`, MCL pose; `(GT)` rows where the GT arm was run.\n")
         for axis, (_, vals) in AXES.items():
             body = []
-            for p in PLANNERS:
+            for p in SHOWN:
                 for pose in ("mcl", "gt") if axis in GT_AXES else ("mcl",):
                     s = stress_series(idx, axis, p, pose)
                     if s:
@@ -482,6 +541,8 @@ def _readme(rows, idx, tests, cfg, meta, tune_path, quick) -> str:
         A(_break_matrix(idx))
         A(_loc_by_condition(rows))
         A(_stress_tests(tests))
+    if ppo_extra:
+        A(ppo_extra)
     # ---------------- taxonomy and localization
     A("## Outcome taxonomy\n")
     A("![taxonomy](fig_outcome_taxonomy.png)\n" if not quick else "![taxonomy](fig_outcome_taxonomy_quick.png)\n")
@@ -527,7 +588,7 @@ def _break_matrix(idx) -> str:
     body = []
     for axis, (_, vals) in AXES.items():
         row = [f"{axis} ({vals[0]:g} -> {vals[-1]:g})"]
-        for p in PLANNERS:
+        for p in SHOWN:
             s = stress_series(idx, axis, p, "mcl")
             if len(s) < 2:
                 row.append("n/a")
@@ -535,7 +596,7 @@ def _break_matrix(idx) -> str:
             bl = break_level(s, s[0][1])
             row.append(f"{'-' if bl == 'not within range' else bl} ({(s[-1][1] - s[0][1]) * 100:+.0f})")
         body.append(row)
-    out.append(_md_table(["axis (nominal -> worst)"] + list(PLANNERS), body) + "\n")
+    out.append(_md_table(["axis (nominal -> worst)"] + list(SHOWN), body) + "\n")
     return "\n".join(out)
 
 
@@ -562,7 +623,7 @@ def _loc_by_condition(rows) -> str:
 def _gt_rescue(idx) -> str:
     lines = ["**Is the MCL cost real? GT rescue (nominal, paired).** Among scenarios where the planner *failed* with MCL, the share it solves with ground-truth pose; and, for contrast, among scenarios failed with GT, the share solved with MCL (pure chaos: the same scenario re-run under a different pose arm):\n"]
     body = []
-    for p in PLANNERS:
+    for p in SHOWN:
         g, m = idx.get(("nominal", "nominal", "gt", p), {}), idx.get(("nominal", "nominal", "mcl", p), {})
         common = sorted(set(g) & set(m))
         if not common:
@@ -590,7 +651,7 @@ def _loc_section(rows, idx, tests, quick) -> str:
     out.append("**MCL-break suite** (all planners; GT arm shown for the same scenarios; `loc>1 m` = share of MCL episodes whose pose error exceeded 1 m in the last 10 s):\n")
     body = []
     for _, c in MCL_BREAK:
-        for p in PLANNERS:
+        for p in SHOWN:
             gtr = list(idx.get(("mclbreak", c.name, "gt", p), {}).values())
             mr = list(idx.get(("mclbreak", c.name, "mcl", p), {}).values())
             if not mr:
@@ -605,7 +666,7 @@ def _loc_section(rows, idx, tests, quick) -> str:
         out.append(_md_table(["comparison", "pairs", "only GT ok / only MCL ok", "success diff (GT - MCL)", "p (McNemar)", "p (Holm)"], body) + "\n")
     body = []
     for _, c in MCL_BREAK:
-        for p in PLANNERS:
+        for p in SHOWN:
             mr = list(idx.get(("mclbreak", c.name, "mcl", p), {}).values())
             if mr:
                 cats = [category(r) for r in mr]

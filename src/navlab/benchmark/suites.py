@@ -4,6 +4,7 @@
 ``nominal``   test split, nominal condition, all planners x {gt, mcl};
 ``stress``    test split, one-factor-at-a-time axes (MCL pose; GT pose too on ``GT_AXES``);
 ``mclbreak``  test split, the MCL-breaking conditions (all planners x {gt, mcl});
+``ppo``       test split, the frozen learned planner (ppo_s0..2) on the same scenarios -> ``episodes_ppo.csv``;
 ``report``    regenerate summary / tests / figures / README from the CSV.
 The three test suites load the frozen config through :func:`navlab.benchmark.config.load_frozen`, which refuses to
 run on a config that is missing, edited or stale with respect to the stack's sources.
@@ -36,6 +37,9 @@ def run_suites(suite: str, out_dir: Path, workers: int = 0, quick: bool = False,
     meta_path = out_dir / "run_meta.json"
     meta = json.loads(meta_path.read_text()) if meta_path.exists() and not quick else {}
     split = "tuning" if quick else "test"       # --quick never touches the test set and is not evidence
+    if suite == "ppo":                           # the learned planner on the frozen test scenarios (own freeze artifact, own CSV)
+        from navlab.benchmark.ppo_suites import run_ppo_suites
+        return run_ppo_suites(out_dir, workers, log=log)
 
     if suite in ("tune", "all") and not quick and not config_path.exists():
         from navlab.benchmark.tuning import tune
