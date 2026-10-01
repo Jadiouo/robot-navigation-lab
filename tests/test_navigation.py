@@ -210,3 +210,35 @@ def test_mcl_stays_accurate_with_unmapped_obstacles_around():
     for scenario in ("corridor_box", "crowd"):
         s = run_episode(scenario, "dwa", "mcl", 0).summary
         assert s["outcome"] == "success" and s["loc_rmse_m"] < 0.15            # measured 0.03-0.06 m (static-map likelihood field)
+
+
+def test_global_layer_ignores_the_unseen_space_behind_a_thin_known_wall():
+    """Regression (found with generated rooms): the costmap's occlusion shadow marked the free room behind a 1 m wall as
+    'unexplained' obstacle, so the overlay A* treated whole rooms as blocked.  Only returned scan cells are evidence."""
+    occ = np.zeros((52, 84), dtype=bool)
+    occ[:, 40:42] = True                                                                   # 1 m wall at x = 20..21, known
+    occ[0, :] = occ[-1, :] = occ[:, 0] = occ[:, -1] = True                                 # the map frame the LiDAR sees
+    grid = GridMap(occ, 0.5)
+    layer = GlobalLayer(grid, (30.0, 13.0), VEH, GlobalConfig())
+    lidar = Lidar(grid, CLEAN_LIDAR)
+    state = VehicleState(14.0, 13.0, 0.0, 3.0)
+    scan = lidar.scan(state, np.random.default_rng(0))
+    layer.path = np.array([[14.0, 13.0], [14.0, 20.0]])                                    # any path (not through the wall)
+    for k in range(4):
+        layer.update(LocalObservation(0.1 * k, 0.1, state, np.zeros((3, 3)), lidar.angles, scan, lidar.config.max_range, layer.path, layer.goal))
+    assert not layer._overlay and not layer.events.replans
+
+
+def test_stalled_robot_just_outside_the_capture_radius_still_triggers_recovery():
+    """Regression: a 0.5 m margin on the 'at goal' test left a dead ring outside the success radius in which a stalled
+    robot never counted as stuck."""
+    grid = _grid()
+    goal = (30.0, 13.0)
+    layer = GlobalLayer(grid, goal, VEH, GlobalConfig(goal_tolerance=2.0, stuck_time_s=1.0, max_recoveries=1))
+    layer.initial_plan((4.25, 13.25))
+    lidar = Lidar(grid, CLEAN_LIDAR)
+    state = VehicleState(goal[0] - 2.2, 13.0, 0.0, 0.0)                                    # 2.2 m from the goal, stopped
+    scan = lidar.scan(state, np.random.default_rng(0))
+    for k in range(40):
+        layer.update(LocalObservation(0.1 * k, 0.1, state, np.zeros((3, 3)), lidar.angles, scan, lidar.config.max_range, layer.path, goal))
+    assert layer.events.recoveries >= 1

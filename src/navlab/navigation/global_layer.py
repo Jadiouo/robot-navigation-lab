@@ -164,7 +164,9 @@ class GlobalLayer:
     def __init__(self, known_grid: GridMap, goal: tuple[float, float], vehicle: VehicleConfig, config: GlobalConfig | None = None) -> None:
         self.grid, self.goal, self.vehicle = known_grid, goal, vehicle
         self.cfg = config or GlobalConfig()
-        self.costmap = LocalCostmap(CostmapConfig.for_vehicle(vehicle, half_size=16.0, resolution=0.25))
+        # No occlusion shadow here: the shadow marks the (unseen) free space behind a wall as occupied, which would make the
+        # overlay A* treat the room behind every thin wall as blocked.  Only cells the LiDAR actually returned are evidence.
+        self.costmap = LocalCostmap(CostmapConfig.for_vehicle(vehicle, half_size=16.0, resolution=0.25, shadow_depth=0.0))
         self._offsets, self._radius = footprint_cover(vehicle)
         self._known_near = ndimage.binary_dilation(known_grid.occupancy, iterations=2)
         self.path: np.ndarray | None = None
@@ -236,7 +238,7 @@ class GlobalLayer:
         self._observe_unexplained(obs)
         frame = PathFrame(self.path)
         s0, dev = frame.project((st.x, st.y))
-        at_goal = math.hypot(st.x - self.goal[0], st.y - self.goal[1]) <= cfg.goal_tolerance + 0.5
+        at_goal = math.hypot(st.x - self.goal[0], st.y - self.goal[1]) <= cfg.goal_tolerance   # (a margin here left a dead ring outside the capture radius in which a stalled robot never recovered)
         if self._mode == "reverse":
             return self._reverse(obs)
         if self._mode == "settle":
