@@ -77,14 +77,6 @@ def _evaluate(arguments: argparse.Namespace) -> int:
     return 0
 
 
-def _showcase(arguments: argparse.Namespace) -> int:
-    from navlab.showcase.builder import build_showcase
-
-    result = build_showcase(arguments.results, arguments.output)
-    print(json.dumps(result, indent=2, ensure_ascii=False))
-    return 0
-
-
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="navlab", description="Reproducible robot navigation experiments")
     parser.add_argument("--version", action="version", version="navlab 0.1.0")
@@ -133,10 +125,6 @@ def build_parser() -> argparse.ArgumentParser:
     evaluate.add_argument("--seed-start", type=int, default=0)
     evaluate.add_argument("--output", type=Path, required=True)
     evaluate.set_defaults(handler=_evaluate)
-    showcase = subparsers.add_parser("showcase", help="build an offline interactive showcase from frozen results")
-    showcase.add_argument("--results", type=Path, default=Path("docs/results"), help="frozen results directory (default: docs/results)")
-    showcase.add_argument("--output", type=Path, required=True, help="standalone showcase output directory")
-    showcase.set_defaults(handler=_showcase)
     return parser
 
 

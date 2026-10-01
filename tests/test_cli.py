@@ -14,19 +14,6 @@ def test_module_help_is_available():
     assert result.returncode == 0
     assert "demo" in result.stdout
     assert "benchmark" in result.stdout
-    assert "showcase" in result.stdout
-
-
-def test_showcase_command_exposes_explicit_results_and_output_paths():
-    result = subprocess.run(
-        [sys.executable, "-m", "navlab", "showcase", "--help"],
-        check=False,
-        text=True,
-        capture_output=True,
-    )
-    assert result.returncode == 0
-    assert "--results" in result.stdout
-    assert "--output" in result.stdout
 
 
 def test_train_command_exposes_its_bounded_cpu_budget():
