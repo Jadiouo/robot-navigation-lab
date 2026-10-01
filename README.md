@@ -40,6 +40,8 @@ python3 -m venv .venv
 
 `--quick` 只跑縮小矩陣以驗證管線；`benchmark.json` 明確記錄它和完整矩陣的差異。完整 benchmark 保留：端到端漏斗、相同 reference trajectory 下的 controller 比較、以及 backward speed pass × lookahead braking 2×2 消融。
 
+> **RL 區域規劃器 (P4).** `navlab.rl` 是實作 `LocalPlanner` 介面的 PPO 規劃器（三個獨立 seed，各 2.4 M env steps；checkpoint 只用 tuning split 選；權重 sha256 凍結於 `docs/results/benchmark/ppo_frozen.json`），在與 DWA / MPPI 完全相同的凍結測試情境上配對評估。結果（誠實的負面結果：名目測試集上輸給 DWA 與 pp_stop）見 `docs/results/benchmark/README.md` 的 *RL local planner (PPO)* 一節。重現：`python -m navlab.rl.train --seed S --out outputs/ppo_train` → `python -m navlab.rl.finalize` → `navlab benchmark-uncertainty --suite ppo` → `--suite report`。
+
 > **Legacy / experimental.** 下面的 PPO 是早期的「路徑追蹤」PPO（單維轉向、真值定位、無障礙物），現位於 `navlab.experimental.learning`，不屬於 headline 結果。Headline 的學習式方法是 `navlab.rl` 的 RL 區域規劃器（與 DWA / MPPI 在同一個凍結的不確定性 benchmark 上比較）。
 
 PPO 是選裝功能（`pip install -e '.[rl]'`）。它固定讀取 40 維 observation 與一維 tanh-bounded steering action，並用共用縱向控制；legacy HW3 checkpoint 與此 contract 不相容，不會載入。
