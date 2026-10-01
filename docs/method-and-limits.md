@@ -1,13 +1,47 @@
-# 方法、資料契約與限制
+# Methods, data contracts and limits
 
-`robot-navigation-lab` 是二維靜態已知地圖上的導航模擬與實驗平台。車輛參考點是後軸中心；座標使用公尺、角度使用弧度，x 向右、y 向上。它不包含感知、SLAM、動態障礙物、輪胎模型或實車安全保證。
+Scope: navigation of a 2-D car-like robot (kinematic bicycle, rear-axle reference point; metres, radians, x right, y up) in procedurally generated maps with a simulated LiDAR, odometry, an MCL localizer, unmapped static boxes and moving pedestrians. The results and their statistics are in [`results/benchmark/README.md`](results/benchmark/README.md) (generated); this file explains what each component does and where it is only an approximation.
 
-每次 demo 依序執行：A* 或 RRT* 幾何規劃、受車體碰撞與曲率限制驗證的 trajectory construction、曲率限速與終點煞停、共用 bicycle actuator 下的追蹤控制。成功同時要求終點位置、低速、有效進度與無碰撞；規劃失敗、軌跡不可行、collision、timeout 都會保留為結果，而非從表格移除。
+## Components
 
-控制比較只在相同場景、起始條件、reference trajectory、車模、縱向控制、轉角/轉角速率限制與評測 seed 下成立。PPO 與古典控制器都只使用同源的 `PolicyInput` 有限預覽資訊：PPO 將它 encode 成 clipped/normalized 40 維向量，古典控制器直接讀取未正規化欄位。它不會沿用課程 HW3 的 14 維 observation 或 checkpoint。PPO 的 entropy bonus 是未經 tanh squash 的 Normal distribution entropy，作為探索正則項，不能視為已執行動作分布的精確 entropy。
+**LiDAR** (`navlab/perception/lidar.py`). Rays are traced on the occupancy grid with the Amanatides-Woo DDA traversal, so the hit range is the analytic entry distance into the first occupied cell, with no marching step. Dynamic obstacles are discs hit by ray-disc intersection. Each beam draws one component of the Thrun beam model (hit: Gaussian around the true range; short: truncated exponential on [0, true range], i.e. a phantom close return; max: dropout; rand: uniform, off by default). The beam model is the *simulator*; MCL uses a different, cheaper likelihood model, so the filter is mis-specified for short returns on purpose.
 
-## 如何檢查一筆結果
+**Odometry** (`navlab/perception/odometry.py`). Velocity motion model with the six-parameter noise of Probabilistic Robotics ch. 5.3. Stress is injected as a gyro bias (rad/s) and a speed-scale error.
 
-每個 run 的 `trace.csv` 是原始逐步資料；`trajectory.csv` 是不可變的 reference；`run.json` 保存命令、seed、車輛設定、套件版本、程式 digest 與終態原因。所有 summary 指標都由 trace 加上 manifest 的終態重新計算。`overview.png` 和 `replay.gif` 使用同一份 trace，不含人工挑選的軌跡。
+**MCL** (`navlab/perception/mcl.py`). Particle filter (500 particles) with the likelihood-field sensor model of ch. 6.4: a beam endpoint is scored by the distance to the nearest map surface (Euclidean distance transform), mixed with a uniform term. Beams are not independent given the pose, so the summed log-likelihood is tempered (exponent < 1) and the ESS floor limits how much one scan can collapse the set. Low-variance (systematic) resampling when ESS < N/2; roughening jitter after resampling. Augmented MCL (w_fast/w_slow random injection) is implemented but off in the frozen benchmark configuration.
 
-`benchmark` 的三個群組分別是完整漏斗、共同軌跡的控制器比較，以及 backward speed pass × lookahead braking 的 2×2 消融。`--quick` 刻意縮小矩陣，並在 `benchmark.json` 揭露；它是 smoke test，不應視為完整實驗。
+**Scan costmap** (`navlab/local/costmap.py`). A robot-centred distance field built from scan endpoints only. Because the simulator produces phantom short returns, a hit is accepted only if it is supported by an adjacent beam on the same surface or by the previous scan; there is no long-term memory. `navlab/local/tracking.py` gives constant-velocity obstacle tracks used for prediction.
+
+**Local planners** share the `LocalPlanner` contract (`navlab/local/interface.py`): estimated pose, odometry speed, measured steering, scan, global path, goal in; acceleration and steering rate out. Planners never see the true pose, the obstacle list or the hidden boxes.
+
+* `pp`: pure pursuit on the global path, ignores the scan (reference, not a competitor).
+* `pp_stop`: pure pursuit plus a stopping-corridor safety layer: speed is capped at the largest value from which the car can stop a standoff distance before the nearest confirmed scan point in the swept corridor. It never steers around anything.
+* `dwa`: Dynamic Window Approach for a bicycle model. Candidates are (speed target, steering target, profile) triples reachable within one control interval given actuator limits; a candidate is admissible only if the car can still stop before an obstacle after executing it; cost combines path progress, path distance, clearance and speed.
+* `mppi`: Model Predictive Path Integral control. K noisy control sequences are rolled out through the actuator-limited bicycle; weights are `exp(-(S_k - min S) / lambda)` normalised, and the nominal sequence is updated by the weighted noise average.
+* `ppo`: a PPO policy (`navlab/rl`) on min-pooled scan sectors over three frames plus path/goal features; deterministic NumPy inference.
+
+**Global layer** (`navlab/navigation/global_layer.py`). A* on the known map; replans with an overlay of obstacle cells the robot has seen but the map cannot explain when the path ahead is blocked for a persistence time; reverse-and-replan recovery; gives up (`stuck`) after three recoveries. `pp` does not use replanning or recovery.
+
+**Scenario generator** (`navlab/world/generator.py`). Four seeded families (corridors, rooms, field, and a featureless hall). A scenario is a pure function of `(family, seed, stress parameters)`; stress levels use nested candidate sets so stress curves are paired. A scenario is accepted only if an A* route at the global planner's clearance exists on the true map (known plus hidden obstacles).
+
+## Evaluation contract
+
+* Tuning seeds 0-999, test seeds >= 100000, enforced in `navlab/benchmark/splits.py`. PPO trains on seeds 1000-99999.
+* `frozen_config.json` is written before any test episode and carries two integrity fields: `hash`, the SHA-256 of the canonical JSON of the config *excluding* that field (not the SHA-256 of the file's bytes), and `code_digest`, the SHA-256 over the source files of the stack under test (`core`, `sim`, `maps`, `control`, `perception`, `local`, `navigation`, `world`, `benchmark/conditions.py`, `benchmark/splits.py`). `load_frozen` raises if the file was edited or those sources changed. `ppo_frozen.json` chains to it and records per-seed weight SHA-256s and the `navlab/rl` code digest.
+* Success is judged on the true pose; planners see only the estimate (or ground truth in the GT-pose arm). Failures stay in the denominator; time-to-goal is reported over successes only.
+* Statistics: Wilson 95 % intervals for proportions (Wilson 1927); exact McNemar test on discordant pairs (McNemar 1947) with a paired bootstrap for the effect size; Holm step-down correction (Holm 1979) within pre-declared families. Families F1-F2 (nominal planner pairs, GT vs MCL) and F6 (PPO vs baselines) are confirmatory; F3-F5, F7-F8 are exploratory by declaration.
+* `loc_induced` is a correlational label (failed MCL episode with pose error > 1 m in the last 10 s). The GT-rescue table is the counterfactual check.
+
+## Limits (read before quoting any number)
+
+1. **Asymmetric tuning.** pp_stop was tuned over 37 candidates, DWA and MPPI over 9 each, pp not at all. Rankings among pp_stop, DWA and MPPI are hedged by that; nominal DWA vs pp_stop is not significant.
+2. **Exploratory sections.** The break matrix, the localization-by-condition table and the MCL-break failure table were added after the results were seen. They describe the data; they are not tests of prior hypotheses.
+3. **Courtesy rule.** A pedestrian does not step into a nearly stationary car (speed < 0.3 m/s). This favours planners that stop; `pp` has no replanning or recovery by design.
+4. **PPO.** Headline seed = median tuning score of three seeds; seed variance is large on the hall conditions; training used surrogate pose noise rather than the real MCL; the test split has been used, so improving PPO requires a new test split.
+5. **Simulator.** 2-D ray casting, ray-disc dynamic model, non-reactive pedestrians (apart from the courtesy), one vehicle model, small synthetic maps (60 m x 36 m), one factor at a time. No tire model, no real sensor data, no SLAM. Confidence intervals describe scenario sampling, not seed-to-seed variance of a planner within a scenario.
+6. **Axis confounds.** The speed-scale axis enters through the filter motion model and through the speed fed to the controllers; the GT-pose arm was not run on it, so the two are not separated.
+7. **Planner timing** was measured inside busy parallel workers; use it for ranking only.
+
+## Inherited components
+
+The A*/RRT* planners, trajectory validation and tracking controllers from the original project (`navlab/planning`, `trajectory`, `control`, `evaluation`, `experimental/learning`) are kept as components. Their original contracts are described in [planning-design.md](planning-design.md) and [control-design.md](control-design.md); their old results are in [legacy/](legacy/results/README.md) and are not part of the current evidence.
