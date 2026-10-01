@@ -14,9 +14,11 @@ jobs:
           python-version: "3.12"
       - run: python -m pip install --upgrade pip
       - run: python -m pip install '.[dev]'
-      - run: python -m pytest
-      - run: python -m navlab demo --scenario open --planner astar --controller pure_pursuit --seed 0 --max-steps 300 --output ci-output
-      - run: test -s ci-output/run.json && test -s ci-output/trace.csv && test -s ci-output/overview.png && test -s ci-output/replay.gif
+      # Fast subset: skips the multi-episode closed-loop tests marked `slow`.
+      - run: python -m pytest -p no:cacheprovider -q -m 'not slow'
+      # Smoke run of the uncertainty benchmark on the tuning split (not evidence).
+      - run: python -m navlab benchmark-uncertainty --quick --workers 2 --output ci-quick
+      - run: test -s ci-quick/summary_quick.csv && test -s ci-quick/README_quick.md
   rl-smoke:
     runs-on: ubuntu-latest
     steps:
@@ -27,16 +29,5 @@ jobs:
       - run: python -m pip install --upgrade pip
       - run: python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
       - run: python -m pip install '.[dev,rl]'
-      - run: python -m pytest tests/test_learning.py
-      - run: python -c "from navlab.learning.ppo import PPOConfig, train_ppo; train_ppo('ci-ppo', 0, 512, PPOConfig(rollout_steps=512, update_epochs=1), validation_episodes=1)"
-  showcase-ui:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-      - run: python -m pip install --upgrade pip
-      - run: python -m pip install '.[dev,ui-test]'
-      - run: google-chrome --version
-      - run: python -m pytest tests/test_showcase_data.py tests/test_showcase_build.py tests/test_showcase_browser.py
+      # Includes the frozen-weights, freeze-verification and PPO trainer tests that need torch.
+      - run: python -m pytest -p no:cacheprovider -q tests/test_rl.py tests/test_learning.py

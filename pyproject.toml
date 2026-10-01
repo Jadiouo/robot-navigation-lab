@@ -5,8 +5,9 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "robot-navigation-lab"
 version = "0.1.0"
-description = "Reproducible planning, trajectory validation, and tracking-control experiments."
+description = "Navigation under uncertainty: a frozen, paired stress benchmark of LiDAR+MCL navigation stacks (pure pursuit, DWA, MPPI, PPO) on procedurally generated maps."
 readme = "README.md"
+keywords = ["robotics", "navigation", "localization", "monte-carlo-localization", "lidar", "dwa", "mppi", "ppo", "benchmark", "simulation"]
 license = {file = "LICENSE"}
 requires-python = ">=3.10"
 dependencies = [
