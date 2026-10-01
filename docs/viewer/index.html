@@ -1,0 +1,583 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>導航失效地圖 · navlab 結果</title>
+<link rel="icon" href="data:,">
+<meta name="description" content="導航系統在真實干擾下失敗，問題出在哪一個環節？凍結配對壓力測試的互動結果。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+TC:wght@400;500;700&display=swap">
+<style>
+/* Layout concept: story first, evidence second. One reading column; a hero that states question and answer, one centerpiece matrix, then three claims each with exactly one picture. Lab-bench slate neutrals; planner colors are the only saturated marks and never change meaning. */
+:root{
+  color-scheme:light;
+  --bg:#eceff1; --panel:#fafbfb; --floor:#eef1f3; --ink:#11181c; --ink2:#47535a; --muted:#66727a; --line:#d5dce0; --wall:#3a464d;
+  --accent:#0f6a7a; --accent-ink:#ffffff; --hid:#c0267a; --crit:#c53030; --good:#1f7a3a; --warn:#a86a00;
+  --hm-neu:#eef1f2; --hm-neg:#a4301a; --hm-pos:#1f6fb0;
+  --c-pp:#6b6a66; --c-pp_stop:#2a78d6; --c-dwa:#eb6834; --c-mppi:#12996a; --c-ppo:#4a3aa7;
+  --o-success:#2e9e57; --o-collision_dynamic:#d03b3b; --o-collision_static:#ec835a; --o-timeout:#fab219; --o-stuck:#8b979d; --o-loc_induced:#5a4ab8;
+  --font:'Noto Sans TC',system-ui,-apple-system,'PingFang TC','Microsoft JhengHei',sans-serif; --mono:'IBM Plex Mono',ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  color-scheme:dark;
+  --bg:#0d1113; --panel:#161b1e; --floor:#0b0e10; --ink:#eef2f4; --ink2:#aeb8be; --muted:#8a959b; --line:#283035; --wall:#8896a0;
+  --accent:#5cc4d6; --accent-ink:#06222a; --hid:#ff7ab8; --crit:#f27a7a; --good:#5fd08a; --warn:#f0b64a;
+  --hm-neu:#1b2226; --hm-neg:#ea7552; --hm-pos:#5aa0e0;
+  --c-pp:#9a998f; --c-pp_stop:#3987e5; --c-dwa:#d95926; --c-mppi:#199e70; --c-ppo:#a08fe8;
+  --o-success:#3ea866; --o-collision_dynamic:#e05a5a; --o-collision_static:#ec835a; --o-timeout:#e0a417; --o-stuck:#7c878d; --o-loc_induced:#9a8cf0}}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#0d1113; --panel:#161b1e; --floor:#0b0e10; --ink:#eef2f4; --ink2:#aeb8be; --muted:#8a959b; --line:#283035; --wall:#8896a0;
+  --accent:#5cc4d6; --accent-ink:#06222a; --hid:#ff7ab8; --crit:#f27a7a; --good:#5fd08a; --warn:#f0b64a;
+  --hm-neu:#1b2226; --hm-neg:#ea7552; --hm-pos:#5aa0e0;
+  --c-pp:#9a998f; --c-pp_stop:#3987e5; --c-dwa:#d95926; --c-mppi:#199e70; --c-ppo:#a08fe8;
+  --o-success:#3ea866; --o-collision_dynamic:#e05a5a; --o-collision_static:#ec835a; --o-timeout:#e0a417; --o-stuck:#7c878d; --o-loc_induced:#9a8cf0}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.75 var(--font);padding-inline:16px;padding-block:32px 72px}
+.wrap{max-width:960px;margin-inline:auto;display:flex;flex-direction:column;gap:clamp(72px,12vw,120px)}
+h1,h2,h3{font-weight:700;line-height:1.35;text-wrap:balance;margin:0}
+h1{font-size:clamp(26px,5.2vw,40px);letter-spacing:.005em}
+h2{font-size:clamp(22px,4vw,30px);max-width:24em}
+h3{font-size:15px}
+p{margin:0}
+b{font-weight:700}
+.eyebrow{font:500 12px/1.4 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.mono,.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+section{display:flex;flex-direction:column;gap:20px;min-width:0}
+.head{display:flex;flex-direction:column;gap:10px;min-width:0}
+.sub{color:var(--ink2);max-width:62ch}
+.note{font-size:13px;color:var(--muted);max-width:76ch;line-height:1.65}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:16px;min-width:0}
+.sure{display:flex;gap:10px;align-items:baseline;font-size:13px;color:var(--ink2);max-width:76ch;border-top:1px solid var(--line);padding-top:12px;line-height:1.65}
+.sure b{font:500 11px/1.6 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);flex:none;white-space:nowrap}
+.sure span{min-width:0}
+/* hero */
+.hero{gap:28px}
+.answer{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:14px;max-width:46em}
+.answer li{display:grid;grid-template-columns:2.2em minmax(0,1fr);gap:0 6px;font-size:clamp(16px,2.3vw,18px);line-height:1.7}
+.answer li>i{font:500 14px/1.9 var(--mono);color:var(--accent);font-style:normal}
+.answer li.ppo{color:var(--ink2);font-size:15px;padding-top:12px;border-top:1px solid var(--line)}
+.answer .num{font-weight:500;white-space:nowrap}
+.fine{font-size:13px;color:var(--muted)}
+/* heatmap */
+.hmwrap{overflow-x:auto;max-width:100%}
+table.hm{border-collapse:separate;border-spacing:3px;width:100%;table-layout:fixed;min-width:0}
+.hm th{font-weight:500;text-align:left;padding:0}
+.hm thead th{vertical-align:bottom;padding-bottom:6px;font:500 12px/1.3 var(--mono);text-align:center;color:var(--ink)}
+.hm thead th .sw{display:block;margin:0 auto 5px;width:18px;height:5px;border-radius:2px}
+.hm tbody th{padding:4px 8px 4px 0;font-size:13.5px;line-height:1.35;color:var(--ink)}
+.hm tbody th small{display:block;font:400 11px/1.4 var(--mono);color:var(--muted);margin-top:1px}
+.hm td{height:54px;text-align:center;border-radius:3px;font:500 15px/1.15 var(--mono);font-variant-numeric:tabular-nums;padding:2px;position:relative}
+.hm td small{display:block;font:400 10px/1.2 var(--mono);opacity:.85;margin-top:2px}
+.hm td:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.hm col.lab{width:34%}
+.hm tr.grp th{padding-top:10px;font:500 11px/1.2 var(--mono);letter-spacing:.1em;color:var(--muted);text-transform:uppercase}
+.scale{display:flex;align-items:center;gap:10px;font:12px var(--mono);color:var(--muted);flex-wrap:wrap}
+.scale .bar{height:10px;width:min(240px,100%);border-radius:2px;border:1px solid var(--line)}
+@media (max-width:560px){.hm td small{display:none}.hm td{height:46px;font-size:14px}.hm col.lab{width:36%}.hm tbody th{font-size:12.5px}.hm thead th{font-size:10.5px}}
+/* charts */
+svg{display:block;max-width:100%;overflow:visible}
+svg text{fill:var(--muted);font:11px var(--mono)}
+svg text.ink{fill:var(--ink)}
+.chart{position:relative;min-width:0}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12.5px;color:var(--ink2);align-items:center}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:22px;height:10px;border-radius:2px;display:inline-block}
+.hatch{width:14px;height:12px;border:1.5px dashed var(--hid);background:repeating-linear-gradient(135deg,var(--hid) 0 1.5px,transparent 1.5px 4px)}
+.tip{position:absolute;pointer-events:none;background:var(--ink);color:var(--bg);font:12px/1.5 var(--mono);padding:6px 9px;border-radius:4px;white-space:nowrap;z-index:5;opacity:0;transition:opacity .08s}
+.tip.on{opacity:1}
+.curves{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr));gap:20px 24px}
+.curve{display:flex;flex-direction:column;gap:4px;min-width:0}
+.curve h3{font-size:15px}
+.curve .cap{font-size:12.5px;color:var(--muted);line-height:1.55;min-height:3.1em}
+details{min-width:0}
+details>summary{cursor:pointer;font-size:14px;color:var(--accent);padding:8px 0;min-height:36px;display:flex;align-items:center;gap:8px;width:fit-content}
+details>summary:hover{text-decoration:underline}
+details.box{border:1px solid var(--line);border-radius:6px;background:var(--panel);padding:4px 16px}
+details.box>summary{color:var(--ink);font-weight:500;font-size:15px}
+details[open]>summary{margin-bottom:8px}
+/* controls */
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;min-width:0}
+button,select,input[type=range]{font:inherit;color:inherit}
+.btn,.seg button{border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:5px;padding:5px 11px;cursor:pointer;font-size:13px;line-height:1.5;min-height:36px}
+.btn:hover,.seg button:hover{border-color:var(--ink2)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:500;min-width:76px}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg button[aria-pressed=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+select{background:var(--panel);border:1px solid var(--line);border-radius:5px;padding:5px 8px;min-height:36px}
+input[type=range]{flex:1 1 200px;accent-color:var(--accent);min-width:0;height:36px}
+.tag{display:inline-block;font:500 12px/1.4 var(--font);padding:1px 9px;border-radius:99px;border:1px solid var(--line);color:var(--ink2)}
+.tag.rand{border-color:var(--good);color:var(--good)} .tag.pick{border-color:var(--warn);color:var(--warn)} .tag.v2{border-color:var(--accent);color:var(--accent)}
+.pickrow{display:flex;gap:8px 12px;align-items:center;flex-wrap:wrap}
+.pickrow .lb{font-size:12.5px;color:var(--muted);min-width:7.5em}
+.stage{position:relative;min-width:0}
+canvas{display:block;width:100%;border-radius:4px}
+.cv-map{background:var(--floor);border:1px solid var(--line);touch-action:pan-y}
+.cv-time{background:var(--panel);cursor:pointer;touch-action:none}
+.rows{display:grid;gap:6px;min-width:0}
+.prow{display:grid;grid-template-columns:minmax(120px,1.1fr) minmax(130px,1fr) minmax(0,2fr);gap:4px 12px;align-items:center;padding:6px 8px;border-radius:5px;border:1px solid var(--line);font-size:13px;min-width:0}
+.prow label{display:flex;gap:8px;align-items:center;cursor:pointer;min-width:0}
+.prow input{accent-color:var(--accent);width:16px;height:16px;flex:none}
+.prow .nm{font:500 13.5px var(--mono);overflow-wrap:anywhere}
+.prow .desc{color:var(--muted);font-size:12px;font-family:var(--font)}
+.prow .tm{font-family:var(--mono);font-variant-numeric:tabular-nums;color:var(--ink2);font-size:12.5px}
+.prow.off{opacity:.45}
+.badge{display:inline-flex;gap:6px;align-items:center;font-size:12.5px;font-weight:500;padding:2px 9px;border-radius:4px;border:1.5px solid var(--bc,var(--line));white-space:nowrap}
+.badge i{font-style:normal;font-family:var(--mono)}
+@media (max-width:640px){.prow{grid-template-columns:1fr 1fr}.prow .tm{grid-column:1/-1}}
+.readout{font:500 13px var(--mono);font-variant-numeric:tabular-nums;color:var(--ink2);min-width:11ch;text-align:right}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr));gap:20px;min-width:0}
+.scroll{overflow-x:auto;max-width:100%}
+table.t{border-collapse:collapse;font-size:13px;width:100%}
+table.t th,table.t td{text-align:left;padding:6px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+table.t th{font-weight:500;color:var(--muted);font-size:12px}
+table.t td.n{font-family:var(--mono);font-variant-numeric:tabular-nums;text-align:right}
+ul.notes{margin:0;padding:0;list-style:none;display:grid;gap:14px}
+ul.notes li{display:grid;gap:2px;padding-left:14px;border-left:2px solid var(--line);min-width:0}
+ul.notes span{color:var(--ink2);font-size:14px;line-height:1.7}
+.kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:10px 18px;font-size:13px}
+.kv span{color:var(--muted)} .kv b{font-family:var(--mono);font-weight:500;font-size:12.5px;overflow-wrap:anywhere}
+code{font:12.5px var(--mono);background:var(--floor);padding:1px 5px;border-radius:3px;overflow-wrap:anywhere}
+footer{font-size:13px;color:var(--muted);display:flex;flex-wrap:wrap;gap:6px 18px}
+footer a{color:var(--accent)}
+.err{color:var(--crit);padding:24px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap" id="app">
+
+<!-- 1. hero -->
+<header class="hero">
+  <div class="head">
+    <div class="eyebrow">robot-navigation-lab · 凍結配對壓力測試</div>
+    <h1>導航系統在真實干擾下失敗，問題出在哪一個環節？</h1>
+  </div>
+  <ol class="answer" id="answer" aria-label="答案"><li class="fine"><i></i>載入中…</li></ol>
+  <p class="fine" id="scope"></p>
+</header>
+
+<!-- 2. centerpiece -->
+<section id="s-map" aria-labelledby="h-map">
+  <div class="head">
+    <h2 id="h-map">每一套導航堆疊，在哪裡垮掉？</h2>
+    <p class="sub" id="hm-read"></p>
+  </div>
+  <div class="panel" style="display:flex;flex-direction:column;gap:14px">
+    <div class="hmwrap" id="hm"></div>
+    <div class="scale" id="hm-scale"></div>
+  </div>
+  <p class="note">探索性分析（看到結果後才做）。每格為 60 個配對情境、MCL 定位；表格每格的前後成功率與信賴區間可在下方「看全部 8 個壓力軸」查到。</p>
+</section>
+
+<!-- 3. takeaways -->
+<section id="t1" aria-labelledby="h-t1">
+  <div class="head">
+    <div class="eyebrow">發現 1 · 名義條件</div>
+    <h2 id="h-t1">名義條件下，定位不是瓶頸</h2>
+    <p class="sub" id="t1-text"></p>
+  </div>
+  <div class="panel" style="display:flex;flex-direction:column;gap:12px">
+    <div class="legend" id="t1-lg"></div>
+    <div class="chart" id="t1-chart"></div>
+  </div>
+  <p class="sure"><b>多確定</b><span id="t1-sure"></span></p>
+</section>
+
+<section id="t2" aria-labelledby="h-t2">
+  <div class="head">
+    <div class="eyebrow">發現 2 · 壓力曲線</div>
+    <h2 id="h-t2">不同規劃器，垮在不同的地方</h2>
+    <p class="sub" id="t2-text"></p>
+  </div>
+  <div class="panel" style="display:flex;flex-direction:column;gap:16px">
+    <div class="legend" id="t2-lg"></div>
+    <div class="curves" id="t2-curves"></div>
+  </div>
+  <details id="all8">
+    <summary>看全部 8 個壓力軸</summary>
+    <div class="panel" style="display:flex;flex-direction:column;gap:16px">
+      <div class="curves" id="all8-curves"></div>
+    </div>
+  </details>
+  <p class="sure"><b>多確定</b><span id="t2-sure"></span></p>
+</section>
+
+<section id="t3" aria-labelledby="h-t3">
+  <div class="head">
+    <div class="eyebrow">發現 3 · 定位失效</div>
+    <h2 id="h-t3">定位只在「無特徵大廳＋里程計偏差」時才變成主因</h2>
+    <p class="sub" id="t3-text"></p>
+  </div>
+  <div class="panel" style="display:flex;flex-direction:column;gap:12px">
+    <div class="row"><span class="note">觀察對象</span><div class="seg" id="mcl-pick" role="group" aria-label="觀察的 planner"></div></div>
+    <div class="stage"><canvas id="cv2" class="cv-map" role="img" aria-label="真實與估計軌跡"></canvas></div>
+    <div class="legend" id="lg2"></div>
+    <div class="row">
+      <button class="btn primary" id="play2">播放</button>
+      <input type="range" id="scrub2" min="0" max="100" step="1" value="0" aria-label="時間軸">
+      <span class="readout" id="rd2"></span>
+    </div>
+    <div class="stage"><canvas id="cv3" class="cv-time" role="img" aria-label="定位誤差對時間"></canvas></div>
+    <div class="rows" id="mrows"></div>
+  </div>
+  <p class="sure"><b>多確定</b><span id="t3-sure"></span></p>
+</section>
+
+<!-- 4. replay -->
+<section id="s-replay" aria-labelledby="h-replay">
+  <div class="head">
+    <div class="eyebrow">親眼看看</div>
+    <h2 id="h-replay">同一張地圖，五個規劃器各跑一次</h2>
+    <p class="sub">五個 planner 在<b>完全相同</b>的情境（同地圖、同起訖點、同隱藏障礙、同行人設定）下，使用 MCL 定位各跑一次。重播由 repo 的 runner 以凍結設定重新執行，以 5 Hz 取樣。<b>隨機抽樣</b>的三個可以代表一般情況；<b>挑選</b>的兩個是為了展示差異而選，不代表整體成功率。</p>
+  </div>
+  <div class="panel" style="display:flex;flex-direction:column;gap:12px">
+    <div class="pickrow"><span class="lb">隨機抽樣（固定種子）</span><div class="seg" id="scn-pick-r" role="group" aria-label="隨機抽樣的情境"></div></div>
+    <div class="pickrow"><span class="lb">挑選（展示差異）</span><div class="seg" id="scn-pick-p" role="group" aria-label="挑選的情境"></div></div>
+    <div class="row" id="scn-meta"></div>
+    <div class="stage"><canvas id="cv1" class="cv-map" role="img" aria-label="五個 planner 的並排重播"></canvas></div>
+    <div class="legend" id="lg1"></div>
+    <div class="row">
+      <button class="btn primary" id="play1">播放</button>
+      <input type="range" id="scrub1" min="0" max="100" step="1" value="0" aria-label="時間軸">
+      <span class="readout" id="rd1"></span>
+      <label class="row" style="gap:6px;font-size:13px">速度 <select id="spd1"><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option><option value="4">4×</option></select></label>
+    </div>
+    <canvas id="tl1" class="cv-time" role="img" aria-label="各 planner 的結束時刻"></canvas>
+    <div class="rows" id="prows"></div>
+    <p class="note">行人圓圈取自各 planner 自己的那一次模擬（外框為 planner 色），行人看到機器人幾乎停下時會讓行，所以同一情境的行人軌跡不一定完全重疊。時間軸的符號標出結束時刻：✓ 抵達、✕ 碰撞、◷ 逾時、■ 卡住。</p>
+  </div>
+</section>
+
+<!-- 5. PPO -->
+<section id="s-ppo" aria-labelledby="h-ppo">
+  <div class="head">
+    <div class="eyebrow">PPO v1 <span class="tag v2" style="margin-left:6px;letter-spacing:0;text-transform:none">v2 開發中</span></div>
+    <h2 id="h-ppo">學出來的 PPO v1 輸給 dwa 與 pp_stop，而且 seed 之間差很多</h2>
+    <p class="sub" id="ppo-text"></p>
+  </div>
+  <div class="two" style="grid-template-columns:minmax(0,1fr)">
+    <div class="panel"><h3>學習曲線（驗證集，GT 位姿，60 個調校情境）</h3><div class="chart" id="lc" style="margin-top:8px"></div><p class="note" style="margin-top:6px">調校集上的驗證成功率，帶壓力課程，與測試集數字不可直接比較。圓圈是被選中的 checkpoint。</p></div>
+    <div class="panel"><h3>確證性檢定 F6（名義 240 對，MCL，Holm 校正）</h3><p class="note" style="margin:4px 0 8px">差值 = 成功率(PPO) − 成功率(基準)。</p><div class="scroll"><table class="t" id="t-f6"></table></div></div>
+  </div>
+  <p class="sure"><b>多確定</b><span id="ppo-sure"></span></p>
+</section>
+
+<!-- 6. method -->
+<section id="s-proto">
+  <details class="box">
+    <summary>方法與誠實聲明</summary>
+    <ul class="notes" id="notes" style="padding-block:6px 12px"></ul>
+    <div class="kv" id="hashes" style="padding-bottom:12px"></div>
+  </details>
+  <footer><span>原始碼與完整報告：<a href="https://github.com/Jadiouo/robot-navigation-lab">github.com/Jadiouo/robot-navigation-lab</a></span></footer>
+</section>
+</div>
+
+<script>
+'use strict';
+const PL=['pp','pp_stop','dwa','mppi','ppo'];
+const PDESC={pp:'純追蹤，無重規劃',pp_stop:'純追蹤＋煞停',dwa:'Dynamic Window',mppi:'MPPI 取樣控制',ppo:'PPO v1（ppo_s1）'};
+const OUTL={success:['成功','✓'],collision_dynamic:['撞移動物','✕'],collision_static:['撞靜態障礙','✕'],timeout:['逾時','◷'],stuck:['卡住','■'],loc_induced:['定位誘發失敗','◇']};
+const AXL={agent_density:['行人密度','人 / 1000 m²','人群'],agent_speed:['行人速度','m/s','人群'],hidden_density:['隱藏障礙密度','個 / 1000 m²','地圖'],speed_scale:['里程計速度尺度','×','里程計'],gyro_bias:['陀螺偏差','rad/s','里程計'],lidar_short:['LiDAR 短讀數率','機率','LiDAR'],lidar_sigma:['LiDAR 雜訊 σ','m','LiDAR'],lidar_dropout:['LiDAR 遺失率','機率','LiDAR']};
+const N_PPO=11520;
+const $=s=>document.querySelector(s);
+const el=(t,a={},h='')=>{const e=document.createElement(t);for(const k in a)e.setAttribute(k,a[k]);if(h)e.innerHTML=h;return e};
+const f2=v=>v.toFixed(2), g=v=>String(+v.toPrecision(3));
+const ci=c=>`${f2(c.rate)} [${f2(c.lo)}, ${f2(c.hi)}]`;
+const pv=p=>p<0.001?'<0.001':p.toFixed(3);
+const pt=(v,d=0)=>(v<0?'−':v>0?'+':'')+Math.abs(v*100).toFixed(d);
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+let TH={};function readTheme(){['ink','ink2','muted','line','wall','floor','panel','hid','crit','accent','bg','hm-neu','hm-neg','hm-pos',...PL.map(p=>'c-'+p)].forEach(n=>TH[n]=css('--'+n))}
+const dirty=[];function onTheme(f){dirty.push(f)}
+function themeChanged(){readTheme();dirty.forEach(f=>f())}
+new MutationObserver(themeChanged).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change',themeChanged);
+const col=p=>TH['c-'+p];
+const badge=o=>{const [t,i]=OUTL[o];return `<span class="badge" style="--bc:var(--o-${o})"><i>${i}</i>${t}</span>`};
+function fit(host,draw){const run=()=>{const w=host.clientWidth;if(w>0)draw(w)};new ResizeObserver(run).observe(host);run()}
+const sw=p=>`<span class="sw" style="background:var(--c-${p})"></span>`;
+
+/* ---------- map helpers ---------- */
+/* ---------- map helpers ---------- */
+function unpack(b64,n){const bin=atob(b64),a=new Uint8Array(n);for(let i=0;i<n;i++)a[i]=(bin.charCodeAt(i>>3)>>(7-(i&7)))&1;return a}
+function boxes(a,rows,cols){const seen=new Uint8Array(a.length),out=[];for(let i=0;i<a.length;i++){if(!a[i]||seen[i])continue;let x0=1e9,y0=1e9,x1=-1,y1=-1;const st=[i];seen[i]=1;while(st.length){const k=st.pop(),r=(k/cols)|0,c=k%cols;x0=Math.min(x0,c);x1=Math.max(x1,c);y0=Math.min(y0,r);y1=Math.max(y1,r);for(const [dr,dc] of [[1,0],[-1,0],[0,1],[0,-1]]){const rr=r+dr,cc=c+dc;if(rr<0||cc<0||rr>=rows||cc>=cols)continue;const j=rr*cols+cc;if(a[j]&&!seen[j]){seen[j]=1;st.push(j)}}}out.push([x0,y0,x1+1,y1+1])}return out}
+function hatchPattern(ctx,color){const p=document.createElement('canvas');p.width=p.height=8;const c=p.getContext('2d');c.strokeStyle=color;c.lineWidth=1.4;c.beginPath();c.moveTo(0,8);c.lineTo(8,0);c.moveTo(-2,2);c.lineTo(2,-2);c.moveTo(6,10);c.lineTo(10,6);c.stroke();return ctx.createPattern(p,'repeat')}
+const bs=(t,a)=>{let lo=0,hi=a.length;while(lo<hi){const m=(lo+hi)>>1;if(a[m]<=t)lo=m+1;else hi=m}return lo-1};
+
+class MapView{
+  constructor(canvas){this.cv=canvas;this.ctx=canvas.getContext('2d');this.sc=null;this.W=0;this.H=0;this.s=1;this.layer=null;onTheme(()=>{this.layer=null;this.redraw&&this.redraw()});new ResizeObserver(()=>this.resize()).observe(canvas.parentElement)}
+  set(sc){this.sc=sc;const g=sc.grid;this.known=unpack(g.known,g.rows*g.cols);{let r0=g.rows,r1=-1;for(let rr=0;rr<g.rows;rr++)for(let cc=0;cc<g.cols;cc++)if(!this.known[rr*g.cols+cc]){r0=Math.min(r0,rr);r1=Math.max(r1,rr)}const mg=Math.ceil(3/g.res);this.r0=Math.max(0,r0-mg);this.r1=Math.min(g.rows,r1+1+mg);if(this.r1<=this.r0){this.r0=0;this.r1=g.rows}this.y0=this.r0*g.res}this.hid=unpack(g.hidden,g.rows*g.cols);this.hbox=boxes(this.hid,g.rows,g.cols);this.layer=null;this.resize()}
+  resize(){if(!this.sc)return;const g=this.sc.grid,w=this.cv.parentElement.clientWidth;if(!w)return;const dpr=Math.min(devicePixelRatio||1,2);this.W=w;this.H=Math.round(w*(this.r1-this.r0)/g.cols);this.s=w/(g.cols*g.res);this.cv.width=Math.round(this.W*dpr);this.cv.height=Math.round(this.H*dpr);this.cv.style.height=this.H+'px';this.dpr=dpr;this.layer=null;this.redraw&&this.redraw()}
+  X(x){return x*this.s} Y(y){return this.H-(y-this.y0)*this.s}
+  base(){const c=this.ctx,g=this.sc.grid,s=this.s,r=g.res;c.setTransform(this.dpr,0,0,this.dpr,0,0);
+    if(!this.layer){const L=document.createElement('canvas');L.width=this.cv.width;L.height=this.cv.height;const k=L.getContext('2d');k.setTransform(this.dpr,0,0,this.dpr,0,0);k.fillStyle=TH.floor;k.fillRect(0,0,this.W,this.H);k.fillStyle=TH.wall;
+      for(let rr=this.r0;rr<this.r1;rr++)for(let cc=0;cc<g.cols;cc++)if(this.known[rr*g.cols+cc])k.fillRect(cc*r*s-.25,this.Y((rr+1)*r)-.25,r*s+.5,r*s+.5);
+      const hp=hatchPattern(k,TH.hid);k.strokeStyle=TH.hid;k.lineWidth=1.6;k.setLineDash([4,3]);
+      for(const [x0,y0,x1,y1] of this.hbox){const X=x0*r*s,Y=this.Y(y1*r),w=(x1-x0)*r*s,h=(y1-y0)*r*s;k.globalAlpha=.55;k.fillStyle=hp;k.fillRect(X,Y,w,h);k.globalAlpha=1;k.strokeRect(X,Y,w,h)}
+      // path
+      k.setLineDash([5,4]);k.strokeStyle=TH.muted;k.lineWidth=1.3;k.beginPath();this.sc.path.forEach(([x,y],i)=>i?k.lineTo(this.X(x),this.Y(y)):k.moveTo(this.X(x),this.Y(y)));k.stroke();k.setLineDash([]);
+      // goal tolerance + start
+      const [gx,gy]=this.sc.goal;k.strokeStyle=TH.ink;k.lineWidth=1.5;k.beginPath();k.arc(this.X(gx),this.Y(gy),2*s,0,7);k.stroke();k.beginPath();k.arc(this.X(gx),this.Y(gy),.35*s+2,0,7);k.fillStyle=TH.ink;k.fill();
+      const [sx,sy]=this.sc.start;k.beginPath();k.arc(this.X(sx),this.Y(sy),3.5,0,7);k.fillStyle=TH.panel;k.fill();k.stroke();
+      k.fillStyle=TH.ink;k.font=`500 ${Math.max(10,Math.min(13,s*.8))}px 'Noto Sans TC',sans-serif`;k.fillText('起點',this.X(sx)+6,this.Y(sy)-6);k.fillText('終點',this.X(gx)+Math.max(10,2*s*.7),this.Y(gy)-4);
+      if(this.hbox.length){const [x0,y0,x1,y1]=this.hbox[0];k.fillStyle=TH.hid;k.fillText('地圖上沒有的障礙',Math.min(this.W-110,x0*r*s),Math.max(12,this.Y(y1*r)-6))}
+      this.layer=L}
+    c.drawImage(this.layer,0,0,this.W,this.H)}
+  rect(x,y,yaw,color,fill,dash){const c=this.ctx,s=this.s;c.save();c.translate(this.X(x),this.Y(y));c.rotate(-yaw);c.beginPath();c.rect(-.8*s,-.8*s,4.1*s,1.6*s);if(fill){c.globalAlpha=.55;c.fillStyle=color;c.fill();c.globalAlpha=1}c.strokeStyle=color;c.lineWidth=1.6;if(dash)c.setLineDash([3,2]);c.stroke();c.setLineDash([]);if(fill){c.beginPath();c.moveTo(3.3*s,0);c.lineTo(2.2*s,-.55*s);c.lineTo(2.2*s,.55*s);c.closePath();c.fillStyle=color;c.fill()}c.restore()}
+  trail(xs,ys,n,color,w,alpha,dash){if(n<1)return;const c=this.ctx;c.save();c.globalAlpha=alpha;c.strokeStyle=color;c.lineWidth=w;c.lineJoin='round';if(dash)c.setLineDash(dash);c.beginPath();for(let i=0;i<n;i++)i?c.lineTo(this.X(xs[i]),this.Y(ys[i])):c.moveTo(this.X(xs[i]),this.Y(ys[i]));c.stroke();c.restore()}
+  mark(x,y,o,color){const c=this.ctx,X=this.X(x),Y=this.Y(y),r=Math.max(6,this.s*1.1);c.save();c.lineWidth=2.6;c.lineCap='round';
+    if(o==='success'){c.strokeStyle=color;c.beginPath();c.arc(X,Y,r,0,7);c.stroke();c.beginPath();c.moveTo(X-r*.45,Y);c.lineTo(X-r*.1,Y+r*.4);c.lineTo(X+r*.5,Y-r*.35);c.stroke()}
+    else if(o==='timeout'){c.strokeStyle=color;c.beginPath();c.arc(X,Y,r,0,7);c.stroke();c.beginPath();c.moveTo(X,Y-r*.6);c.lineTo(X,Y);c.lineTo(X+r*.45,Y+r*.2);c.stroke()}
+    else if(o==='stuck'){c.fillStyle=color;c.fillRect(X-r*.6,Y-r*.6,r*1.2,r*1.2)}
+    else{c.strokeStyle=TH.crit;c.lineWidth=3.4;c.beginPath();c.moveTo(X-r,Y-r);c.lineTo(X+r,Y+r);c.moveTo(X+r,Y-r);c.lineTo(X-r,Y+r);c.stroke();c.strokeStyle=color;c.lineWidth=1.2;c.stroke()}
+    c.restore()}
+  agents(sc,run,idx,color){const c=this.ctx;if(idx<0)idx=0;const a=run.ag[idx];if(!a)return;c.save();c.strokeStyle=color;c.fillStyle=color;for(let i=0;i<a.length/2;i++){const x=this.X(a[2*i]),y=this.Y(a[2*i+1]),r=sc.agent_radii[i]*this.s;c.globalAlpha=.16;c.beginPath();c.arc(x,y,r,0,7);c.fill();c.globalAlpha=.85;c.lineWidth=1.4;c.stroke()}c.restore()}
+}
+
+
+/* ---------- state ---------- */
+/* ---------- state ---------- */
+let D,A;
+const OK=['success'];
+function frameAt(run,T){return bs(T,run.t)}
+function endT(run){return run.dur}
+function poseAt(sc,run,T){const i=frameAt(run,T);return i<0?{i,x:sc.start[0],y:sc.start[1],yaw:sc.start[2],v:0}:{i,x:run.x[i],y:run.y[i],yaw:run.yaw[i],v:run.v[i]}}
+function ended(run,T){return T>=run.dur-1e-6}
+
+/* ---------- replay viewer 1 ---------- */
+const V1={view:null,sc:null,T:0,max:1,vis:new Set(PL),playing:false,speed:1,last:0};
+function initV1(){
+  D.scenarios.filter(s=>s.kind!=='mclbreak').forEach(s=>{const pick=$(s.kind==='random'?'#scn-pick-r':'#scn-pick-p');const b=el('button',{type:'button','aria-pressed':'false'});b.textContent=`${s.family} #${s.seed}`;b.onclick=()=>setScn1(s);pick.append(b);s._b=b});
+  V1.view=new MapView($('#cv1'));V1.view.redraw=()=>draw1();
+  $('#lg1').innerHTML=`<span><span class="sw" style="background:var(--wall)"></span> 地圖上的牆</span><span><i class="hatch"></i>地圖上沒有的障礙</span><span><svg width="20" height="12" style="display:inline;vertical-align:-1px;margin-right:6px"><line x1="0" y1="6" x2="20" y2="6" stroke="currentColor" stroke-width="1.5" stroke-dasharray="5 4"/></svg>全域路徑</span><span><svg width="16" height="16" style="display:inline;vertical-align:-3px;margin-right:6px"><circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>移動行人</span><span>終點外圈 = 2 m 抵達半徑</span>`;
+  const rows=$('#prows');PL.forEach(p=>{const r=el('div',{class:'prow'});r.id='pr-'+p;r.innerHTML=`<label><input type="checkbox" checked aria-label="顯示 ${p}"><span class="sw" style="background:var(--c-${p})"></span><span><span class="nm">${p}</span><br><span class="desc">${PDESC[p]}</span></span></label><span class="st"></span><span class="tm"></span>`;r.querySelector('input').onchange=e=>{e.target.checked?V1.vis.add(p):V1.vis.delete(p);r.classList.toggle('off',!e.target.checked);draw1()};rows.append(r)});
+  $('#play1').onclick=()=>play1(!V1.playing);
+  $('#scrub1').oninput=e=>{V1.T=e.target.value/100;play1(false);draw1()};
+  $('#spd1').onchange=e=>V1.speed=+e.target.value;
+  const tl=$('#tl1');const seek=e=>{const r=tl.getBoundingClientRect();V1.T=Math.max(0,Math.min(V1.max,(e.clientX-r.left-60)/(r.width-70)*V1.max));draw1()};
+  tl.addEventListener('pointerdown',e=>{tl.setPointerCapture(e.pointerId);play1(false);seek(e);tl.onpointermove=seek});tl.addEventListener('pointerup',()=>tl.onpointermove=null);
+  onTheme(draw1);
+  setScn1(D.scenarios[2]);
+}
+function play1(on){V1.playing=on;$('#play1').textContent=on?'暫停':(V1.T>=V1.max-1e-6?'重播':'播放');if(on){if(V1.T>=V1.max-1e-6)V1.T=0;V1.last=performance.now();requestAnimationFrame(tick1)}}
+function tick1(now){if(!V1.playing)return;V1.T+=(now-V1.last)/1000*V1.speed;V1.last=now;if(V1.T>=V1.max){V1.T=V1.max;play1(false)}draw1();if(V1.playing)requestAnimationFrame(tick1)}
+function setScn1(s){V1.sc=s;V1.max=Math.max(...s.runs.map(r=>r.dur));V1.T=Math.min(8,V1.max);document.querySelectorAll('#s-replay .seg button').forEach(b=>b.setAttribute('aria-pressed',String(b===s._b)));
+  $('#scrub1').max=Math.round(V1.max*100);
+  $('#scn-meta').innerHTML=`<span class="tag ${s.kind==='random'?'rand':'pick'}">${s.why}</span><span class="note">${s.family} 家族 · seed ${s.seed} · 路徑長 ${s.route_m} m · ${s.n_agents} 位行人 · ${s.n_hidden} 個隱藏障礙 · 時限 ${s.max_time} s</span>`;
+  V1.view.set(s);play1(false)}
+function draw1(){const v=V1.view,s=V1.sc;if(!s||!v.W)return;v.base();const T=V1.T;
+  $('#scrub1').value=Math.round(T*100);$('#rd1').textContent=`t = ${T.toFixed(1)} / ${V1.max.toFixed(1)} s`;
+  for(const run of s.runs){const p=run.planner;if(!V1.vis.has(p))continue;const c=col(p),P=poseAt(s,run,T);v.agents(s,run,P.i,c)}
+  for(const run of s.runs){const p=run.planner;if(!V1.vis.has(p))continue;const c=col(p),P=poseAt(s,run,T);v.trail(run.x,run.y,P.i+1,c,2,.75,p==='pp'?[6,3]:null)}
+  for(const run of s.runs){const p=run.planner;if(!V1.vis.has(p))continue;const c=col(p),P=poseAt(s,run,T);v.rect(P.x,P.y,P.yaw,c,true);if(ended(run,T))v.mark(P.x,P.y,run.outcome,c)}
+  for(const run of s.runs){const p=run.planner,P=poseAt(s,run,T),r=$('#pr-'+p),e=ended(run,T);
+    r.querySelector('.st').innerHTML=e?badge(run.outcome):`<span class="badge"><i>…</i>進行中</span>`;
+    const txt=run.outcome==='success'?`${run.ttg.toFixed(1)} s 抵達`:run.outcome==='timeout'?`逾時 ${run.dur.toFixed(1)} s`:`${run.dur.toFixed(1)} s 結束（${OUTL[run.outcome][0]}）`;
+    r.querySelector('.tm').textContent=`${txt} · 現速 ${e?0:P.v.toFixed(1)} m/s · 最小間距 ${run.min_clear.toFixed(2)} m`}
+  drawTL()}
+function drawTL(){const cv=$('#tl1'),w=cv.parentElement.clientWidth,rowH=20,h=PL.length*rowH+22,dpr=Math.min(devicePixelRatio||1,2);if(cv.width!==Math.round(w*dpr)||cv.height!==Math.round(h*dpr)){cv.width=Math.round(w*dpr);cv.height=Math.round(h*dpr);cv.style.height=h+'px'}
+  const c=cv.getContext('2d');c.setTransform(dpr,0,0,dpr,0,0);c.clearRect(0,0,w,h);const x0=60,x1=w-10,mx=V1.max,X=t=>x0+t/mx*(x1-x0);const s=V1.sc;c.font="11px 'IBM Plex Mono',monospace";
+  PL.forEach((p,i)=>{const run=s.runs.find(r=>r.planner===p),y=i*rowH+rowH/2+2,on=V1.vis.has(p);c.globalAlpha=on?1:.3;c.fillStyle=TH.muted;c.textAlign='left';c.textBaseline='middle';c.fillText(p,0,y);c.fillStyle=col(p);c.globalAlpha=on?.4:.12;c.fillRect(x0,y-4,X(run.dur)-x0,8);c.globalAlpha=on?1:.3;c.fillStyle=run.outcome==='success'?col(p):TH.crit;c.textAlign='center';c.font="12px 'IBM Plex Mono',monospace";c.fillText(OUTL[run.outcome][1],Math.min(X(run.dur),x1-4),y+1);c.font="11px 'IBM Plex Mono',monospace"});
+  c.globalAlpha=1;c.textAlign='center';c.textBaseline='top';c.fillStyle=TH.muted;const step=mx>40?10:5;for(let t=0;t<=mx;t+=step)c.fillText(t+'s',X(t),PL.length*rowH+6);
+  c.strokeStyle=TH.ink;c.lineWidth=1.5;c.beginPath();c.moveTo(X(V1.T),0);c.lineTo(X(V1.T),PL.length*rowH+2);c.stroke()}
+
+
+/* ---------- MCL viewer ---------- */
+/* ---------- MCL viewer ---------- */
+const V2={view:null,sc:null,T:0,max:1,focus:'dwa',playing:false,last:0};
+function runsMcl(){return V2.sc.runs.map(r=>({...r,key:r.planner}))}
+function initV2(){
+  const s=D.scenarios.find(x=>x.kind==='mclbreak');V2.sc=s;V2.max=Math.max(...s.runs.map(r=>r.dur),s.gt_run.dur);V2.T=Math.min(30,V2.max);
+  V2.view=new MapView($('#cv2'));V2.view.redraw=()=>draw2();V2.view.set(s);
+  const pick=$('#mcl-pick');[...PL,'dwa (GT)'].forEach(p=>{const b=el('button',{type:'button','aria-pressed':String(p===V2.focus)});b.textContent=p==='dwa (GT)'?'dwa · GT 位姿':p+' · MCL';b.dataset.p=p;b.onclick=()=>{V2.focus=p;pick.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));draw2()};pick.append(b)});
+  $('#lg2').innerHTML=`<span><svg width="26" height="10" style="display:inline"><line x1="0" y1="5" x2="26" y2="5" stroke="currentColor" stroke-width="2.4"/></svg> 真實位置</span><span><svg width="26" height="10" style="display:inline"><line x1="0" y1="5" x2="26" y2="5" stroke="currentColor" stroke-width="2" stroke-dasharray="3 3"/></svg> MCL 估計位置</span><span>細連線 = 估計與真實的差距</span><span>其餘 planner 以淡色顯示真實軌跡</span><span>此情境沒有行人、沒有隱藏障礙</span>`;
+  const rows=$('#mrows');[...s.runs,s.gt_run].forEach((r,i)=>{const gt=i===s.runs.length,p=gt?'dwa (GT)':r.planner,d=el('div',{class:'prow'});d.id='mr-'+i;d.innerHTML=`<span class="row" style="gap:8px"><span class="sw" style="background:var(--c-${r.planner})"></span><span><span class="nm">${r.planner}</span><br><span class="desc">${gt?'GT 位姿（對照）':'MCL 位姿'}</span></span></span><span class="st">${badge(r.outcome)}</span><span class="tm">${r.outcome==='success'?r.ttg.toFixed(1)+' s 抵達':'結束於 '+r.dur.toFixed(1)+' s'}${gt?'':' · 最大定位誤差 '+r.loc_max.toFixed(1)+' m'}</span>`;rows.append(d)});
+  $('#play2').onclick=()=>play2(!V2.playing);
+  $('#scrub2').max=Math.round(V2.max*100);$('#scrub2').oninput=e=>{V2.T=e.target.value/100;play2(false);draw2()};
+  const tl=$('#cv3');const seek=e=>{const r=tl.getBoundingClientRect();V2.T=Math.max(0,Math.min(V2.max,(e.clientX-r.left-40)/(r.width-52)*V2.max));draw2()};
+  tl.addEventListener('pointerdown',e=>{tl.setPointerCapture(e.pointerId);play2(false);seek(e);tl.onpointermove=seek});tl.addEventListener('pointerup',()=>tl.onpointermove=null);
+  new ResizeObserver(()=>draw2()).observe(tl.parentElement);onTheme(draw2);draw2();
+}
+function play2(on){V2.playing=on;$('#play2').textContent=on?'暫停':(V2.T>=V2.max-1e-6?'重播':'播放');if(on){if(V2.T>=V2.max-1e-6)V2.T=0;V2.last=performance.now();requestAnimationFrame(tick2)}}
+function tick2(now){if(!V2.playing)return;V2.T+=(now-V2.last)/1000*2;V2.last=now;if(V2.T>=V2.max){V2.T=V2.max;play2(false)}draw2();if(V2.playing)requestAnimationFrame(tick2)}
+function draw2(){const v=V2.view,s=V2.sc;if(!s||!v||!v.W)return;v.base();const T=V2.T;$('#scrub2').value=Math.round(T*100);
+  const gtFocus=V2.focus==='dwa (GT)',focus=gtFocus?s.gt_run:s.runs.find(r=>r.planner===V2.focus);
+  for(const run of s.runs){if(run===focus)continue;const P=poseAt(s,run,T);v.trail(run.x,run.y,P.i+1,col(run.planner),1.6,.28)}
+  if(!gtFocus){const P=poseAt(s,s.gt_run,T);v.trail(s.gt_run.x,s.gt_run.y,P.i+1,col('dwa'),1.6,.28,[2,3])}
+  const P=poseAt(s,focus,T),c=col(focus.planner);v.trail(focus.x,focus.y,P.i+1,c,3,.95);
+  let err=0;
+  if(!gtFocus&&P.i>=0){v.trail(focus.xe,focus.ye,P.i+1,TH.ink,2,.9,[3,3]);const xe=focus.xe[P.i],ye=focus.ye[P.i];v.rect(xe,ye,P.yaw,TH.ink,false,true);const k=v.ctx;k.save();k.strokeStyle=TH.crit;k.lineWidth=1.5;k.beginPath();k.moveTo(v.X(P.x),v.Y(P.y));k.lineTo(v.X(xe),v.Y(ye));k.stroke();k.restore();err=focus.err[P.i]}
+  v.rect(P.x,P.y,P.yaw,c,true);if(ended(focus,T))v.mark(P.x,P.y,focus.outcome,c);
+  $('#rd2').textContent=`t = ${T.toFixed(1)} s · 誤差 ${err.toFixed(2)} m`;
+  s.runs.concat([s.gt_run]).forEach((r,i)=>{const d=$('#mr-'+i);if(d)d.style.outline=(r===focus)?`2px solid ${TH.accent}`:'none'});
+  drawErr()}
+function drawErr(){const cv=$('#cv3'),w=cv.parentElement.clientWidth,h=Math.max(150,Math.min(220,w*.3)),dpr=Math.min(devicePixelRatio||1,2);if(!w)return;if(cv.width!==Math.round(w*dpr)||cv.height!==Math.round(h*dpr)){cv.width=Math.round(w*dpr);cv.height=Math.round(h*dpr);cv.style.height=h+'px'}
+  const c=cv.getContext('2d');c.setTransform(dpr,0,0,dpr,0,0);c.clearRect(0,0,w,h);const L=40,R=12,Tp=12,B=24,pw=w-L-R,ph=h-Tp-B,s=V2.sc,mx=V2.max;
+  const ymax=Math.ceil(Math.max(...s.runs.map(r=>Math.max(...r.err)))+.5);const X=t=>L+t/mx*pw,Y=e=>Tp+ph-e/ymax*ph;
+  c.font="11px 'IBM Plex Mono',monospace";c.fillStyle=TH.muted;c.strokeStyle=TH.line;c.lineWidth=1;c.textAlign='right';c.textBaseline='middle';
+  for(let e=0;e<=ymax;e+=2){c.beginPath();c.moveTo(L,Y(e));c.lineTo(L+pw,Y(e));c.stroke();c.fillText(e+' m',L-6,Y(e))}
+  c.textAlign='center';c.textBaseline='top';for(let t=0;t<=mx;t+=10)c.fillText(t+'s',X(t),Tp+ph+6);
+  c.strokeStyle=TH.crit;c.setLineDash([5,4]);c.beginPath();c.moveTo(L,Y(1));c.lineTo(L+pw,Y(1));c.stroke();c.setLineDash([]);c.fillStyle=TH.crit;c.textAlign='right';c.textBaseline='bottom';c.fillText('1 m = loc_induced 門檻',L+pw-4,Y(1)-3);
+  const gtFocus=V2.focus==='dwa (GT)';
+  for(const r of s.runs){const foc=!gtFocus&&r.planner===V2.focus;c.strokeStyle=col(r.planner);c.globalAlpha=foc?1:.4;c.lineWidth=foc?2.6:1.4;c.beginPath();r.t.forEach((t,i)=>i?c.lineTo(X(t),Y(r.err[i])):c.moveTo(X(t),Y(r.err[i])));c.stroke()}
+  c.globalAlpha=1;c.strokeStyle=col('dwa');c.lineWidth=gtFocus?2.6:1.4;c.setLineDash([2,3]);c.beginPath();c.moveTo(X(0),Y(0));c.lineTo(X(s.gt_run.dur),Y(0));c.stroke();c.setLineDash([]);c.fillStyle=TH.muted;c.textAlign='left';c.textBaseline='bottom';c.fillText('dwa GT：誤差恆為 0，抵達後結束',L+6,Y(0)-3);
+  c.strokeStyle=TH.ink;c.lineWidth=1.5;c.beginPath();c.moveTo(X(V2.T),Tp);c.lineTo(X(V2.T),Tp+ph);c.stroke()}
+
+
+/* ---------- shared chart bits ---------- */
+const MK=['circle','square','diamond','tri','tri2'];
+function marker(i,x,y,c,r=3.6){const st=`fill="${c}" stroke="var(--panel)" stroke-width="1.5"`;
+  switch(MK[i]){case'square':return `<rect x="${x-r}" y="${y-r}" width="${2*r}" height="${2*r}" ${st}/>`;
+  case'diamond':return `<path d="M${x},${y-r*1.3}L${x+r*1.3},${y}L${x},${y+r*1.3}L${x-r*1.3},${y}Z" ${st}/>`;
+  case'tri':return `<path d="M${x},${y-r*1.25}L${x+r*1.2},${y+r*.9}L${x-r*1.2},${y+r*.9}Z" ${st}/>`;
+  case'tri2':return `<path d="M${x},${y+r*1.25}L${x+r*1.2},${y-r*.9}L${x-r*1.2},${y-r*.9}Z" ${st}/>`;
+  default:return `<circle cx="${x}" cy="${y}" r="${r}" ${st}/>`}}
+function markerLg(i,c){return `<svg width="18" height="14" style="display:inline" aria-hidden="true"><line x1="0" x2="18" y1="7" y2="7" stroke="${c}" stroke-width="2" ${i===0?'stroke-dasharray="5 3"':''}/>${marker(i,9,7,c)}</svg>`}
+function plannerLegend(host){host.innerHTML=PL.map((p,i)=>`<span>${markerLg(i,`var(--c-${p})`)}<span class="mono" style="font-size:12px">${p}</span></span>`).join('')}
+
+/* ---------- hero + matrix ---------- */
+function worstAxisByPlanner(){const out={};PL.forEach(p=>{let best=null;Object.keys(AXL).forEach(ax=>{const d=A.worst_delta[ax][p];if(best===null||d<best.d)best={ax,d}});out[p]=best});return out}
+function initHero(){
+  const n=A.nominal,h=A.headline,wd=A.worst_delta,mb=A.mclbreak['hall/odom_bias'],f6=A.paired.F6;
+  const range=ax=>{const v=PL.map(p=>wd[ax][p]);return [Math.min(...v),Math.max(...v)]};
+  const [dl,dh]=range('agent_density'),[sl,sh]=range('speed_scale');
+  const wk=worstAxisByPlanner(),grp={};PL.forEach(p=>(grp[wk[p].ax]=grp[wk[p].ax]||[]).push(p));
+  const wkTxt=Object.entries(grp).sort((a,b)=>b[1].length-a[1].length).map(([ax,ps])=>`<span class="mono">${ps.join('、')}</span> 最怕${AXL[ax][0]}`).join('；');
+  const worse=f6.filter(r=>r.diff<0&&r.p_holm<.05).length,maxp=Math.max(...f6.map(r=>r.p_holm));
+  const rows=[
+   `<b>名義條件下，定位不是瓶頸。</b>用真實位姿（GT）與用 MCL 估計位姿，成功率最多只差 <span class="num">${(h.gt_vs_mcl_nominal_max_abs_diff*100).toFixed(1)}</span> 個百分點（≤ 3 pt）。`,
+   `<b>人群密度與里程計尺度誤差拖垮所有方法，各規劃器的弱點不同。</b>行人密度 1→6 讓成功率掉 <span class="num">${Math.round(-dh*100)}–${Math.round(-dl*100)}</span> pt，里程計速度尺度 ×1.0→1.3 掉 <span class="num">${Math.round(-sh*100)}–${Math.round(-sl*100)}</span> pt。${wkTxt}。`,
+   `<b>定位只在「無特徵大廳＋里程計偏差」時才成為主因。</b>這時 GT 位姿全部 <span class="num">${f2(mb.dwa.gt.rate)}</span>，換成 MCL 後 <span class="mono">dwa</span> 掉到 <span class="num">${f2(mb.dwa.mcl.rate)}</span>、<span class="mono">mppi</span> <span class="num">${f2(mb.mppi.mcl.rate)}</span>、<span class="mono">ppo</span> <span class="num">${f2(mb.ppo_s1.mcl.rate)}</span>。`];
+  $('#answer').innerHTML=rows.map((t,i)=>`<li><i>${'abc'[i]}</i><span>${t}</span></li>`).join('')+`<li class="ppo"><i>＋</i><span>PPO v1 輸了：${f6.length} 個確證性檢定中 ${worse} 個顯著比 dwa / pp_stop 差（最大 Holm p = ${pv(maxp)}）。</span></li>`;
+  const nb=A.meta.episodes_total-N_PPO;
+  $('#scope').textContent=`依據 ${nb.toLocaleString()} 個基準 episode + ${N_PPO.toLocaleString()} 個 PPO episode = ${A.meta.episodes_total.toLocaleString()} 個凍結後的測試 episode；${PL.length} 個 planner 在相同情境上配對比較。2D 模擬，非實車資料。`;
+}
+function hexRgb(h){h=h.replace('#','');if(h.length===3)h=[...h].map(c=>c+c).join('');return [0,2,4].map(i=>parseInt(h.slice(i,i+2),16))}
+function lum([r,g,b]){const f=v=>{v/=255;return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4)};return .2126*f(r)+.7152*f(g)+.0722*f(b)}
+function contrast(a,b){const A_=lum(a),B_=lum(b);return (Math.max(A_,B_)+.05)/(Math.min(A_,B_)+.05)}
+const HM_MAX=.75;
+function hmColor(d){const neu=hexRgb(TH['hm-neu']),end=hexRgb(TH[d<0?'hm-neg':'hm-pos']),t=Math.min(1,Math.abs(d)/HM_MAX),mix=neu.map((v,i)=>Math.round(v+(end[i]-v)*Math.pow(t,.85)));
+  const dk=[11,15,17],wh=[255,255,255],fg=contrast(mix,dk)>=contrast(mix,wh)?'#0b0f11':'#ffffff';return {bg:`rgb(${mix})`,fg}}
+function renderHeatmap(){
+  const order=Object.keys(AXL).map(ax=>({ax,m:PL.reduce((s,p)=>s+A.worst_delta[ax][p],0)/PL.length})).sort((a,b)=>a.m-b.m).map(o=>o.ax);
+  let h=`<table class="hm"><caption class="fine" style="text-align:left;caption-side:top;padding-bottom:8px">成功率變化（百分點）：壓力等級 0 → 最高等級，MCL 定位，每格 60 個配對情境</caption><colgroup><col class="lab">${PL.map(()=>'<col>').join('')}</colgroup><thead><tr><th scope="col"><span class="fine" style="font-weight:400">壓力軸 · 範圍</span></th>${PL.map(p=>`<th scope="col"><span class="sw" style="background:var(--c-${p})"></span>${p}</th>`).join('')}</tr></thead><tbody>`;
+  order.forEach(ax=>{const lv=A.stress[ax].levels;h+=`<tr><th scope="row">${AXL[ax][0]}<small>${AXL[ax][2]} · ${g(lv[0])}→${g(lv[4])}</small></th>`+PL.map(p=>{const d=A.worst_delta[ax][p],c=hmColor(d),s=A.stress[ax].mcl[p],r0=s[0].rate,r4=s[4].rate;
+    const lab=`${p}，${AXL[ax][0]}：成功率 ${f2(r0)} → ${f2(r4)}，${d===0?'無變化':d<0?'下降':'上升'} ${Math.abs(Math.round(d*100))} 個百分點`;
+    return `<td tabindex="0" style="background:${c.bg};color:${c.fg}" title="${lab}" aria-label="${lab}">${d===0?'0':pt(d)}<small>${f2(r0)}→${f2(r4)}</small></td>`}).join('')+'</tr>'});
+  $('#hm').innerHTML=h+'</tbody></table>';
+  const neu=TH['hm-neu'],neg=TH['hm-neg'],pos=TH['hm-pos'];
+  $('#hm-scale').innerHTML=`<span>−75 pt</span><span class="bar" style="background:linear-gradient(90deg,${neg},${neu} 94%,${pos})" role="img" aria-label="色階：深色代表成功率大幅下降，中性灰代表沒有變化"></span><span>0</span><span>＋ 上升極少</span><span style="flex-basis:100%;font-family:var(--font)">每格都標出數值，不靠顏色單獨傳達。</span>`}
+function initMatrix(){
+  const wk=worstAxisByPlanner();
+  $('#hm-read').innerHTML=`<b>怎麼讀：</b>每一格是某個規劃器（欄）在某個壓力軸（列）上，成功率從等級 0 到最高等級的變化。顏色越深紅、數字越負，代表垮得越多；列依平均受損程度排序，最痛的在最上面。你會看到上面兩列整排都深（所有人一起被拖垮），下面幾列幾乎空白，而 <span class="mono">mppi</span> 的最深格在 ${AXL[wk.mppi.ax][0]}。`;
+  renderHeatmap();onTheme(renderHeatmap)}
+
+/* ---------- T1 dot plot ---------- */
+function initT1(){
+  $('#t1-lg').innerHTML=`<span><svg width="14" height="14" style="display:inline" aria-hidden="true"><circle cx="7" cy="7" r="4.5" fill="var(--panel)" stroke="var(--ink)" stroke-width="2"/></svg> GT 真實位姿</span><span><svg width="14" height="14" style="display:inline" aria-hidden="true"><circle cx="7" cy="7" r="4.5" fill="var(--ink)"/></svg> MCL 估計位姿</span><span>橫線 = Wilson 95% 信賴區間</span>`;
+  const n=A.nominal,F2=A.paired.F2,mx=Math.max(...F2.map(r=>Math.abs(r.diff)));
+  $('#t1-text').innerHTML=`每個規劃器各用真實位姿與 MCL 估計位姿跑同樣的 240 個名義情境。兩個點幾乎疊在一起：成功率最多差 ${(A.headline.gt_vs_mcl_nominal_max_abs_diff*100).toFixed(1)} 個百分點，遠小於規劃器之間的差距。名義情境下，失敗主要不是定位造成的。`;
+  const lo=Math.min(...F2.map(r=>r.lo)),hi=Math.max(...F2.map(r=>r.hi)),minp=Math.min(...F2.map(r=>r.p_holm));
+  $('#t1-sure').innerHTML=`確證性檢定 F2（${F2.length} 項，240 對配對）：沒有一項顯著（最小 Holm p = ${pv(minp)}）。未顯著不等於證明相等；各項 GT − MCL 差距的 95% 信賴區間落在 ${pt(lo,1)} 到 ${pt(hi,1)} 個百分點之間。ppo 另有同樣的 GT / MCL 兩個 arm，未列入 F2 家族。`;
+  const host=$('#t1-chart');
+  fit(host,w=>{const rowH=48,top=20,bot=26,L=w<520?96:128,R=64,pw=w-L-R,x0=Math.floor(Math.min(...PL.flatMap(p=>[n[p].gt.lo,n[p].mcl.lo]))*20)/20,x1=Math.ceil(Math.max(...PL.flatMap(p=>[n[p].gt.hi,n[p].mcl.hi]))*20)/20,X=v=>L+(v-x0)/(x1-x0)*pw,H=top+PL.length*rowH+bot;
+    let s=`<svg width="${w}" height="${H}" viewBox="0 0 ${w} ${H}" role="img" aria-label="各規劃器名義成功率：GT 與 MCL 的點和信賴區間">`;
+    for(let v=Math.ceil(x0*10)/10;v<=x1+1e-9;v+=.1)s+=`<line x1="${X(v)}" x2="${X(v)}" y1="${top-6}" y2="${top+PL.length*rowH}" stroke="var(--line)"/><text x="${X(v)}" y="${H-8}" text-anchor="middle">${Math.round(v*100)}%</text>`;
+    s+=`<text x="${w-R+8}" y="${top-8}">GT − MCL</text>`;
+    PL.forEach((p,i)=>{const y=top+i*rowH+rowH/2,a=n[p].gt,b=n[p].mcl,d=a.rate-b.rate,c=`var(--c-${p})`;
+      s+=`<g><text class="ink" x="0" y="${y-2}" style="font:500 13px var(--mono)">${p}</text><text x="0" y="${y+13}">${f2(a.rate)} / ${f2(b.rate)}</text>`;
+      s+=`<line x1="${X(a.lo)}" x2="${X(a.hi)}" y1="${y-6}" y2="${y-6}" stroke="${c}" stroke-width="2.4" stroke-linecap="round"/><circle cx="${X(a.rate)}" cy="${y-6}" r="5" fill="var(--panel)" stroke="${c}" stroke-width="2.4"><title>${p} GT：${ci(a)}</title></circle>`;
+      s+=`<line x1="${X(b.lo)}" x2="${X(b.hi)}" y1="${y+7}" y2="${y+7}" stroke="${c}" stroke-width="2.4" stroke-linecap="round"/><circle cx="${X(b.rate)}" cy="${y+7}" r="5" fill="${c}" stroke="var(--panel)" stroke-width="1.5"><title>${p} MCL：${ci(b)}</title></circle>`;
+      s+=`<text class="ink" x="${w-R+8}" y="${y+4}" style="font:500 12px var(--mono)">${pt(d,1)} pt</text></g>`});
+    host.innerHTML=s+'</svg>'})}
+
+/* ---------- T2 curves ---------- */
+const CURVE_SEL=['lidar_short','agent_density','speed_scale'];
+function lineChart(host,ax,h){
+  const d=A.stress[ax];
+  fit(host,w=>{const l=36,r=w<340?44:52,t=8,b=30,H=h,pw=w-l-r,ph=H-t-b,X=i=>l+i/4*pw,Y=v=>t+ph-v*ph;
+    let s=`<svg width="${w}" height="${H}" viewBox="0 0 ${w} ${H}" role="img" aria-label="${AXL[ax][0]}：成功率對壓力等級">`;
+    [0,.25,.5,.75,1].forEach(v=>s+=`<line x1="${l}" x2="${w-r}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--line)"/><text x="${l-6}" y="${Y(v)+4}" text-anchor="end">${Math.round(v*100)}%</text>`);
+    d.levels.forEach((v,i)=>s+=`<text x="${X(i)}" y="${H-b+16}" text-anchor="middle">${g(v)}</text>`);
+    PL.forEach(p=>{const c=d.mcl[p];s+=`<path d="M${c.map((q,i)=>`${X(i)},${Y(q.hi)}`).join('L')}L${c.slice().reverse().map((q,i)=>`${X(4-i)},${Y(q.lo)}`).join('L')}Z" fill="var(--c-${p})" fill-opacity=".11" stroke="none"/>`});
+    PL.forEach((p,pi)=>{const c=d.mcl[p];s+=`<path d="M${c.map((q,i)=>`${X(i)},${Y(q.rate)}`).join('L')}" fill="none" stroke="var(--c-${p})" stroke-width="2" ${p==='pp'?'stroke-dasharray="5 3"':''} stroke-linejoin="round"/>`;c.forEach((q,i)=>s+=marker(pi,X(i),Y(q.rate),`var(--c-${p})`,3.4))});
+    const ends=PL.map(p=>({p,y:Y(d.mcl[p][4].rate)})).sort((a,b)=>a.y-b.y);for(let i=1;i<ends.length;i++)if(ends[i].y-ends[i-1].y<12)ends[i].y=ends[i-1].y+12;
+    ends.forEach(e=>s+=`<text x="${w-r+6}" y="${e.y+4}" style="fill:var(--c-${e.p});font:500 10.5px var(--mono)">${e.p}</text>`);
+    s+=`<line class="cross" x1="0" x2="0" y1="${t}" y2="${t+ph}" stroke="var(--ink2)" opacity="0"/><rect class="hit" x="${l-10}" y="${t}" width="${pw+20}" height="${ph}" fill="transparent"/></svg><div class="tip"></div>`;
+    host.innerHTML=s;
+    const tip=host.querySelector('.tip'),cross=host.querySelector('.cross'),hit=host.querySelector('.hit');
+    const move=e=>{const rc=host.getBoundingClientRect(),px=e.clientX-rc.left,i=Math.max(0,Math.min(4,Math.round((px-l)/pw*4)));cross.setAttribute('x1',X(i));cross.setAttribute('x2',X(i));cross.setAttribute('opacity',1);
+      tip.innerHTML=`<b>${g(d.levels[i])}</b>（等級 ${i}）<br>`+PL.map(p=>`${p.padEnd(8)} ${f2(d.mcl[p][i].rate)} [${f2(d.mcl[p][i].lo)}, ${f2(d.mcl[p][i].hi)}]`).join('<br>');
+      const tx=px+12;tip.style.left=Math.max(0,Math.min(tx,rc.width-tip.offsetWidth-2))+'px';tip.style.top=Math.max(0,e.clientY-rc.top-tip.offsetHeight-10)+'px';tip.classList.add('on')};
+    hit.addEventListener('pointermove',move);hit.addEventListener('pointerdown',move);hit.addEventListener('pointerleave',()=>{tip.classList.remove('on');cross.setAttribute('opacity',0)})})}
+function curveCard(ax,h){const wd=A.worst_delta[ax],ps=PL.slice().sort((a,b)=>wd[a]-wd[b]),w=ps[0],b=ps[ps.length-1];
+  const c=el('div',{class:'curve'});c.innerHTML=`<h3>${AXL[ax][0]}</h3><div class="cap">${AXL[ax][1]}，等級 0 → 4。掉最多 <span class="mono">${w}</span> ${pt(wd[w])} pt，最耐 <span class="mono">${b}</span> ${wd[b]===0?'0':pt(wd[b])} pt。</div><div class="chart"></div>`;lineChart(c.querySelector('.chart'),ax,h);return c}
+function initT2(){
+  plannerLegend($('#t2-lg'));
+  const wd=A.worst_delta;
+  $('#t2-text').innerHTML=`同樣是加壓，曲線形狀完全不同。LiDAR 短讀數率（假的近距離障礙）下 <span class="mono">mppi</span> 掉 ${Math.round(-wd.lidar_short.mppi*100)} pt、<span class="mono">pp_stop</span> 掉 ${Math.round(-wd.lidar_short.pp_stop*100)} pt，不會停也不太看掃描的 <span class="mono">pp</span> 只掉 ${Math.round(-wd.lidar_short.pp*100)} pt；行人密度對 <span class="mono">pp_stop</span> 最致命（${pt(wd.agent_density.pp_stop)} pt），對 <span class="mono">ppo</span> 較輕（${pt(wd.agent_density.ppo)} pt）；里程計速度尺度則讓每個人都掉 ${Math.round(-Math.max(...PL.map(p=>wd.speed_scale[p]))*100)}–${Math.round(-Math.min(...PL.map(p=>wd.speed_scale[p]))*100)} pt。`;
+  const host=$('#t2-curves');CURVE_SEL.forEach(ax=>host.append(curveCard(ax,230)));
+  $('#t2-sure').innerHTML=`探索性分析，不屬於預先宣告的檢定。每個點 60 個配對情境，色帶是 Wilson 95% 信賴區間；等級 0 對所有點是同一批名義情境。把游標或手指移到圖上可看到每個等級的數值與區間。`;
+  let done=false;$('#all8').addEventListener('toggle',e=>{if(e.target.open&&!done){done=true;const h=$('#all8-curves');Object.keys(AXL).forEach(ax=>h.append(curveCard(ax,210)))}})}
+
+/* ---------- T3 text ---------- */
+function initT3(){
+  const mb=A.mclbreak['hall/odom_bias'],mc=A.mclbreak['hall/clean'],tx=A.taxonomy_hall_odom_bias,f5=A.paired.F5_odom_bias;
+  $('#t3-text').innerHTML=`大廳沒有沿路特徵，里程計又有偏差（gyro bias 0.10 rad/s、速度尺度 1.20）時，MCL 的估計會沿著大廳漂走，機器人以為自己在別處。實線是<b>真實</b>位置，虛線與虛框是 MCL <b>估計</b>位置；同一個情境用真實位姿跑 <span class="mono">dwa</span> 可以順利抵達。這是為了展示失效而挑的單一情境。`;
+  const li=['pp','pp_stop','dwa','mppi','ppo'].map(p=>`${p} ${tx[p].mcl.loc_induced} / ${60-tx[p].mcl.success}`).join('、');
+  const maxp=Math.max(...f5.map(r=>r.p_holm));
+  $('#t3-sure').innerHTML=`探索性分析，每個條件 60 個配對情境。同一個大廳沒有里程計偏差時，所有 planner 的 MCL 成功率至少 ${f2(Math.min(...PL.map(p=>mc[p].mcl.rate)))}，所以失敗來自偏差而非大廳本身。hall/odom_bias 的失敗中被標為 <span class="mono">loc_induced</span>（失敗且最後 10 秒定位誤差曾超過 1 m）的比例：${li}（相關性標籤，不是因果證明）。GT 對 MCL 的配對檢定（pp、pp_stop、dwa、mppi）Holm p ${pv(maxp)}。`}
+
+/* ---------- PPO ---------- */
+function initPPO(){
+  const f6=A.paired.F6,mb=A.mclbreak['hall/odom_bias'],s=A.ppo_seeds_nominal,tp=A.taxonomy,
+    lo=Math.min(...f6.map(r=>r.diff)),hi=Math.max(...f6.map(r=>r.diff)),maxp=Math.max(...f6.map(r=>r.p_holm));
+  $('#ppo-text').innerHTML=`名義條件下三個 seed 全都顯著比 <span class="mono">dwa</span> 與 <span class="mono">pp_stop</span> 差（差 ${Math.round(-hi*100)}–${Math.round(-lo*100)} 個百分點）。PPO 抵達最快（平均 ${tp.ppo.mcl.ttg} s，dwa ${tp.dwa.mcl.ttg} s）但撞得最多：靜態障礙 ${tp.ppo.mcl.collision_static} 次，dwa 只有 ${tp.dwa.mcl.collision_static} 次。超速不是單一解釋：事後診斷（只在調校集，非凍結結果）把速度壓到 4 m/s，成功率也沒有回升。在 hall/odom_bias，三個 seed 分別是 ${f2(mb.ppo_s0.mcl.rate)} / ${f2(mb.ppo_s1.mcl.rate)} / ${f2(mb.ppo_s2.mcl.rate)}，只看單一 seed 會得到完全不同的結論。v2 仍在開發中，換新的測試切分前不會重跑這份結果。`;
+  $('#ppo-sure').innerHTML=`F6 是測試前宣告的確證性檢定，${f6.length} 項全部為負差，最大 Holm p = ${pv(maxp)}。三個名義成功率（MCL）：${f2(s.ppo_s0.mcl.rate)} / ${f2(s.ppo_s1.mcl.rate)} / ${f2(s.ppo_s2.mcl.rate)}（頁面上的 ppo 是調校分數居中的 ppo_s1，規則在測試前凍結）。訓練的壓力課程只到等級 3，等級 4 與大廳從未見過，那些是外推測試。`;
+  const host=$('#lc'),sty={s0:['5 3',1.6,.75],s1:['',2.8,1],s2:['1.5 3',1.8,.75]},mxs=2.4e6;
+  const sel={};A.ppo_selection.forEach(r=>{if(!sel[r.train_seed]||r.sel_mean>sel[r.train_seed].sel_mean)sel[r.train_seed]=r});
+  fit(host,w=>{const H=250,l=38,r=60,t=10,b=34,pw=w-l-r,ph=H-t-b,X=v=>l+v/mxs*pw,Y=v=>t+ph-v*ph;
+    let svg=`<svg width="${w}" height="${H}" viewBox="0 0 ${w} ${H}" role="img" aria-label="PPO 三個 seed 的驗證成功率對訓練步數">`;
+    [0,.25,.5,.75,1].forEach(v=>svg+=`<line x1="${l}" x2="${w-r}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--line)"/><text x="${l-6}" y="${Y(v)+4}" text-anchor="end">${v*100}%</text>`);
+    [0,.5,1,1.5,2].forEach(m=>svg+=`<text x="${X(m*1e6)}" y="${H-b+16}" text-anchor="middle">${m}M</text>`);
+    svg+=`<text x="${l+pw/2}" y="${H-4}" text-anchor="middle">環境步數</text>`;
+    const lab=[];
+    for(const k of ['s0','s1','s2']){const c=A.ppo_curves[k];svg+=`<path d="M${c.step.map((q,i)=>`${X(q)},${Y(c.val_success[i])}`).join('L')}" fill="none" stroke="var(--c-ppo)" stroke-width="${sty[k][1]}" stroke-opacity="${sty[k][2]}" ${sty[k][0]?`stroke-dasharray="${sty[k][0]}"`:''} stroke-linejoin="round"/>`;
+      const last=c.step.length-1;lab.push([k,Y(c.val_success[last])+4,X(c.step[last])+6]);
+      const sp=sel[k.slice(1)];if(sp){const i=c.step.indexOf(sp.step);if(i>=0)svg+=`<circle cx="${X(sp.step)}" cy="${Y(c.val_success[i])}" r="4.5" fill="var(--panel)" stroke="var(--c-ppo)" stroke-width="2"/>`}}
+    lab.sort((a,b)=>a[1]-b[1]);for(let i=1;i<lab.length;i++)if(lab[i][1]-lab[i-1][1]<12)lab[i][1]=lab[i-1][1]+12;
+    lab.forEach(([k,y,x])=>svg+=`<text x="${x}" y="${y}" style="fill:var(--c-ppo)">ppo_${k}</text>`);
+    host.innerHTML=svg+'</svg>'});
+  $('#t-f6').innerHTML='<tr><th>比較（A vs B）</th><th>只 A 成功 / 只 B 成功</th><th>成功率差</th><th>Holm p</th></tr>'+f6.map(r=>`<tr><td class="mono">${r.comparison.replace(' [mcl]','')}</td><td class="n">${r.only_A} / ${r.only_B}</td><td class="n">${r.diff>0?'+':''}${f2(r.diff)} [${f2(r.lo)}, ${f2(r.hi)}]</td><td class="n">${pv(r.p_holm)}</td></tr>`).join('')}
+
+/* ---------- method notes ---------- */
+function initNotes(){
+  const rc=D.meta.rerun_check,ok=rc.filter(r=>r.match).length,gr=A.gt_rescue.dwa,m=A.meta,nb=m.episodes_total-N_PPO;
+  $('#notes').innerHTML=[
+   ['調校集與測試集嚴格以 seed 切開','調校集 seed 0–999，測試集 seed ≥ 100000；程式碼會拒絕其他組合。planner 參數只在調校集上調過，測試集在凍結前沒有被碰過。'],
+   ['凍結設定與雜湊','所有 planner、全域層、感測器與 MCL 設定寫入 frozen_config.json，其 hash 欄位是<b>去掉 hash 欄位後的 canonical JSON 的 SHA-256</b>（不是檔案位元組的雜湊），另有涵蓋被測程式碼的 code_digest。檔案缺失、被改過或過期時，測試套件會拒絕執行。PPO 另有自己的凍結檔，鏈接到基準雜湊。'],
+   ['確證性與探索性','F1（名義 planner 配對）、F2（GT 對 MCL）與 F6（PPO 對 dwa / pp_stop）是測試前宣告的確證性檢定。F3–F5、F7–F8、熱圖與壓力曲線是探索性的，其中「斷點」分析是看到結果後才加的。所有 p 值在各自家族內做 Holm 校正。'],
+   ['行人讓行的禮讓偏差','行人不會走進幾乎靜止（< 0.3 m/s）的車，那一步會被跳過；移動中的車沒有這個待遇。這對會停車的 planner（pp_stop、dwa、mppi）有利。pp 沒有重規劃或恢復機制，它與其他 planner 的差距有一部分來自設計，不只是避障能力。'],
+   ['調校力道不對稱','pp_stop 試了 37 組候選參數，dwa 與 mppi 各 9 組，pp 沒有調（當參考），PPO 則是另外訓練並在調校集上選 checkpoint。所以「哪個 planner 最好」的說法一律保守；名義條件下 dwa 與 pp_stop 的差距不顯著。'],
+   ['loc_induced 是相關性標籤',`失敗的 MCL episode 在最後 10 秒內位置誤差曾超過 1 m 就標為 loc_induced；若 planner 因別的原因撞車而 MCL 剛好也偏了，會被誤標。反事實檢查是「GT 救援率」：名義條件下 dwa 在 MCL 失敗的情境用 GT 解決 ${Math.round(gr.gt_solves*100)}%，與兩個 arm 互換的隨機基準（GT 失敗的情境用 MCL 解決 ${Math.round(gr.mcl_solves*100)}%）幾乎相同，表示名義失敗大多與定位無關。`],
+   ['PPO 的範圍','頁面上的 ppo 是 ppo_s1，規則是調校集選擇分數的中位數 seed，在測試前凍結。訓練的壓力課程只到各軸等級 3，等級 4 與 hall 家族從未見過，所以那些結果是外推測試。PPO 以替代的位姿雜訊訓練，不是真正的 MCL。'],
+   ['重播只是示意，不是證據',`重播是重新執行 repo 的 runner 並以 5 Hz 取樣。${rc.length} 個重播 episode 中 ${ok} 個的結果類別與時長與 CSV 完全一致。隨機抽樣的三個情境以固定種子 ${D.meta.random_seed} 從 240 個名義測試情境抽出；其餘兩個為了展示差異而挑選，MCL 失效情境也是為了展示失效而挑選。整體結論請看彙總統計。`],
+   ['範圍限制','全部是 2D 模擬、單一車輛模型（自行車模型）、程序生成地圖與 LiDAR 模擬，不含真實感測資料。']
+  ].map(([a,b])=>`<li><b>${a}</b><span>${b}</span></li>`).join('');
+  $('#hashes').innerHTML=[['凍結設定 hash（canonical JSON SHA-256）',m.frozen_hash],['code digest（被測原始碼 SHA-256）',m.code_digest],['PPO 凍結檔 hash（同樣的 canonical JSON SHA-256）',m.ppo_hash],['測試 episode 數',`${m.episodes_total.toLocaleString()} = 基準 ${nb.toLocaleString()} + PPO ${N_PPO.toLocaleString()}`]].map(([k,v])=>`<div style="min-width:0"><span>${k}</span><br><b>${v}</b></div>`).join('')}
+
+async function main(){
+  readTheme();
+  try{[D,A]=await Promise.all([fetch('data.json').then(r=>r.json()),fetch('agg.json').then(r=>r.json())])}
+  catch(e){$('#app').innerHTML='<p class="err">無法載入 data.json / agg.json：'+e.message+'</p>';return}
+  initHero();initMatrix();initT1();initT2();initT3();initV2();initV1();initPPO();initNotes();
+}
+main();
+</script>
+</body>
+</html>

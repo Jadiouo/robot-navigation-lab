@@ -1,5 +1,7 @@
 # navlab: where do navigation stacks break under uncertainty?
 
+Interactive results: https://jadiouo.github.io/robot-navigation-lab/viewer/
+
 A 2-D car-like robot navigates procedurally generated maps with a noisy LiDAR, biased odometry, a Monte Carlo localizer (MCL), unmapped static boxes and moving pedestrians. The project asks one question:
 
 > As sensing noise, odometry bias, crowd density / speed and map mismatch increase, where and how does each navigation stack break?
