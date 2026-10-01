@@ -1,0 +1,31 @@
+{
+  "freeze": {
+    "ppo_hash": "93a21bec4faa1eba00dc8d58dc1f3695cd257fad5951ae3e93d652ed969d0d3d",
+    "baseline_hash": "de26663d705a2af16fc982bed3e23930158354f644d4633adbf397e834200fff",
+    "baseline_code_digest": "89ef94496adeeb0c839a15c8a91671478e076879b43f66103ec378808cd1f617"
+  },
+  "nominal": {
+    "episodes_run": 1440,
+    "episodes_skipped_resume": 0,
+    "wall_s": 86.82815217971802,
+    "workers": 14,
+    "n_scenarios": 240,
+    "n_jobs": 1440
+  },
+  "stress": {
+    "episodes_run": 8640,
+    "episodes_skipped_resume": 0,
+    "wall_s": 644.7867705821991,
+    "workers": 14,
+    "n_scenarios": 60,
+    "n_jobs": 8640
+  },
+  "mclbreak": {
+    "episodes_run": 1440,
+    "episodes_skipped_resume": 0,
+    "wall_s": 117.45746612548828,
+    "workers": 14,
+    "n_scenarios": 60,
+    "n_jobs": 1440
+  }
+}

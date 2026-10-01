@@ -83,3 +83,39 @@ rooms/crowd+outliers: pp gt vs mcl,60,2,1,0,57,0.05,0.0333,0.0167,0.0,0.05,1.0,2
 rooms/crowd+outliers: pp_stop gt vs mcl,60,0,2,1,57,0.0333,0.0167,0.0167,-0.0333,0.0833,1.0,0,nan,nan,nan,,pp_stop/gt,pp_stop/mcl,F5 MCL-break suite: GT vs MCL,1.0,
 rooms/crowd+outliers: dwa gt vs mcl,60,1,1,2,56,0.0333,0.05,-0.0167,-0.0833,0.0333,1.0,1,nan,nan,nan,,dwa/gt,dwa/mcl,F5 MCL-break suite: GT vs MCL,1.0,
 rooms/crowd+outliers: mppi gt vs mcl,60,0,0,0,60,0.0,0.0,0.0,0.0,0.0,1.0,0,nan,nan,nan,,mppi/gt,mppi/mcl,F5 MCL-break suite: GT vs MCL,1.0,
+ppo_s0 vs dwa [gt],240,106,31,70,33,0.5708,0.7333,-0.1625,-0.2417,-0.0833,0.0001,106,-4.8835,-6.0535,-3.7764,gt,ppo_s0,dwa,F6 PPO seeds vs baselines (nominal),0.001,
+ppo_s0 vs pp_stop [gt],240,115,22,54,49,0.5708,0.7042,-0.1333,-0.2,-0.0625,0.0003,115,-2.5096,-3.0722,-1.8939,gt,ppo_s0,pp_stop,F6 PPO seeds vs baselines (nominal),0.0021,
+ppo_s0 vs dwa [mcl],240,109,30,66,35,0.5792,0.7292,-0.15,-0.225,-0.0708,0.0003,109,-5.4009,-6.7368,-4.1624,mcl,ppo_s0,dwa,F6 PPO seeds vs baselines (nominal),0.0021,
+ppo_s0 vs pp_stop [mcl],240,108,31,60,41,0.5792,0.7,-0.1208,-0.1958,-0.0417,0.0031,108,-2.2171,-2.5995,-1.7815,mcl,ppo_s0,pp_stop,F6 PPO seeds vs baselines (nominal),0.0093,
+ppo_s1 vs dwa [gt],240,116,26,60,38,0.5917,0.7333,-0.1417,-0.2167,-0.0708,0.0003,116,-3.8142,-4.8475,-2.8754,gt,ppo_s1,dwa,F6 PPO seeds vs baselines (nominal),0.0021,
+ppo_s1 vs pp_stop [gt],240,119,23,50,48,0.5917,0.7042,-0.1125,-0.1792,-0.0417,0.0021,119,-1.8769,-2.2937,-1.4618,gt,ppo_s1,pp_stop,F6 PPO seeds vs baselines (nominal),0.0085,
+ppo_s1 vs dwa [mcl],240,121,27,54,38,0.6167,0.7292,-0.1125,-0.1833,-0.0417,0.0036,121,-4.3868,-5.7756,-3.093,mcl,ppo_s1,dwa,F6 PPO seeds vs baselines (nominal),0.0093,
+ppo_s1 vs pp_stop [mcl],240,121,27,47,45,0.6167,0.7,-0.0833,-0.15,-0.0125,0.0265,121,-1.4579,-1.9757,-0.8488,mcl,ppo_s1,pp_stop,F6 PPO seeds vs baselines (nominal),0.0265,
+ppo_s2 vs dwa [gt],240,97,27,79,37,0.5167,0.7333,-0.2167,-0.2958,-0.1375,0.0,97,-3.1242,-4.5805,-1.7289,gt,ppo_s2,dwa,F6 PPO seeds vs baselines (nominal),0.0,
+ppo_s2 vs pp_stop [gt],240,113,11,56,60,0.5167,0.7042,-0.1875,-0.25,-0.125,0.0,113,-0.4257,-1.3119,0.4846,gt,ppo_s2,pp_stop,F6 PPO seeds vs baselines (nominal),0.0,
+ppo_s2 vs dwa [mcl],240,102,26,73,39,0.5333,0.7292,-0.1958,-0.2708,-0.1208,0.0,102,-3.0843,-4.5074,-1.7926,mcl,ppo_s2,dwa,F6 PPO seeds vs baselines (nominal),0.0,
+ppo_s2 vs pp_stop [mcl],240,107,21,61,51,0.5333,0.7,-0.1667,-0.2375,-0.0958,0.0,107,-0.1449,-0.8336,0.6182,mcl,ppo_s2,pp_stop,F6 PPO seeds vs baselines (nominal),0.0001,
+lidar_sigma@worst: ppo vs dwa,60,23,9,14,14,0.5333,0.6167,-0.0833,-0.2333,0.0667,0.4049,23,-3.4174,-6.8264,-0.9826,,ppo,dwa,"F7 PPO headline vs baselines, worst level (MCL)",1.0,lidar_sigma
+lidar_sigma@worst: ppo vs pp_stop,60,26,6,20,8,0.5333,0.7667,-0.2333,-0.3833,-0.0833,0.0094,26,-1.6442,-3.0,-0.0634,,ppo,pp_stop,"F7 PPO headline vs baselines, worst level (MCL)",0.1029,lidar_sigma
+lidar_dropout@worst: ppo vs dwa,60,29,4,11,16,0.55,0.6667,-0.1167,-0.2333,0.0,0.1185,29,-4.7155,-7.1571,-2.7276,,ppo,dwa,"F7 PPO headline vs baselines, worst level (MCL)",0.5923,lidar_dropout
+lidar_dropout@worst: ppo vs pp_stop,60,28,5,15,12,0.55,0.7167,-0.1667,-0.3,-0.0333,0.0414,28,-1.9286,-2.2821,-1.5625,,ppo,pp_stop,"F7 PPO headline vs baselines, worst level (MCL)",0.3311,lidar_dropout
+lidar_short@worst: ppo vs dwa,60,7,3,12,38,0.1667,0.3167,-0.15,-0.2667,-0.0333,0.0352,7,8.9929,1.8929,16.6214,,ppo,dwa,"F7 PPO headline vs baselines, worst level (MCL)",0.3164,lidar_short
+lidar_short@worst: ppo vs pp_stop,60,6,4,19,31,0.1667,0.4167,-0.25,-0.4,-0.1,0.0026,6,6.85,-2.15,16.1167,,ppo,pp_stop,"F7 PPO headline vs baselines, worst level (MCL)",0.0338,lidar_short
+gyro_bias@worst: ppo vs dwa,60,23,9,18,10,0.5333,0.6833,-0.15,-0.3167,0.0167,0.1221,23,-3.3783,-6.2957,-0.8999,,ppo,dwa,"F7 PPO headline vs baselines, worst level (MCL)",0.5923,gyro_bias
+gyro_bias@worst: ppo vs pp_stop,60,27,5,17,11,0.5333,0.7333,-0.2,-0.35,-0.05,0.0169,27,-0.0722,-2.3241,2.8558,,ppo,pp_stop,"F7 PPO headline vs baselines, worst level (MCL)",0.169,gyro_bias
+speed_scale@worst: ppo vs dwa,60,2,2,15,41,0.0667,0.2833,-0.2167,-0.3333,-0.1,0.0023,2,nan,nan,nan,,ppo,dwa,"F7 PPO headline vs baselines, worst level (MCL)",0.0329,speed_scale
+speed_scale@worst: ppo vs pp_stop,60,2,2,17,39,0.0667,0.3167,-0.25,-0.3833,-0.1167,0.0007,2,nan,nan,nan,,ppo,pp_stop,"F7 PPO headline vs baselines, worst level (MCL)",0.0109,speed_scale
+agent_density@worst: ppo vs dwa,60,5,9,9,37,0.2333,0.2333,0.0,-0.1333,0.1333,1.0,5,-5.03,-9.47,-1.97,,ppo,dwa,"F7 PPO headline vs baselines, worst level (MCL)",1.0,agent_density
+agent_density@worst: ppo vs pp_stop,60,5,9,2,44,0.2333,0.1167,0.1167,0.0167,0.2167,0.0654,5,-1.86,-2.24,-1.5,,ppo,pp_stop,"F7 PPO headline vs baselines, worst level (MCL)",0.458,agent_density
+agent_speed@worst: ppo vs dwa,60,17,5,13,25,0.3667,0.5,-0.1333,-0.2667,0.0,0.0963,17,-3.5941,-7.5441,-0.2206,,ppo,dwa,"F7 PPO headline vs baselines, worst level (MCL)",0.5775,agent_speed
+agent_speed@worst: ppo vs pp_stop,60,17,5,8,30,0.3667,0.4167,-0.05,-0.1667,0.0667,0.5811,17,-1.0088,-2.6648,1.2941,,ppo,pp_stop,"F7 PPO headline vs baselines, worst level (MCL)",1.0,agent_speed
+hidden_density@worst: ppo vs dwa,60,24,4,18,14,0.4667,0.7,-0.2333,-0.3833,-0.1,0.0043,24,-3.7479,-6.473,-1.3979,,ppo,dwa,"F7 PPO headline vs baselines, worst level (MCL)",0.0521,hidden_density
+hidden_density@worst: ppo vs pp_stop,60,25,3,21,11,0.4667,0.7667,-0.3,-0.45,-0.15,0.0003,25,-1.628,-2.534,-0.286,,ppo,pp_stop,"F7 PPO headline vs baselines, worst level (MCL)",0.0044,hidden_density
+hall/clean: ppo vs dwa [mcl],60,60,0,0,0,1.0,1.0,0.0,0.0,0.0,1.0,60,-3.6942,-3.8108,-3.5775,,ppo,dwa,"F8 PPO headline vs baselines, MCL-break (MCL)",1.0,
+hall/clean: ppo vs pp_stop [mcl],60,60,0,0,0,1.0,1.0,0.0,0.0,0.0,1.0,60,-2.6025,-2.6684,-2.5333,,ppo,pp_stop,"F8 PPO headline vs baselines, MCL-break (MCL)",1.0,
+hall/odom_bias: ppo vs dwa [mcl],60,0,1,41,18,0.0167,0.6833,-0.6667,-0.7833,-0.5333,0.0,0,nan,nan,nan,,ppo,dwa,"F8 PPO headline vs baselines, MCL-break (MCL)",0.0,
+hall/odom_bias: ppo vs pp_stop [mcl],60,0,1,39,20,0.0167,0.65,-0.6333,-0.7667,-0.5,0.0,0,nan,nan,nan,,ppo,pp_stop,"F8 PPO headline vs baselines, MCL-break (MCL)",0.0,
+hall/odom_bias+hidden: ppo vs dwa [mcl],60,1,1,39,19,0.0333,0.6667,-0.6333,-0.7667,-0.5,0.0,1,nan,nan,nan,,ppo,dwa,"F8 PPO headline vs baselines, MCL-break (MCL)",0.0,
+hall/odom_bias+hidden: ppo vs pp_stop [mcl],60,1,1,32,26,0.0333,0.55,-0.5167,-0.65,-0.3833,0.0,1,nan,nan,nan,,ppo,pp_stop,"F8 PPO headline vs baselines, MCL-break (MCL)",0.0,
+rooms/crowd+outliers: ppo vs dwa [mcl],60,0,1,3,56,0.0167,0.05,-0.0333,-0.1,0.0333,0.625,0,nan,nan,nan,,ppo,dwa,"F8 PPO headline vs baselines, MCL-break (MCL)",1.0,
+rooms/crowd+outliers: ppo vs pp_stop [mcl],60,0,1,1,58,0.0167,0.0167,0.0,-0.05,0.05,1.0,0,nan,nan,nan,,ppo,pp_stop,"F8 PPO headline vs baselines, MCL-break (MCL)",1.0,
