@@ -1,0 +1,13 @@
+scenario,arm,n_runs,success_rate,collision_rate,loc_rmse_m,loc_max_m,yaw_rmse_rad,cte_true_rmse_m,cte_true_max_m
+open,gt,1,1.0,0.0,0.0,0.0,0.0,0.0,0.0
+open,mcl,10,1.0,0.0,0.0299,0.1238,0.0054,0.0202,0.0507
+open,mcl_degraded,10,0.2,0.8,0.3676,0.7546,0.0116,0.0395,0.1303
+open,odometry_degraded,10,0.0,1.0,2.2967,6.0197,0.1332,2.0396,5.7952
+detour,gt,1,1.0,0.0,0.0,0.0,0.0,0.3163,0.7163
+detour,mcl,10,1.0,0.0,0.042,0.1072,0.006,0.3071,0.7577
+detour,mcl_degraded,10,1.0,0.0,0.2893,0.68,0.0195,0.3373,0.8333
+detour,odometry_degraded,10,0.0,0.0,5.2632,6.7559,1.7255,4.1193,5.6503
+tracking-S,gt,1,1.0,0.0,0.0,0.0,0.0,0.2341,0.5748
+tracking-S,mcl,10,1.0,0.0,0.0308,0.0727,0.0053,0.2395,0.6068
+tracking-S,mcl_degraded,10,1.0,0.0,0.1649,0.2822,0.0132,0.276,0.6303
+tracking-S,odometry_degraded,10,0.0,0.1,8.6082,11.174,1.5821,7.7047,9.5938
