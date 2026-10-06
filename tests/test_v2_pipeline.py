@@ -172,12 +172,71 @@ def test_finalize_refuses_to_overwrite(fake_freeze, tmp_path, monkeypatch):
     selection.write_text(json.dumps({str(k): v for k, v in sel.items()}))
     out = tmp_path / "out" / "ppo2_frozen.json"
     kw = dict(obs_spec={"n": 1}, reward_version="r", speed_feature_version="s", weights=w, check_spec=False)
-    a = finalize_ppo2(selection, {"source": "t"}, out, **kw)
+    a = finalize_ppo2(selection, {"source": "t", "final_steps": {"0": 100, "1": 300, "2": 200}}, out, **kw)
     assert out.exists() and a["hash"] == json.loads(out.read_text())["hash"]
     before = out.read_bytes()
     with pytest.raises(FileExistsError):
-        finalize_ppo2(selection, {"source": "t"}, out, **kw)
+        finalize_ppo2(selection, {"source": "t", "final_steps": {"0": 100, "1": 300, "2": 200}}, out, **kw)
     assert out.read_bytes() == before
+
+
+def _nv_setup(fake_freeze, tmp_path, final_steps):
+    from navlab.v2.finalize import finalize_ppo2
+    _, _, w, sel = fake_freeze
+    selection = tmp_path / "selection.json"
+    selection.write_text(json.dumps({str(k): v for k, v in sel.items()}))
+    main_out = tmp_path / "out" / "ppo2_frozen.json"
+    main = finalize_ppo2(selection, {"source": "t", "final_steps": final_steps}, main_out, obs_spec={"n": 1}, reward_version="r",
+                         speed_feature_version="s", weights=w, check_spec=False)
+    nvw = tmp_path / "weights_nv"
+    nvw.mkdir()
+    for s in range(3):
+        (nvw / f"ppo2nv_seed{s}.npz").write_bytes(bytes([9 + s]) * 64)
+    kw = dict(obs_spec={"n": 1, "use_agent_velocity": False}, reward_version="r", speed_feature_version="s", weights=nvw, check_spec=False,
+              variant="nv", ppo2_path=main_out, main_weights=w)
+    return main, selection, kw
+
+
+def test_finalize_av_records_final_steps_and_their_median(fake_freeze, tmp_path):
+    main, _, _ = _nv_setup(fake_freeze, tmp_path, {"0": 7_999_488, "1": 5_000_000, "2": 6_000_000})
+    assert main["training"]["final_steps_median"] == 6_000_000
+    from navlab.v2.finalize import finalize_ppo2
+    _, _, w, sel = fake_freeze
+    selection = tmp_path / "s2.json"
+    selection.write_text(json.dumps({str(k): v for k, v in sel.items()}))
+    with pytest.raises(ValueError, match="final_steps"):                     # av freeze without per-seed final steps is refused
+        finalize_ppo2(selection, {"source": "t"}, tmp_path / "o2.json", obs_spec={"n": 1}, reward_version="r", speed_feature_version="s", weights=w, check_spec=False)
+
+
+def test_finalize_nv_requires_the_main_median_within_one_rollout_batch(fake_freeze, tmp_path):
+    from navlab.v2.finalize import finalize_ppo2
+    main, selection, kw = _nv_setup(fake_freeze, tmp_path, {"0": 8000, "1": 5000, "2": 6000})
+    ok = {"source": "t", "rollout_batch": 2048, "final_steps": {"0": 6000, "1": 6000 + 2048, "2": 6000 - 2048}}
+    out = tmp_path / "out" / "ppo2nv_frozen.json"
+    bad = {**ok, "final_steps": {"0": 6000, "1": 6000, "2": 6000 + 2049}}
+    with pytest.raises(ValueError, match="ablation budget mismatch"):
+        finalize_ppo2(selection, bad, out, **kw)
+    assert not out.exists()
+    with pytest.raises(ValueError, match="rollout_batch"):
+        finalize_ppo2(selection, {k: v for k, v in ok.items() if k != "rollout_batch"}, out, **kw)
+    with pytest.raises(ValueError, match="lacks final_steps"):
+        finalize_ppo2(selection, {**ok, "final_steps": {"0": 6000, "1": 6000}}, out, **kw)
+    art = finalize_ppo2(selection, ok, out, **kw)
+    assert art["training"]["final_steps_median_main"] == 6000 and out.exists()
+
+
+def test_finalize_nv_refuses_a_main_freeze_without_recorded_median(fake_freeze, tmp_path):
+    from navlab.v2.finalize import finalize_ppo2
+    _, path, w, sel = fake_freeze                       # fixture's main freeze records no final_steps_median
+    selection = tmp_path / "selection.json"
+    selection.write_text(json.dumps({str(k): v for k, v in sel.items()}))
+    nvw = tmp_path / "weights_nv"
+    nvw.mkdir()
+    for s in range(3):
+        (nvw / f"ppo2nv_seed{s}.npz").write_bytes(bytes([9 + s]) * 64)
+    with pytest.raises(ValueError, match="final_steps_median"):
+        finalize_ppo2(selection, {"rollout_batch": 2048, "final_steps": {"0": 1, "1": 1, "2": 1}}, tmp_path / "nv.json", obs_spec={"n": 1, "use_agent_velocity": False},
+                      reward_version="r", speed_feature_version="s", weights=nvw, check_spec=False, variant="nv", ppo2_path=path, main_weights=w)
 
 
 # ------------------------------------------------------------------------------------------- pre-run checks

@@ -90,3 +90,27 @@ def select(train_dir: Path, seeds: tuple[int, ...], weights_dir: Path, log_csv: 
         w.writerows(out)
     log_csv.with_name("selection.json" if variant == "av" else "selection_nv.json").write_text(json.dumps({str(k): v for k, v in chosen.items()}, indent=2, sort_keys=True) + "\n")
     return chosen
+
+
+def main(argv: list[str] | None = None) -> int:
+    import argparse
+    from navlab.v2.freeze import weights_dir as default_weights_dir
+    ap = argparse.ArgumentParser(description="PPO v2 stage-2 checkpoint selection (tuning seeds 500-659, GT + MCL); writes weights + selection json")
+    ap.add_argument("--variant", choices=("av", "nv"), required=True)
+    ap.add_argument("--train-dir", type=Path, default=None, help="default: outputs/v2_train/<variant>")
+    ap.add_argument("--weights-dir", type=Path, default=None, help="default: navlab/v2/weights (av) or weights_nv (nv); dry-runs override")
+    ap.add_argument("--log-csv", type=Path, default=None, help="default: outputs/v2_train/<variant>/selection_log.csv (selection.json sits beside it)")
+    ap.add_argument("--seeds", default="0,1,2")
+    ap.add_argument("--top-k", type=int, default=4)
+    ap.add_argument("--n-sel", type=int, default=SEL_N, help="dry-runs only: smaller sample of tuning seeds 500..")
+    ap.add_argument("--workers", type=int, default=14)
+    a = ap.parse_args(argv)
+    train_dir = a.train_dir or Path("outputs/v2_train") / a.variant
+    chosen = select(train_dir, tuple(int(x) for x in a.seeds.split(",")), a.weights_dir or default_weights_dir(a.variant),
+                    a.log_csv or train_dir / "selection_log.csv", a.top_k, a.n_sel, a.workers, variant=a.variant)
+    print(json.dumps({str(k): v for k, v in chosen.items()}, indent=2))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

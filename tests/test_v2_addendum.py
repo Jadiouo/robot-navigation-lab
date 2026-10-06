@@ -103,7 +103,7 @@ def chain(tmp_path, monkeypatch):
         (wnv / f"ppo2nv_seed{s}.npz").write_bytes(bytes([s + 10]) * 64)
     sel = {s: {"step": 100 * s, "val_gt_stage1": 0.8, "sel_gt": 0.70 + 0.05 * s, "sel_mcl": 0.60 + 0.05 * s} for s in range(3)}
     av_spec = ObsSpec2().to_json()
-    main = F.build_ppo2_artifact(seeds=(0, 1, 2), selection=sel, training={"source": "t"}, obs_spec=av_spec, reward_version="r", speed_feature_version="s", weights=wav)
+    main = F.build_ppo2_artifact(seeds=(0, 1, 2), selection=sel, training={"source": "t", "final_steps": {"0": 100, "1": 100, "2": 100}, "final_steps_median": 100}, obs_spec=av_spec, reward_version="r", speed_feature_version="s", weights=wav)
     main_path = tmp_path / "ppo2_frozen.json"
     main_path.write_text(json.dumps(main, indent=2, sort_keys=True))
     kw = dict(seeds=(0, 1, 2), selection=sel, training={"source": "t", "max_steps": 5}, reward_version="r", speed_feature_version="s", weights=wnv,
@@ -191,12 +191,13 @@ def test_finalize_nv_writes_checks_and_refuses_overwrite(chain):
     out = tmp / "o" / "ppo2nv_frozen.json"
     spec = F.nv_spec_of(ObsSpec2().to_json())
     fk = dict(obs_spec=spec, reward_version="r", speed_feature_version="s", weights=wnv, check_spec=True, variant="nv", ppo2_path=main_path, main_weights=wav)
-    art = finalize_ppo2(sel, {"source": "t"}, out, **fk)
+    nvt = {"source": "t", "rollout_batch": 2048, "final_steps": {"0": 100, "1": 100, "2": 100}}
+    art = finalize_ppo2(sel, nvt, out, **fk)
     assert art["variant"] == "nv" and out.exists()
     with pytest.raises(FileExistsError):
-        finalize_ppo2(sel, {"source": "t"}, out, **fk)
+        finalize_ppo2(sel, nvt, out, **fk)
     with pytest.raises(ValueError, match="use_agent_velocity must be False"):
-        finalize_ppo2(sel, {"source": "t"}, tmp / "o2.json", **{**fk, "obs_spec": ObsSpec2().to_json()})
+        finalize_ppo2(sel, nvt, tmp / "o2.json", **{**fk, "obs_spec": ObsSpec2().to_json()})
     assert not (tmp / "o2.json").exists()
 
 
