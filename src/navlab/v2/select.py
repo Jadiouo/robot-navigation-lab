@@ -50,9 +50,11 @@ def _job(args):
 
 
 def select(train_dir: Path, seeds: tuple[int, ...], weights_dir: Path, log_csv: Path, top_k: int = 4, n_sel: int = SEL_N,
-           workers: int = 14, log=print) -> dict:
+           workers: int = 14, log=print, variant: str = "av") -> dict:
     for k in ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS"):
         os.environ[k] = "1"
+    from navlab.v2.freeze import variant_names
+    wf = variant_names(variant)[1]            # 'ppo2_seed' (main arm) or 'ppo2nv_seed' (ablation arm)
     scen = selection_scenarios(n_sel)
     cands: dict[int, list[tuple[Path, float, int]]] = {}
     for s in seeds:
@@ -78,7 +80,7 @@ def select(train_dir: Path, seeds: tuple[int, ...], weights_dir: Path, log_csv: 
                 best = (key, p, step, v1, g, m)
         _, p, step, v1, g, m = best
         weights_dir.mkdir(parents=True, exist_ok=True)
-        shutil.copy(p, weights_dir / f"ppo2_seed{s}.npz")
+        shutil.copy(p, weights_dir / f"{wf}{s}.npz")
         chosen[s] = {"step": step, "val_gt_stage1": v1, "sel_gt": g, "sel_mcl": m}
         log(f"seed {s}: chosen step {step} (stage-1 {v1:.3f}, stage-2 GT {g:.3f} / MCL {m:.3f})")
     log_csv.parent.mkdir(parents=True, exist_ok=True)
@@ -86,5 +88,5 @@ def select(train_dir: Path, seeds: tuple[int, ...], weights_dir: Path, log_csv: 
         w = csv.DictWriter(fh, fieldnames=list(out[0]))
         w.writeheader()
         w.writerows(out)
-    log_csv.with_name("selection.json").write_text(json.dumps({str(k): v for k, v in chosen.items()}, indent=2, sort_keys=True) + "\n")
+    log_csv.with_name("selection.json" if variant == "av" else "selection_nv.json").write_text(json.dumps({str(k): v for k, v in chosen.items()}, indent=2, sort_keys=True) + "\n")
     return chosen

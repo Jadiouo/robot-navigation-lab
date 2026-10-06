@@ -120,9 +120,9 @@ def build_parser() -> argparse.ArgumentParser:
     bv2 = subparsers.add_parser(
         "benchmark-v2",
         help="PPO v2 evaluation on the frozen v2 test set (needs ppo2_frozen.json for every suite) and its paired-test report")
-    bv2.add_argument("--suite", choices=("base", "ppo1", "ppo2", "warehouse", "all", "report"), required=True,
+    bv2.add_argument("--suite", choices=("base", "ppo1", "ppo2", "warehouse", "ppo2nv", "all", "report"), required=True,
                      help="base: pp/pp_stop/dwa/mppi (+ mcl_aug arm); ppo1: ppo_s0..2; ppo2: ppo2_s0..2; warehouse: all planners on the warehouse family; "
-                          "all = the four suites + report; report: summary / paired tests / README from the CSV only")
+                          "ppo2nv: ablation arm ppo2nv_s0..2 incl. its warehouse part (needs ppo2nv_frozen.json); all = base/ppo1/ppo2/warehouse + report; report: summary / paired tests / README from the CSV only")
     bv2.add_argument("--workers", type=int, default=0, help="worker processes (default: all cores)")
     bv2.add_argument("--quick", action="store_true", help="tiny smoke run on tuning seeds with the default config (not evidence; no freeze needed)")
     bv2.add_argument("--output", type=Path, default=None, help="default: docs/results/benchmark_v2 (--quick: outputs/benchmark_v2_quick)")

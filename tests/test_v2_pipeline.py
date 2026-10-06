@@ -26,7 +26,7 @@ ROOT = Path(__file__).resolve().parents[1]
 # ------------------------------------------------------------------------------------------- job counts
 def test_job_counts_match_the_protocol():
     exp = SU.expected_counts(P.load_protocol())
-    assert exp == {"base": 16560, "ppo1": 11520, "ppo2": 11520, "warehouse": 3000}          # hand-derived from the protocol's N
+    assert exp == {"base": 16560, "ppo1": 11520, "ppo2": 11520, "warehouse": 3000, "ppo2nv": 12420}          # hand-derived from the protocol's N
     seeds = v2_test_seeds()
     for s in SU.SUITES:
         jobs = SU.build_suite_jobs(s)
@@ -39,7 +39,7 @@ def test_job_counts_match_the_protocol():
     assert {j[5] for j in base} == {"gt", "mcl", "mcl_aug"}
     aug = [j for j in base if j[5] == "mcl_aug"]
     assert len(aug) == 4 * (240 + 60) and {(j[0], j[1].name) for j in aug} == {("nominal", "nominal"), ("mclbreak", "hall/odom_bias")}
-    assert not any(j[5] == "mcl_aug" for s in ("ppo1", "ppo2", "warehouse") for j in SU.build_suite_jobs(s))
+    assert not any(j[5] == "mcl_aug" for s in ("ppo1", "ppo2", "warehouse", "ppo2nv") for j in SU.build_suite_jobs(s))
     wh = SU.build_suite_jobs("warehouse")
     assert {j[0] for j in wh} == {"warehouse_nominal", "warehouse_crowd"} and {j[2] for j in wh} == {"warehouse"}
     assert len(SU.planners_of("warehouse")) == 10
@@ -266,7 +266,7 @@ def test_family_holm_pads_declared_tests_and_resolves_aliases(tmp_path):
         {"a": ["v2_headline"], "b": ["dwa"], "cond": "nominal", "pose": "mcl", "n_pairs": 20},
         {"a": ["ppo2_s0"], "b": ["pp_stop"], "cond": "nominal", "pose": "mcl", "n_pairs": 20},
         {"a": ["ppo2_s0"], "b": ["ppo_s1"], "cond": "nominal", "pose": "mcl", "n_pairs": 20}]}, "method": {}}}
-    out = R.run_v2_tests(idx, proto, headline="ppo2_s0")
+    out = [t for t in R.run_v2_tests(idx, proto, headline="ppo2_s0") if t["group"] == "G1"]      # G6 / G7 (addendum) are covered in test_v2_addendum
     assert [t["status"] for t in out] == ["ok", "ok", "missing"] and out[0]["A"] == "ppo2_s0"     # alias resolved; ppo_s1 has no rows
     p = [t["mcnemar_p"] for t in out]
     assert p[0] == pytest.approx(0.109375) and p[1] == pytest.approx(2 / 2 ** 14) and p[2] == 1.0
@@ -281,7 +281,7 @@ def test_report_builds_from_a_synthetic_quick_csv(tmp_path):
     for n in ("summary_v2_quick.csv", "paired_tests_v2_quick.csv", "README_v2_quick.md"):
         assert (tmp_path / n).stat().st_size > 100
     tests = list(csv.DictReader((tmp_path / "paired_tests_v2_quick.csv").open()))
-    assert len(tests) == 68 and meta["tests_with_data"] >= 1                                    # 18 + 6 + 24 + 12 + 8 declared tests
+    assert len(tests) == 74 and meta["tests_with_data"] >= 1                                    # 18 + 6 + 24 + 12 + 8 declared tests, + G6 (2) + G7 (4) from the addendum
     g1 = [t for t in tests if t["group"] == "G1" and t["status"] != "missing"]
     assert any(t["only_A_ok"] == "8" and float(t["mcnemar_p"]) == pytest.approx(0.1094, abs=1e-4) for t in g1)
     text = (tmp_path / "README_v2_quick.md").read_text()

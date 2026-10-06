@@ -197,7 +197,9 @@ def window_stats(eps: list[dict]) -> dict:
 def train(seed: int, total_steps: int, out_dir: Path, workers: int = 4, envs_per_worker: int = 2, val_every: int = 150_000,
           n_val: int | None = None, max_hours: float = 2.5, cfg: PPOConfig2 | None = None, use_agent_velocity: bool = True,
           val_seeds: tuple[int, int] = (200, 260), val_poses: tuple[str, ...] = ("gt",), reward: RewardConfig2 | None = None,
-          log=print) -> dict:
+          max_steps: int | None = None, log=print) -> dict:
+    """``total_steps`` fixes the schedule (curriculum / lr decay); ``max_steps`` (optional) stops training once that many env steps are
+    done (a final validation + checkpoint is written at the stop).  The ablation arm uses it: same schedule, step cap = median of the main arm."""
     import torch
     from navlab.v2.evaluate import validation_jobs
     from navlab.v2.policy import save_actor
@@ -350,7 +352,8 @@ def train(seed: int, total_steps: int, out_dir: Path, workers: int = 4, envs_per
             var_y = f_ret.var()
             last_ev = float(1 - ((f_ret - b_val.reshape(-1)) ** 2).mean() / (var_y + 1e-8))
         elapsed = time.time() - t_start
-        if step >= next_val or upd == n_updates - 1 or elapsed > max_hours * 3600:
+        hit_cap = max_steps is not None and step >= max_steps
+        if step >= next_val or upd == n_updates - 1 or elapsed > max_hours * 3600 or hit_cap:
             next_val = step + val_every
             tail = recent[-300:]
             row = {"step": step, "wall_s": round(elapsed, 1), "curriculum": round(u_of(step), 3),
@@ -368,11 +371,14 @@ def train(seed: int, total_steps: int, out_dir: Path, workers: int = 4, envs_per
         if elapsed > max_hours * 3600:
             log(f"[seed {seed}] wall-clock cap reached at step {step}")
             break
+        if hit_cap:
+            log(f"[seed {seed}] max-steps cap reached at step {step}")
+            break
     fh.close()
     pool.close()
     wall = time.time() - t_start
     meta = {"seed": seed, "steps": step, "wall_s": wall, "steps_per_s": step / max(wall, 1e-9), "workers": workers, "envs_per_worker": envs_per_worker,
-            "device": str(device), "config": asdict(cfg), "total_steps_budget": total_steps, "spec": spec.to_json(), "reward": reward.to_json(),
+            "device": str(device), "config": asdict(cfg), "total_steps_budget": total_steps, "max_steps": max_steps, "spec": spec.to_json(), "reward": reward.to_json(),
             "val_seeds": list(val_seeds), "val_poses": list(val_poses), "n_val_jobs": len(val_jobs), "train_range": list(TRAIN_RANGE)}
     (out_dir / "train_meta.json").write_text(json.dumps(meta, indent=2))
     return meta
@@ -387,6 +393,7 @@ def main() -> None:
     ap.add_argument("--workers", type=int, default=4)
     ap.add_argument("--envs-per-worker", type=int, default=2)
     ap.add_argument("--val-every", type=int, default=150_000)
+    ap.add_argument("--max-steps", type=int, default=None, help="stop after this many env steps (the --steps schedule is unchanged); ablation arm: median final steps of the main arm")
     ap.add_argument("--max-hours", type=float, default=2.5)
     ap.add_argument("--use-agent-velocity", action=argparse.BooleanOptionalAction, default=True)
     ap.add_argument("--val-seeds", default="200-259", help="inclusive tuning-seed range for validation (pilot: 900-999)")
@@ -395,7 +402,7 @@ def main() -> None:
     ap.add_argument("--out", type=Path, required=True)
     a = ap.parse_args()
     train(a.seed, a.steps, a.out / f"seed{a.seed}", a.workers, a.envs_per_worker, a.val_every, n_val=a.n_val, max_hours=a.max_hours,
-          use_agent_velocity=a.use_agent_velocity, val_seeds=parse_seed_range(a.val_seeds), val_poses=tuple(a.val_poses.split(",")))
+          use_agent_velocity=a.use_agent_velocity, val_seeds=parse_seed_range(a.val_seeds), val_poses=tuple(a.val_poses.split(",")), max_steps=a.max_steps)
 
 
 if __name__ == "__main__":

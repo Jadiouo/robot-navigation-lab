@@ -1,0 +1,172 @@
+{
+  "baseline_chain": {
+    "code_digest_now": "89ef94496adeeb0c839a15c8a91671478e076879b43f66103ec378808cd1f617",
+    "p3_code_digest": "89ef94496adeeb0c839a15c8a91671478e076879b43f66103ec378808cd1f617",
+    "p3_ppo_frozen_hash": "f7be3e1dee2fc523b85dca401d395e0620b081237171bfa4b1278dc9578ccccf"
+  },
+  "decisions": {
+    "1_main_arm": "ppo2_s0..2 = the full recipe: new reward + pedestrian-velocity features + hall curriculum (level <= 3.5); 3 seeds, about 6 h in total.",
+    "2_ablation_arm": {
+      "budget": "identical env steps: max_steps of every ppo2nv seed = median over the main arm's three seeds of the final env step of the training run (train_meta.json 'steps'); the --steps schedule (curriculum / lr decay) is the main arm's; wall-clock is NOT used as the budget",
+      "checkpoint_selection_and_headline": "the same stage-1 / stage-2 selection on tuning seeds 500-659 and the same median-seed headline rule as the main arm",
+      "freeze": "ppo2nv_frozen.json chains ppo2_frozen.json hash and this addendum's hash; obs_spec must be ObsSpec2 with use_agent_velocity=False and every other field equal to the main arm's",
+      "frozen_artifact": "docs/results/benchmark_v2/ppo2nv_frozen.json",
+      "order": "trained AFTER the main arm is trained, selected and frozen (ppo2_frozen.json), strictly sequentially (never concurrently)",
+      "planners": [
+        "ppo2nv_s0",
+        "ppo2nv_s1",
+        "ppo2nv_s2"
+      ],
+      "recipe": "identical to the main arm (reward, curriculum, PPOConfig2, seeds 0..2, validation, checkpoint selection, headline rule); the ONLY difference is use_agent_velocity=False",
+      "suites": "ppo2nv runs the ppo2 suite set (nominal, stress, mclbreak) and also the warehouse suites (nominal GT+MCL, crowd MCL) inside the 'ppo2nv' suite; main arm, baselines and v1 need only ppo2_frozen.json and may be evaluated before the ablation arm exists",
+      "weights_dir": "src/navlab/v2/weights_nv"
+    },
+    "3_failure_branch": {
+      "condition": "In G1 the test 'ppo2 headline seed @mcl vs dwa @mcl' (nominal, 240 pairs, MCL pose) is significantly WORSE for PPO v2 after Holm correction within G1 (Holm p < 0.05 and success difference < 0).",
+      "if_false": "ppo2 not significantly worse than dwa, or significantly better: report as is; in either case no PPO version may be iterated on this test set afterwards.",
+      "if_true": "STOP ('收攤'): no further PPO version is iterated on this test set; v1 + v2 are written up as a negative result. Any later method (e.g. BC warm start, residual RL) must use brand-new test seeds (>= 400000) and a new protocol."
+    },
+    "4_pilot_role": "The pilot is only a gate for bugs / degenerate solutions (standing still, all-timeout, speed collapse). It is NOT used to choose the arm, nor to tune coefficients (sample and budget too small). If the pilot reveals a bug it may be fixed, but the fix must land before this addendum is frozen or be recorded as a dated addendum revision.",
+    "5_disclosures": [
+      "v2 is one bundled change (reward + speed features + curriculum): the main-arm conclusion is attributed to the recipe as a whole; the effect of the speed features is answered only by the ablation arm (G6).",
+      "Baseline parameters stay as frozen in P3, while PPO went through two rounds of design iteration: tuning effort is asymmetric.",
+      "During training the PPO reward uses ground-truth clearance shaping; the policy input contains no ground truth.",
+      "The warehouse protocol was revised r1 -> r2 after visual QA, before any episode was run.",
+      "The speed-feature thresholds were adjusted on 8 training-range scenarios in a diagnostic.",
+      "The mcl_aug arm is exploratory."
+    ]
+  },
+  "hash": "bc606e219d03aff3b01d67637ff841a7c73e59332ef0399c809c674f4b8e39ad",
+  "kind": "protocol_addendum",
+  "planners": {
+    "v2_ablation_ppo": [
+      "ppo2nv_s0",
+      "ppo2nv_s1",
+      "ppo2nv_s2"
+    ],
+    "v2nv_headline_rule": "the ppo2nv seed with the median tuning-split selection score (same rule as v2_headline); fixed in ppo2nv_frozen.json before any test episode"
+  },
+  "protocol": {
+    "hash": "aba7a45c7972a260ba47de1c834281e697ed93f70ca4a924b580bcec653c6e47",
+    "revision": 2,
+    "worlds_py_sha256": "146b0af8d6258501884e0f95e581fda1dcd3bfb336de4015311612a783c138e6"
+  },
+  "report_rules": [
+    "a declared test without data enters Holm with p = 1 and is labelled 'not yet run' (尚未執行)",
+    "loc_induced counts failed episodes of pose mcl AND mcl_aug"
+  ],
+  "rules": [
+    "This addendum does not change the r2 protocol, the scenario sets, the baselines or the P3 / P4 freezes.",
+    "Nothing in this addendum may be edited after the tag v2-protocol-addendum; changes require a dated revision file that links this hash."
+  ],
+  "status": "frozen before any PPO v2 formal training and before any test episode",
+  "suite_counts": {
+    "base": 16560,
+    "ppo1": 11520,
+    "ppo2": 11520,
+    "ppo2nv": 12420,
+    "ppo2nv_core": 11520,
+    "ppo2nv_warehouse": 900,
+    "warehouse": 3000
+  },
+  "test_families": {
+    "G6": {
+      "desc": "ablation: ppo2 headline vs ppo2nv headline, nominal, 240 pairs, GT and MCL",
+      "n_tests": 2,
+      "tests": [
+        {
+          "a": [
+            "v2_headline"
+          ],
+          "b": [
+            "v2nv_headline"
+          ],
+          "cond": "nominal",
+          "group": "G6",
+          "kind": "paired_mcnemar",
+          "n_pairs": 240,
+          "pose": "gt"
+        },
+        {
+          "a": [
+            "v2_headline"
+          ],
+          "b": [
+            "v2nv_headline"
+          ],
+          "cond": "nominal",
+          "group": "G6",
+          "kind": "paired_mcnemar",
+          "n_pairs": 240,
+          "pose": "mcl"
+        }
+      ],
+      "type": "confirmatory"
+    },
+    "G7": {
+      "desc": "ppo2nv headline vs dwa, pp_stop, nominal, 240 pairs, GT and MCL",
+      "n_tests": 4,
+      "tests": [
+        {
+          "a": [
+            "v2nv_headline"
+          ],
+          "b": [
+            "dwa"
+          ],
+          "cond": "nominal",
+          "group": "G7",
+          "kind": "paired_mcnemar",
+          "n_pairs": 240,
+          "pose": "gt"
+        },
+        {
+          "a": [
+            "v2nv_headline"
+          ],
+          "b": [
+            "dwa"
+          ],
+          "cond": "nominal",
+          "group": "G7",
+          "kind": "paired_mcnemar",
+          "n_pairs": 240,
+          "pose": "mcl"
+        },
+        {
+          "a": [
+            "v2nv_headline"
+          ],
+          "b": [
+            "pp_stop"
+          ],
+          "cond": "nominal",
+          "group": "G7",
+          "kind": "paired_mcnemar",
+          "n_pairs": 240,
+          "pose": "gt"
+        },
+        {
+          "a": [
+            "v2nv_headline"
+          ],
+          "b": [
+            "pp_stop"
+          ],
+          "cond": "nominal",
+          "group": "G7",
+          "kind": "paired_mcnemar",
+          "n_pairs": 240,
+          "pose": "mcl"
+        }
+      ],
+      "type": "exploratory"
+    },
+    "method": {
+      "effect_size": "paired bootstrap of the success difference (navlab.benchmark.stats.paired_bootstrap, 10000 resamples, seed 0, 95% percentile CI)",
+      "multiplicity": "Holm within each family",
+      "test": "exact McNemar on discordant success pairs"
+    }
+  },
+  "version": 1
+}

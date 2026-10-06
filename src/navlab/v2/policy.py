@@ -18,6 +18,7 @@ from navlab.rl.policy import file_digest, mlp_mean, save_actor  # noqa: F401  (r
 from navlab.v2.features import ObsEncoder2, ObsSpec2
 
 WEIGHTS_DIR = Path(__file__).resolve().parent / "weights"
+WEIGHTS_NV_DIR = Path(__file__).resolve().parent / "weights_nv"      # ablation arm (use_agent_velocity=False)
 
 
 def load_actor2(path: Path) -> tuple[list[tuple[np.ndarray, np.ndarray]], ObsSpec2, dict[str, Any]]:
