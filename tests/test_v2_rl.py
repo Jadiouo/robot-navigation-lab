@@ -164,12 +164,12 @@ def test_speed_cap_and_overspeed_penalty():
     assert overspeed_penalty(3.0, 1.5, 1.0, rc) == pytest.approx(p_lo - rc.r_accel_over)   # accelerating while too fast costs extra
     assert overspeed_penalty(3.0, 1.5, -1.0, rc) == p_lo                       # braking does not
     assert overspeed_penalty(5.0, 50.0, 0.0, RewardConfig2.v1_equivalent()) == -0.0 or True
-    assert collision_penalty(0.0, rc) == -10.0 and collision_penalty(4.0, rc) == -30.0 < collision_penalty(1.0, rc)
+    assert collision_penalty(0.0, rc) == -25.0 and collision_penalty(4.0, rc) == -45.0 < collision_penalty(1.0, rc)
     assert collision_penalty(3.0, RewardConfig2.v1_equivalent()) == -25.0
 
 
 def test_collision_reward_depends_on_impact_speed():
-    """Driving straight at full throttle: the terminal reward carries -(10 + 5 v_impact) with the true pre-impact speed."""
+    """Driving straight at full throttle: the terminal reward carries -(25 + 5 v_impact) with the true pre-impact speed."""
     res = []
     for seed, fam in ((1500, "field"), (1501, "rooms"), (1502, "corridors"), (1503, "hall")):
         env = NavEnv2()
@@ -179,7 +179,7 @@ def test_collision_reward_depends_on_impact_speed():
             _, r, _, _, info = env.step(np.array([1.0, 0.0]))
         if info["outcome"].startswith("collision"):
             res.append((info["v_impact"], r))
-            assert info["v_impact"] > 0.0 and r <= -(10.0 + 5.0 * info["v_impact"]) + 0.5      # + at most the small positive progress term
+            assert info["v_impact"] > 0.0 and r <= -(25.0 + 5.0 * info["v_impact"]) + 0.5      # + at most the small positive progress term
     assert res, "at least one scripted straight drive must end in a collision"
     assert max(v for v, _ in res) > 1.0
 

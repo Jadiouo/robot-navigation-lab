@@ -31,7 +31,7 @@ from navlab.rl.features import decode_action
 from navlab.v2.curriculum import sample_condition2, sample_family
 from navlab.v2.features import ObsEncoder2, ObsSpec2
 
-REWARD_VERSION = "ppo2-r1"
+REWARD_VERSION = "ppo2-r2"
 SPEED_BIN = 0.25
 N_SPEED_BINS = 33               # 0 .. 8 m/s in 0.25 m/s bins (last bin: >= 8)
 
@@ -53,7 +53,7 @@ class RewardConfig2:
     v_cap_margin: float = 0.5
     r_over: float = 0.1             # per tick, x (v - v_cap)^2
     r_accel_over: float = 0.05      # per tick, x max(a_accel, 0) while v > v_cap
-    collision_base: float = 10.0
+    collision_base: float = 25.0    # keeps v1's -25 floor: low-speed impacts are never cheaper than v1
     collision_v: float = 5.0        # x v_impact
 
     @staticmethod
