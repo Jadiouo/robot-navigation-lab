@@ -8,6 +8,7 @@ cd "$(dirname "$0")/.."
 ROOT=$PWD
 PY=$ROOT/.venv/bin/python
 export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 PYTHONUNBUFFERED=1
+if [[ "${V2_DEVICE:-cpu}" == "cpu" ]]; then export CUDA_VISIBLE_DEVICES=""; fi   # no GPU touched anywhere in the pipeline
 
 if [[ "${V2_DRY:-0}" == "1" ]]; then
   OUT=$ROOT/outputs/v2_overnight_dry; TRAIN=$OUT/v2_train; BENCH=$OUT/bench; W_AV=$OUT/weights; W_NV=$OUT/weights_nv; FRZ=$OUT/frozen
@@ -18,6 +19,9 @@ else
   STEPS=8000000; MAXH_AV=6.0; MAXH_NV=7.0; VAL_EVERY=500000; TRAIN_EXTRA=(); SEL_EXTRA=()
 fi
 WORKERS_TRAIN=4; WORKERS_EVAL=14
+# learner device for BOTH arms (consistent recipe): V2_DEVICE=cpu|cuda|auto (default cpu: this machine has one shared GPU, GPU work goes through gpujob).
+# Evaluation stages (select / benchmark-v2 / finalize) are numpy-only; CUDA is hidden from them anyway.
+DEVICE=${V2_DEVICE:-cpu}
 mkdir -p "$OUT/logs"
 PLOG=$OUT/pipeline.log
 CURRENT=startup
@@ -45,7 +49,7 @@ train_arm() {   # $1 = av|nv ; extra args after
   mkdir -p "$dir"
   for s in 0 1 2; do
     "$PY" -m navlab.v2.train --seed "$s" --steps "$STEPS" --workers "$WORKERS_TRAIN" --val-every "$VAL_EVERY" --val-poses gt,mcl \
-      --out "$dir" "${TRAIN_EXTRA[@]}" "$@" > "$OUT/logs/train_$arm.seed$s.out" 2> "$OUT/logs/train_$arm.seed$s.err" &
+      --device "$DEVICE" --out "$dir" "${TRAIN_EXTRA[@]}" "$@" > "$OUT/logs/train_$arm.seed$s.out" 2> "$OUT/logs/train_$arm.seed$s.err" &
     pids+=($!)
   done
   log "train_$arm: launched seeds 0 1 2 as PIDs ${pids[*]}"
@@ -59,7 +63,7 @@ provenance() {  # $1 = arm ; writes $OUT/training_$arm.json and logs how each se
 }
 
 # ------------------------------------------------------------------------------------------------ pipeline
-log "PIPELINE START dry=${V2_DRY:-0} steps=$STEPS out=$OUT"
+log "PIPELINE START dry=${V2_DRY:-0} steps=$STEPS out=$OUT learner_device=$DEVICE (both arms)"
 if [[ "${V2_DRY:-0}" != "1" ]]; then
   [[ "$("$PY" -c 'from navlab.benchmark.config import code_digest; print(code_digest())')" == 89ef94496adeeb0c839a15c8a91671478e076879b43f66103ec378808cd1f617 ]] || fail "baseline code digest changed"
 fi

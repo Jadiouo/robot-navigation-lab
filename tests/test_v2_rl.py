@@ -307,3 +307,16 @@ def test_registry_roundtrip_and_missing_weights_fail_late(tmp_path):
         if not reg.weights_path(s).exists():
             with pytest.raises(FileNotFoundError):
                 make_planner(f"ppo2_s{s}", VEH, 4.0, 0)
+
+
+def test_resolve_device_choices():
+    import pytest
+    import torch
+    from navlab.v2.train import resolve_device
+    assert resolve_device(torch, "cpu").type == "cpu"
+    assert resolve_device(torch, "auto").type == ("cuda" if torch.cuda.is_available() else "cpu")
+    with pytest.raises(ValueError):
+        resolve_device(torch, "tpu")
+    if not torch.cuda.is_available():
+        with pytest.raises(RuntimeError):
+            resolve_device(torch, "cuda")

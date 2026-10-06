@@ -194,10 +194,19 @@ def window_stats(eps: list[dict]) -> dict:
             "timeout_rate": sum(e["outcome"] == "timeout" for e in eps) / n, "stuck_rate": sum(e["outcome"] == "stuck" for e in eps) / n}
 
 
+def resolve_device(torch_mod, choice: str = "auto"):
+    """``auto``: CUDA if available else CPU (previous behaviour); ``cpu``: always CPU; ``cuda``: CUDA or error."""
+    if choice not in ("auto", "cpu", "cuda"):
+        raise ValueError(f"device must be auto|cpu|cuda, got {choice!r}")
+    if choice == "cuda" and not torch_mod.cuda.is_available():
+        raise RuntimeError("--device cuda requested but CUDA is not available")
+    return torch_mod.device("cuda" if choice == "cuda" or (choice == "auto" and torch_mod.cuda.is_available()) else "cpu")
+
+
 def train(seed: int, total_steps: int, out_dir: Path, workers: int = 4, envs_per_worker: int = 2, val_every: int = 150_000,
           n_val: int | None = None, max_hours: float = 2.5, cfg: PPOConfig2 | None = None, use_agent_velocity: bool = True,
           val_seeds: tuple[int, int] = (200, 260), val_poses: tuple[str, ...] = ("gt",), reward: RewardConfig2 | None = None,
-          max_steps: int | None = None, log=print) -> dict:
+          max_steps: int | None = None, log=print, device_choice: str = "auto") -> dict:
     """``total_steps`` fixes the schedule (curriculum / lr decay); ``max_steps`` (optional) stops training once that many env steps are
     done (a final validation + checkpoint is written at the stop).  The ablation arm uses it: same schedule, step cap = median of the main arm."""
     import torch
@@ -212,7 +221,7 @@ def train(seed: int, total_steps: int, out_dir: Path, workers: int = 4, envs_per
     (out_dir / "ckpt").mkdir(parents=True, exist_ok=True)
     torch.manual_seed(seed)
     np.random.seed(seed)
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    device = resolve_device(torch, device_choice)
     torch.set_num_threads(1)
     spec = ObsSpec2(use_agent_velocity=use_agent_velocity)
     actor, critic, log_std = _build(torch, spec.dim, cfg.hidden, cfg.log_std_init)
@@ -399,10 +408,11 @@ def main() -> None:
     ap.add_argument("--val-seeds", default="200-259", help="inclusive tuning-seed range for validation (pilot: 900-999)")
     ap.add_argument("--n-val", type=int, default=None, help="use only the first N validation seeds")
     ap.add_argument("--val-poses", default="gt", help="comma list of gt,mcl")
+    ap.add_argument("--device", choices=("auto", "cpu", "cuda"), default="auto", help="learner device (default auto = CUDA if available); recorded in train_meta.json")
     ap.add_argument("--out", type=Path, required=True)
     a = ap.parse_args()
     train(a.seed, a.steps, a.out / f"seed{a.seed}", a.workers, a.envs_per_worker, a.val_every, n_val=a.n_val, max_hours=a.max_hours,
-          use_agent_velocity=a.use_agent_velocity, val_seeds=parse_seed_range(a.val_seeds), val_poses=tuple(a.val_poses.split(",")), max_steps=a.max_steps)
+          use_agent_velocity=a.use_agent_velocity, val_seeds=parse_seed_range(a.val_seeds), val_poses=tuple(a.val_poses.split(",")), max_steps=a.max_steps, device_choice=a.device)
 
 
 if __name__ == "__main__":

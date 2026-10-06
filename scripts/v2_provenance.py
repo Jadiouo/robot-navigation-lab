@@ -48,6 +48,7 @@ def provenance(variant: str, train_dir: Path, extra: dict) -> dict:
         "final_steps": {str(s): int(m["steps"]) for s, m in metas.items()},
         "stop_reason": {str(s): stop_reason(m) for s, m in metas.items()},
         "wall_s": {str(s): round(m["wall_s"], 1) for s, m in metas.items()},
+        "device": {str(s): m.get("device", "unknown") for s, m in metas.items()},
         "total_steps_budget": m0["total_steps_budget"], "max_steps": m0.get("max_steps"), "workers": m0["workers"],
         "envs_per_worker": m0["envs_per_worker"], "rollout_batch": batch, "val_seeds": m0["val_seeds"], "val_poses": m0["val_poses"],
         "use_agent_velocity": bool(m0["spec"]["use_agent_velocity"]), "reward": m0["reward"], "config": m0["config"], **extra,
