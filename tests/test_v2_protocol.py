@@ -63,3 +63,9 @@ def test_fingerprints_reproduce_for_a_sample():
     for fam, seed in (("corridors", 200000), ("warehouse", 300000), ("warehouse", 300059), ("hall", 200010)):
         dyn = generate_scenario_v2(fam, seed)
         assert p["occupancy"][f"{fam}/{seed}"] == map_digest(dyn.scenario.grid.occupancy)
+
+
+def test_protocol_revision_2_records_r1_hash():
+    p = P.load_protocol()
+    assert p["revision"] == 2 and "a2705ddee13dfb11261a793aa4702c7ac829a0151a94e0d2a0691b47a42d51f4" in p["revision_note"]
+    assert p["hash"] != "a2705ddee13dfb11261a793aa4702c7ac829a0151a94e0d2a0691b47a42d51f4"

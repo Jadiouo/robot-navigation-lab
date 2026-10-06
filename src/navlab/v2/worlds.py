@@ -24,6 +24,7 @@ from dataclasses import asdict
 from pathlib import Path
 
 import numpy as np
+from scipy import ndimage
 
 from navlab.core import GridMap, Scenario, VehicleState
 from navlab.world import generator as g
@@ -33,6 +34,9 @@ from navlab.world.scenarios import DynamicScenario
 V2_FAMILIES = ALL_FAMILIES + ("warehouse",)
 WAREHOUSE_FI = 4
 MIN_BLOCK_M = 8.0
+WH_MIN_DIST = 25.0        # m, start-goal straight-line distance
+WH_MIN_RATIO = 1.25       # known-map A* length / straight-line distance
+WH_CLEARANCE = 2.4        # m, start / goal clearance (aisle centre lines of 5.5 m aisles have 2.75 m)
 
 
 # ---------------------------------------------------------------- warehouse map
@@ -116,13 +120,92 @@ def _warehouse(rng: np.random.Generator) -> np.ndarray:
     return occ
 
 
+# ---------------------------------------------------------------- warehouse start / goal (cross-aisle routes)
+def warehouse_bands(known: np.ndarray) -> list[tuple[str, float, float]]:
+    """Horizontal bands ``(kind, y0, y1)`` of the interior, kind in {"aisle", "shelf"}: a map row is "shelf" if more than
+    30% of its cells in x in [2, 58] m are occupied (aisle rows have none; cross aisles never reach 30%)."""
+    h = known.shape[0]
+    frac = known[:, round(2.0 / g.RES):round((g.WIDTH_M - 2.0) / g.RES)].mean(axis=1)
+    lo, hi = round(1.0 / g.RES), h - round(1.0 / g.RES)
+    bands, r = [], lo
+    while r < hi:
+        shelf = bool(frac[r] > 0.3)
+        r2 = r
+        while r2 < hi and bool(frac[r2] > 0.3) == shelf:
+            r2 += 1
+        bands.append(("shelf" if shelf else "aisle", r * g.RES, r2 * g.RES))
+        r = r2
+    return bands
+
+
+def warehouse_route_stats(known: np.ndarray, start, goal, path: np.ndarray) -> dict:
+    """Aisle indices of start / goal, A* length / straight-line ratio and the number of shelf rows the route enters."""
+    bands = warehouse_bands(known)
+    aisles = [b for b in bands if b[0] == "aisle"]
+    shelves = [b for b in bands if b[0] == "shelf"]
+    idx = lambda y: next(i for i, (_, y0, y1) in enumerate(aisles) if y0 <= y < y1)   # noqa: E731
+    crossed = sum(bool(((path[:, 1] > y0) & (path[:, 1] < y1)).any()) for _, y0, y1 in shelves)
+    return {"start_aisle": idx(start[1]), "goal_aisle": idx(goal[1]), "n_aisles": len(aisles),
+            "ratio": g._path_len(path) / math.hypot(start[0] - goal[0], start[1] - goal[1]), "rows_crossed": crossed}
+
+
+def _warehouse_start_goal(rng: np.random.Generator, known: np.ndarray):
+    """Start / goal for the warehouse: ``(start_xy, goal_xy, path)`` or ``None``.
+
+    Both points are sampled from the largest component of cells with clearance >= WH_CLEARANCE (2.4 m, above plan_radius
+    2.2 so global-layer start checks and ``validate`` pass; aisle centre lines of 5.5 m aisles have 2.75 m) and must satisfy
+    ALL of:
+      1. different parallel aisles (``warehouse_route_stats`` start_aisle != goal_aisle; points in a dock recess / outside
+         every aisle band are rejected);
+      2. straight-line distance >= WH_MIN_DIST = 25 m (about 40% of the 60 m width: a route cannot be a short hop, yet aisle
+         centres are only ~8.5 m apart so the lateral part stays feasible);
+      3. known-map A* length >= WH_MIN_RATIO (1.25) x straight-line distance (the route is forced through a cross aisle,
+         not a diagonal along open space);
+      4. the A* route enters the y-extent of at least one shelf row (rows_crossed >= 1), i.e. it passes through a cross aisle;
+      5. the vehicle footprint is >= POSE_MARGIN clear at both poses (same as the generic sampler).
+    """
+    free = g._free_cells(known, WH_CLEARANCE)
+    lab, _ = ndimage.label(free)
+    if lab.max() == 0:
+        return None
+    big = lab == (np.argmax(np.bincount(lab.ravel())[1:]) + 1)
+    cells = g._cell_xy(np.argwhere(big))
+    aisles = [b for b in warehouse_bands(known) if b[0] == "aisle"]
+    if len(cells) < 2 or len(aisles) < 2:
+        return None
+    ai = np.full(len(cells), -1)
+    for i, (_, y0, y1) in enumerate(aisles):
+        ai[(cells[:, 1] >= y0) & (cells[:, 1] < y1)] = i
+    for _ in range(600):
+        ia, ib = rng.integers(len(cells)), rng.integers(len(cells))
+        a, b = cells[ia], cells[ib]
+        if ai[ia] < 0 or ai[ib] < 0 or ai[ia] == ai[ib]:
+            continue
+        d = math.hypot(*(a - b))
+        if d < WH_MIN_DIST:
+            continue
+        path = g._plan(known, tuple(a), tuple(b))
+        if path is None or g._path_len(path) < WH_MIN_RATIO * d:
+            continue
+        st = warehouse_route_stats(known, a, b, path)
+        if st["rows_crossed"] < 1:
+            continue
+        seg = np.hypot(*np.diff(path, axis=0).T)
+        p3 = path[min(int(np.searchsorted(np.concatenate(([0.0], np.cumsum(seg))), 3.0)), len(path) - 1)]
+        if not (g._pose_clear(known, a[0], a[1], math.atan2(p3[1] - path[0][1], p3[0] - path[0][0]), g.POSE_MARGIN)
+                and g._pose_clear(known, b[0], b[1], g._heading_at_end(path), g.POSE_MARGIN)):
+            continue
+        return a, b, path
+    return None
+
+
 # ---------------------------------------------------------------- scenario assembly (copy of generate_scenario's body)
 def _generate(family: str, fi: int, builder, seed: int, stress: ScenarioStress) -> DynamicScenario:
     for attempt in range(20):
         ss = np.random.SeedSequence([GENERATOR_VERSION, fi, int(seed), attempt])
         r_map, r_sg, r_hid, r_agent = (np.random.default_rng(s) for s in ss.spawn(4))
         known = builder(r_map)
-        sg = g._sample_start_goal(r_sg, family, known)
+        sg = _warehouse_start_goal(r_sg, known) if family == "warehouse" else g._sample_start_goal(r_sg, family, known)
         if sg is not None:
             break
     else:

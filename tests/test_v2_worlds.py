@@ -73,13 +73,28 @@ def test_warehouse_valid_and_reliable_on_tuning_range():
             continue
         v = validate(d)
         assert v["known_reachable"] and v["true_reachable"], (s, v)
-        assert v["start_clearance"] > 1.5 and v["goal_clearance"] > 1.5
-        assert np.hypot(d.scenario.start.x - d.scenario.goal[0], d.scenario.start.y - d.scenario.goal[1]) >= 32.0 - 1e-6
+        assert v["start_clearance"] >= W.WH_CLEARANCE - 1e-6 and v["goal_clearance"] >= W.WH_CLEARANCE - 1e-6
+        assert np.hypot(d.scenario.start.x - d.scenario.goal[0], d.scenario.start.y - d.scenario.goal[1]) >= W.WH_MIN_DIST - 1e-6
     assert failures / 200 < 0.01
 
 
 def test_warehouse_qa_pngs_written():
     from navlab.v2.qa import plot_warehouse
     out = Path(__file__).resolve().parents[1] / "notes" / "v2_qa"
-    for s in range(6):
+    for s in range(12):
         assert plot_warehouse(s, out).stat().st_size > 1000
+
+
+def test_warehouse_routes_cross_aisles_on_200_seeds():
+    """r2 criterion: start / goal in different aisles, A* >= 1.25 x straight line, route enters >= 1 shelf row, dist >= 25 m."""
+    st = ScenarioStress(agent_density=0.0, hidden_density=0.0)
+    for seed in range(200):
+        d = W.generate_scenario_v2("warehouse", seed, st)
+        sc = d.scenario
+        a = (sc.start.x, sc.start.y)
+        path = g._plan(sc.grid.occupancy, a, sc.goal)
+        r = W.warehouse_route_stats(sc.grid.occupancy, a, sc.goal, path)
+        assert r["start_aisle"] != r["goal_aisle"], seed
+        assert r["ratio"] >= W.WH_MIN_RATIO - 1e-9, (seed, r)
+        assert r["rows_crossed"] >= 1, (seed, r)
+        assert np.hypot(a[0] - sc.goal[0], a[1] - sc.goal[1]) >= W.WH_MIN_DIST - 1e-6

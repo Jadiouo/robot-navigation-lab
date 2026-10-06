@@ -19,6 +19,10 @@ from navlab.world.generator import GENERATOR_VERSION, ScenarioStress
 ROOT = Path(__file__).resolve().parents[3]
 PROTOCOL_PATH = ROOT / "docs/results/benchmark_v2/test_protocol_v2.json"
 PROTOCOL_VERSION = 1
+PROTOCOL_REVISION = 2
+R1_PROTOCOL_HASH = "a2705ddee13dfb11261a793aa4702c7ac829a0151a94e0d2a0691b47a42d51f4"
+REVISION_NOTE = ("r1 起訖取樣使多數 warehouse 路線停留在單一通道；於任何 planner/episode 執行前，依目視 QA 修正為跨通道取樣。"
+                 " r1 protocol hash: " + R1_PROTOCOL_HASH)
 P3_CODE_DIGEST = "89ef94496adeeb0c839a15c8a91671478e076879b43f66103ec378808cd1f617"
 P3_PPO_HASH = "f7be3e1dee2fc523b85dca401d395e0620b081237171bfa4b1278dc9578ccccf"
 
@@ -76,6 +80,8 @@ def build_protocol() -> dict:
     mcl_break_names = [c.name for _, c in MCL_BREAK]
     proto = {
         "version": PROTOCOL_VERSION,
+        "revision": PROTOCOL_REVISION,
+        "revision_note": REVISION_NOTE,
         "generator_version": GENERATOR_VERSION,
         "status": "frozen before any v2 training / pilot / evaluation; no planner has been run on these scenarios",
         "baseline_chain": {"p3_code_digest": P3_CODE_DIGEST, "p3_ppo_frozen_hash": P3_PPO_HASH,
