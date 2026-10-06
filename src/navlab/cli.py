@@ -36,6 +36,15 @@ def _benchmark_uncertainty(arguments: argparse.Namespace) -> int:
     return 0
 
 
+def _benchmark_v2(arguments: argparse.Namespace) -> int:
+    from navlab.v2.suites import DEFAULT_OUT, run_v2_suites
+
+    output = arguments.output or (Path("outputs/benchmark_v2_quick") if arguments.quick else DEFAULT_OUT)
+    meta = run_v2_suites(arguments.suite, output, workers=arguments.workers, quick=arguments.quick)
+    print(json.dumps(meta, indent=2))
+    return 0
+
+
 def _train(arguments: argparse.Namespace) -> int:
     try:
         from navlab.experimental.learning.ppo import PPOConfig, train_three_seeds
@@ -108,6 +117,16 @@ def build_parser() -> argparse.ArgumentParser:
     bu.add_argument("--output", type=Path, default=Path("docs/results/benchmark"))
     bu.add_argument("--config", type=Path, default=None, help="frozen config path (default: <output>/frozen_config.json)")
     bu.set_defaults(handler=_benchmark_uncertainty)
+    bv2 = subparsers.add_parser(
+        "benchmark-v2",
+        help="PPO v2 evaluation on the frozen v2 test set (needs ppo2_frozen.json for every suite) and its paired-test report")
+    bv2.add_argument("--suite", choices=("base", "ppo1", "ppo2", "warehouse", "all", "report"), required=True,
+                     help="base: pp/pp_stop/dwa/mppi (+ mcl_aug arm); ppo1: ppo_s0..2; ppo2: ppo2_s0..2; warehouse: all planners on the warehouse family; "
+                          "all = the four suites + report; report: summary / paired tests / README from the CSV only")
+    bv2.add_argument("--workers", type=int, default=0, help="worker processes (default: all cores)")
+    bv2.add_argument("--quick", action="store_true", help="tiny smoke run on tuning seeds with the default config (not evidence; no freeze needed)")
+    bv2.add_argument("--output", type=Path, default=None, help="default: docs/results/benchmark_v2 (--quick: outputs/benchmark_v2_quick)")
+    bv2.set_defaults(handler=_benchmark_v2)
     train = subparsers.add_parser("train", help="train bounded PPO steering runs on CPU")
     train.add_argument("--output", type=Path, required=True)
     train.add_argument("--seeds", nargs=3, type=int, default=[0, 1, 2])
