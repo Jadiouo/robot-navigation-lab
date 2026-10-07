@@ -1,0 +1,46 @@
+{
+  "freeze": {
+    "ppo2_hash": "f17be4fd9e9964e20911a5fc8f72277b2b3b54e067cd72637568e4070f11748c",
+    "ppo1_hash": "f7be3e1dee2fc523b85dca401d395e0620b081237171bfa4b1278dc9578ccccf",
+    "baseline_hash": "de26663d705a2af16fc982bed3e23930158354f644d4633adbf397e834200fff",
+    "baseline_code_digest": "89ef94496adeeb0c839a15c8a91671478e076879b43f66103ec378808cd1f617",
+    "protocol_hash": "aba7a45c7972a260ba47de1c834281e697ed93f70ca4a924b580bcec653c6e47",
+    "addendum_hash": "bc606e219d03aff3b01d67637ff841a7c73e59332ef0399c809c674f4b8e39ad",
+    "ppo2nv_hash": "b472df479f8db24b5fe97830c3878cdf5f07a73a54007b2900cbf1128809a6bf"
+  },
+  "base": {
+    "episodes_run": 16560,
+    "episodes_skipped_resume": 0,
+    "wall_s": 4048.848204612732,
+    "workers": 14,
+    "n_jobs": 16560
+  },
+  "ppo1": {
+    "episodes_run": 11520,
+    "episodes_skipped_resume": 0,
+    "wall_s": 683.4290082454681,
+    "workers": 14,
+    "n_jobs": 11520
+  },
+  "ppo2": {
+    "episodes_run": 11520,
+    "episodes_skipped_resume": 0,
+    "wall_s": 1103.6882123947144,
+    "workers": 14,
+    "n_jobs": 11520
+  },
+  "warehouse": {
+    "episodes_run": 3000,
+    "episodes_skipped_resume": 0,
+    "wall_s": 511.88341212272644,
+    "workers": 14,
+    "n_jobs": 3000
+  },
+  "ppo2nv": {
+    "episodes_run": 12420,
+    "episodes_skipped_resume": 0,
+    "wall_s": 1315.0405311584473,
+    "workers": 14,
+    "n_jobs": 12420
+  }
+}

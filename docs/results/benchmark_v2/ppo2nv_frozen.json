@@ -1,0 +1,168 @@
+{
+  "addendum": {
+    "hash": "bc606e219d03aff3b01d67637ff841a7c73e59332ef0399c809c674f4b8e39ad"
+  },
+  "baseline": {
+    "code_digest": "89ef94496adeeb0c839a15c8a91671478e076879b43f66103ec378808cd1f617",
+    "hash": "de26663d705a2af16fc982bed3e23930158354f644d4633adbf397e834200fff"
+  },
+  "hash": "b472df479f8db24b5fe97830c3878cdf5f07a73a54007b2900cbf1128809a6bf",
+  "headline": {
+    "planner": "ppo2nv_s2",
+    "rule": "median over seeds of the mean (GT, MCL) success of the selected checkpoint on tuning seeds 500-659 (families incl. hall)"
+  },
+  "obs_spec": {
+    "cluster_gap": 0.8,
+    "goal_scale": 20.0,
+    "k_agents": 4,
+    "lags": [
+      0,
+      2,
+      4
+    ],
+    "max_extent": 3.0,
+    "max_resid": 0.12,
+    "max_speed": 6.0,
+    "min_points": 2,
+    "min_speed": 0.5,
+    "min_track": 3,
+    "n_sectors": 40,
+    "path_ahead": [
+      1.0,
+      2.0,
+      4.0,
+      6.0,
+      9.0,
+      13.0
+    ],
+    "path_scale": 15.0,
+    "scan_range": 15.0,
+    "static_tol": 0.7,
+    "tca_max": 8.0,
+    "use_agent_velocity": false,
+    "v_scale": 4.0,
+    "vel_history": 6
+  },
+  "planner_overrides": {
+    "ppo2nv_s0": {},
+    "ppo2nv_s1": {},
+    "ppo2nv_s2": {}
+  },
+  "ppo2_frozen": {
+    "hash": "f17be4fd9e9964e20911a5fc8f72277b2b3b54e067cd72637568e4070f11748c"
+  },
+  "ppo_v1": {
+    "hash": "f7be3e1dee2fc523b85dca401d395e0620b081237171bfa4b1278dc9578ccccf"
+  },
+  "protocol": {
+    "hash": "aba7a45c7972a260ba47de1c834281e697ed93f70ca4a924b580bcec653c6e47",
+    "worlds_py_sha256": "146b0af8d6258501884e0f95e581fda1dcd3bfb336de4015311612a783c138e6"
+  },
+  "reward_version": "ppo2-r2",
+  "speed_feature_version": "agentvel-v1",
+  "training": {
+    "config": {
+      "clip": 0.2,
+      "curriculum_frac": 0.5,
+      "ent_coef": 0.003,
+      "epochs": 8,
+      "gamma": 0.995,
+      "hidden": 256,
+      "lam": 0.95,
+      "log_std_init": -0.7,
+      "lr": 0.0003,
+      "lr_final_frac": 0.15,
+      "max_grad_norm": 0.5,
+      "minibatch": 1024,
+      "n_steps": 256,
+      "pose_gt_prob": 0.4,
+      "target_kl": 0.03,
+      "vf_coef": 0.5
+    },
+    "device": {
+      "0": "cpu",
+      "1": "cpu",
+      "2": "cpu"
+    },
+    "envs_per_worker": 2,
+    "final_steps": {
+      "0": 7999488,
+      "1": 7999488,
+      "2": 7999488
+    },
+    "final_steps_median_main": 7999488,
+    "git_commit": "9aab6e666609dd523c44b4217b191ebda9f5a98e",
+    "max_hours": 7.0,
+    "max_steps": 7999488,
+    "reward": {
+      "collision_base": 25.0,
+      "collision_v": 5.0,
+      "r_accel_over": 0.05,
+      "r_clear": 0.4,
+      "r_goal": 20.0,
+      "r_goal_speed": 0.1,
+      "r_over": 0.1,
+      "r_progress": 1.0,
+      "r_smooth": 0.05,
+      "r_stuck": -10.0,
+      "r_time": 0.03,
+      "reward_version": "ppo2-r2",
+      "v_cap_decel": 3.0,
+      "v_cap_margin": 0.5,
+      "v_cap_max": 4.0
+    },
+    "rollout_batch": 2048,
+    "source": "navlab.v2.train via scripts/overnight_v2.sh (nv)",
+    "stop_reason": {
+      "0": "max_steps",
+      "1": "max_steps",
+      "2": "max_steps"
+    },
+    "total_steps_budget": 8000000,
+    "use_agent_velocity": false,
+    "val_poses": [
+      "gt",
+      "mcl"
+    ],
+    "val_seeds": [
+      200,
+      260
+    ],
+    "variant": "nv",
+    "wall_s": {
+      "0": 22363.6,
+      "1": 24077.8,
+      "2": 22247.9
+    },
+    "workers": 4
+  },
+  "v2_code_digest": "204d923abae0c9ba3de8833c6589cf2c7fed251202522a7b073472c14cb9a6c0",
+  "variant": "nv",
+  "version": 1,
+  "weights": {
+    "ppo2nv_s0": {
+      "file": "ppo2nv_seed0.npz",
+      "sel_gt": 0.625,
+      "sel_mcl": 0.65625,
+      "sha256": "1484c12263fda942922b78576be7c6e4033ce327f9b2289c3f16438b51e3cd13",
+      "step": 6524928,
+      "val_gt_stage1": 0.65
+    },
+    "ppo2nv_s1": {
+      "file": "ppo2nv_seed1.npz",
+      "sel_gt": 0.0,
+      "sel_mcl": 0.0,
+      "sha256": "89d64a957a8f77288544b23813fea6719bf1e714c5cf001de0f7fc6b1d534335",
+      "step": 7999488,
+      "val_gt_stage1": 0.0
+    },
+    "ppo2nv_s2": {
+      "file": "ppo2nv_seed2.npz",
+      "sel_gt": 0.6125,
+      "sel_mcl": 0.6375,
+      "sha256": "a8260960bd7cc9f49add4ce2638d5ecf247bd5f51155aa5fce40a7cafad4b94c",
+      "step": 7026688,
+      "val_gt_stage1": 0.6583
+    }
+  }
+}

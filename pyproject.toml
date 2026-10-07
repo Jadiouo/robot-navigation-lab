@@ -33,6 +33,7 @@ where = ["src"]
 
 [tool.setuptools.package-data]
 "navlab.rl" = ["weights/*.npz"]
+"navlab.v2" = ["weights/*.npz", "weights_nv/*.npz"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

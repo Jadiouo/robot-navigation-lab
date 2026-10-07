@@ -258,15 +258,15 @@ footer a{color:var(--accent)}
 <section id="s-ppo" aria-labelledby="h-ppo">
   <div class="head">
     <div class="eyebrow">PPO v1 → v2</div>
-    <h2 id="h-ppo">PPO v1 → v2：預先註冊的負面結果</h2>
+    <h2 id="h-ppo">PPO v1 → v2：測試前凍結的負面結果</h2>
     <p class="sub" id="ppo-text"></p>
   </div>
   <div class="panel"><h3>每個 seed 的名義成功率（GT 與 MCL 平均）</h3>
-    <p class="note" style="margin:4px 0 8px">一個點 = 一次訓練（一個 seed），各 240 個名義情境。虛線是 dwa 與 pp_stop。v1 與 v2 的範圍互相重疊，3 對 3 的精確排列檢定 <span id="ppo-perm"></span>，所以不宣稱 v2 比 v1 差。</p>
+    <p class="note" style="margin:4px 0 8px">一個點 = 一次訓練（一個 seed），各 240 個名義情境。虛線是 dwa 與 pp_stop。v1 的三個 seed（0.540–0.644）全都高於 v2 的三個 seed（0.463–0.508），但 3 對 3 精確排列檢定的最小可能 p 值就是 0.10（這裡 <span id="ppo-perm"></span>），因此無法在 seed 層級下結論；我們不宣稱 v2 比 v1 差，也不宣稱沒有差。</p>
     <div class="chart" id="seedplot"></div>
     <div class="legend" id="seedlg"></div></div>
   <div class="panel"><h3>失敗結構：v1 與 v2（名義，GT + MCL 合併，各 3 個 seed）</h3>
-    <p class="note" style="margin:4px 0 8px">v2 修掉了超速撞靜態障礙，但換來更多撞移動物、卡住與逾時；成功回合也慢很多。</p>
+    <p class="note" style="margin:4px 0 8px">v2（整包改動）相對 v1，靜態碰撞下降、動態碰撞／卡住／逾時上升，成功回合較慢（ttg 只計成功回合，有倖存者偏差）；無法歸因到單一改動。</p>
     <div class="chart" id="failplot"></div>
     <div class="legend" id="faillg"></div>
     <p class="note" id="failnote" style="margin-top:8px"></p></div>
@@ -465,10 +465,10 @@ function initHero(){
   const rows=[
    `<b>名義條件下，定位不是瓶頸。</b>用真實位姿（GT）與用 MCL 估計位姿，成功率最多只差 <span class="num">${(h.gt_vs_mcl_nominal_max_abs_diff*100).toFixed(1)}</span> 個百分點（≤ 3 pt）。`,
    `<b>人群密度與里程計尺度誤差拖垮所有方法，各規劃器的弱點不同。</b>行人密度 1→6 讓成功率掉 <span class="num">${Math.round(-dh*100)}–${Math.round(-dl*100)}</span> pt，里程計速度尺度 ×1.0→1.3 掉 <span class="num">${Math.round(-sh*100)}–${Math.round(-sl*100)}</span> pt。${wkTxt}。`,
-   `<b>定位只在「無特徵大廳＋里程計偏差」時才成為主因。</b>這時 GT 位姿全部 <span class="num">${f2(mb.dwa.gt.rate)}</span>，換成 MCL 後 <span class="mono">dwa</span> 掉到 <span class="num">${f2(mb.dwa.mcl.rate)}</span>、<span class="mono">mppi</span> <span class="num">${f2(mb.mppi.mcl.rate)}</span>、<span class="mono">ppo</span> <span class="num">${f2(mb.ppo_s1.mcl.rate)}</span>。`];
-  $('#answer').innerHTML=rows.map((t,i)=>`<li><i>${'abc'[i]}</i><span>${t}</span></li>`).join('')+`<li class="ppo"><i>＋</i><span>PPO 輸了，而且是預先註冊的負面結果：v1 的 ${f6.length} 個確證性檢定中 ${worse} 個顯著比 dwa / pp_stop 差（最大 Holm p = ${pv(maxp)}）；修過的 v2（3 個 seed，新測試 seed）在名義與未見過的倉庫地圖上也顯著比 dwa / pp_stop 差，PPO 這條線依事先凍結的規則就此收攤。</span></li>`;
+   `<b>定位只在「無特徵大廳＋里程計偏差」時才成為主因。</b>這時 GT 位姿全部 <span class="num">${f2(mb.dwa.gt.rate)}</span>，換成 MCL 後 <span class="mono">dwa</span> 掉到 <span class="num">${f2(mb.dwa.mcl.rate)}</span>、<span class="mono">mppi</span> <span class="num">${f2(mb.mppi.mcl.rate)}</span>、<span class="mono">ppo</span> <span class="num">${f2(mb.ppo_s1.mcl.rate)}</span>。但 hall 終點貼近端牆，會在牆前停下的 planner 即使定位錯誤也可能被判成功，因此 hall 類結果高估定位影響。`];
+  $('#answer').innerHTML=rows.map((t,i)=>`<li><i>${'abc'[i]}</i><span>${t}</span></li>`).join('')+`<li class="ppo"><i>＋</i><span>PPO 輸了，是測試前凍結的負面結果：v1 的 ${f6.length} 個確證性檢定中 ${worse} 個顯著比 dwa / pp_stop 差（最大 Holm p = ${pv(maxp)}）；v2（3 個 seed，新測試 seed）在名義條件下顯著比 dwa / pp_stop 差，倉庫地圖上 headline seed 顯著較差（其餘 seed 未檢定），PPO 這條線依事先規則停止。</span></li>`;
   const nb=A.meta.episodes_total-N_PPO;
-  $('#scope').textContent=`依據 ${nb.toLocaleString()} 個基準 episode + ${N_PPO.toLocaleString()} 個 PPO episode = ${A.meta.episodes_total.toLocaleString()} 個凍結後的測試 episode；${PL.length} 個 planner 在相同情境上配對比較。2D 模擬，非實車資料。`;
+  $('#scope').textContent=`依據 v2 全部 ${A.v2.episodes.toLocaleString()} 個凍結後的測試 episode（P3 / P4 的 ${A.meta.episodes_total.toLocaleString()} 個另計）；${PL.length} 個 planner 在相同情境上配對比較。2D 模擬，非實車資料。`;
 }
 function hexRgb(h){h=h.replace('#','');if(h.length===3)h=[...h].map(c=>c+c).join('');return [0,2,4].map(i=>parseInt(h.slice(i,i+2),16))}
 function lum([r,g,b]){const f=v=>{v/=255;return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4)};return .2126*f(r)+.7152*f(g)+.0722*f(b)}
@@ -549,7 +549,7 @@ function initT3(){
 /* ---------- PPO ---------- */
 function initPPO(){
   const f6=A.paired.F6,s=A.ppo_seeds_nominal,V=A.v2;
-  $('#ppo-text').innerHTML=`在凍結的合成基準（新測試 seed 200000+）上，3 個 seed 的 PPO v2 在名義與未見過的 warehouse 家族上<b>都顯著比</b> <span class="mono">dwa</span> 與 <span class="mono">pp_stop</span> 差；它是否比 v1 差、差異來自哪個改動，在 3 個 seed 下無法下定論。依事先凍結的規則，PPO 這條線就此收攤，記錄為負面結果。名義成功率（GT / MCL）：dwa ${f2(V.nominal.dwa.gt.rate)} / ${f2(V.nominal.dwa.mcl.rate)}、pp_stop ${f2(V.nominal.pp_stop.gt.rate)} / ${f2(V.nominal.pp_stop.mcl.rate)}，v2 各 seed ${f2(Math.min(...['ppo2_s0','ppo2_s1','ppo2_s2'].flatMap(k=>[V.nominal[k].gt.rate,V.nominal[k].mcl.rate])))}–${f2(Math.max(...['ppo2_s0','ppo2_s1','ppo2_s2'].flatMap(k=>[V.nominal[k].gt.rate,V.nominal[k].mcl.rate])))}。`;
+  $('#ppo-text').innerHTML=`在凍結的合成基準（新測試 seed 200000+）上，3 個 seed 的 PPO v2 在名義條件上<b>顯著比</b> <span class="mono">dwa</span> 與 <span class="mono">pp_stop</span> 差；在未見過的 warehouse 家族上，v2 headline seed（ppo2_s1）顯著較差（G2），其餘 seed 未做檢定，點估計 ${f2(Math.min(...['ppo2_s0','ppo2_s2'].flatMap(k=>[V.warehouse[k].gt,V.warehouse[k].mcl])))}–${f2(Math.max(...['ppo2_s0','ppo2_s2'].flatMap(k=>[V.warehouse[k].gt,V.warehouse[k].mcl])))}，對照 dwa ${f2(Math.min(V.warehouse.dwa.gt,V.warehouse.dwa.mcl))}–${f2(Math.max(V.warehouse.dwa.gt,V.warehouse.dwa.mcl))}、pp_stop ${f2(Math.min(V.warehouse.pp_stop.gt,V.warehouse.pp_stop.mcl))}–${f2(Math.max(V.warehouse.pp_stop.gt,V.warehouse.pp_stop.mcl))}。它是否比 v1 差、差異來自哪個改動，在 3 個 seed 下無法下定論。PPO 這條線依事先規則停止，記錄為負面結果。名義成功率（GT / MCL）：dwa ${f2(V.nominal.dwa.gt.rate)} / ${f2(V.nominal.dwa.mcl.rate)}、pp_stop ${f2(V.nominal.pp_stop.gt.rate)} / ${f2(V.nominal.pp_stop.mcl.rate)}，v2 各 seed ${f2(Math.min(...['ppo2_s0','ppo2_s1','ppo2_s2'].flatMap(k=>[V.nominal[k].gt.rate,V.nominal[k].mcl.rate])))}–${f2(Math.max(...['ppo2_s0','ppo2_s1','ppo2_s2'].flatMap(k=>[V.nominal[k].gt.rate,V.nominal[k].mcl.rate])))}。`;
   $('#ppo-perm').textContent=`p = ${V.perm_p.toFixed(2)}`;
   const seedplot=()=>{const host=$('#seedplot');
     fit(host,w=>{const H=270,l=40,r=Math.min(100,w*.27),t0=14,b=46,pw=w-l-r,ph=H-t0-b,Y=v=>t0+ph-v*ph;
@@ -581,9 +581,9 @@ function initPPO(){
   const F_=V.failure,pc=(k,o)=>(F_[k][o]*100).toFixed(1);
   $('#failnote').innerHTML=`v1 → v2：撞靜態障礙 ${pc('v1','collision_static')}% → ${pc('v2','collision_static')}%，撞移動物 ${pc('v1','collision_dynamic')}% → ${pc('v2','collision_dynamic')}%，卡住 ${pc('v1','stuck')}% → ${pc('v2','stuck')}%，逾時 ${pc('v1','timeout')}% → ${pc('v2','timeout')}%，成功 ${pc('v1','success')}% → ${pc('v2','success')}%。成功回合平均到達時間 ${F_.v1.ttg.toFixed(1)} s → ${F_.v2.ttg.toFixed(1)} s（dwa 約 ${F_.dwa.ttg.toFixed(0)} s）。各 seed 與 GT / MCL 的數字見 FINDINGS.md。`;
   const g6=V.g6[1],nv=V.seed_means.nv;
-  $('#ppo-abl').innerHTML=`確證性檢定 G6（headline 對 headline，名義 240 對）：拿掉速度特徵的 ppo2nv_s2 高於 ppo2_s1，差 ${g6.diff.toFixed(3)}（Holm p = ${pv(g6.p_holm)}，GT 與 MCL 都顯著）。seed 層級：訓練成功的兩個 seed（${f2(nv[0])}、${f2(nv[2])}）高於 v2 的全部三個 seed。<b>但 ppo2nv_s1 訓練崩潰</b>：從 0.5M 步起訓練與驗證成功率都是 0，學到「煞車＋轉向打滿」的不動局部最優（選擇時分數就是 0；權重雜湊與凍結檔一致，不是 bug）。正確的說法是：<b>訓練成功時，拿掉速度特徵的成功率較高；但 1/3 的消融 seed 完全學不起來，訓練穩定性的差異在 3 個 seed 下無法判斷</b>。凍結流程沒有對全 0 的 seed 設守門，這裡照實揭露。G7：去速度特徵的 headline 仍顯著比 dwa、pp_stop 差。`;
-  $('#ppo-sure').innerHTML=`${V.g1[1]} 個 G1 檢定中 ${V.g1[0]} 個、${V.g2[1]} 個 G2 檢定中 ${V.g2[0]} 個顯著較差（確證性，Holm 校正）；失敗分支規則已觸發（ppo2_s1 對 dwa，MCL，差 ${V.branch.diff.toFixed(3)}，Holm p ${pv(V.branch.p_holm)}）。對 v1 的 McNemar 檢定只量化「固定 policy 的情境抽樣誤差」，不含重訓變異，所以不用它宣稱 v2 比 v1 差。`;
-  $('#ppo-disc').innerHTML=`v2 是整包改動（reward、速度特徵、含 hall 的課程）；PPO 經兩輪設計迭代，baseline 凍結不重調，調校不對稱；reward 訓練時用真值淨空塑形；warehouse 協定 r1 → r2（任何 episode 之前，目視 QA）；行人禮讓規則偏袒會停車的 planner；訓練在 CPU；訓練健康度存疑（「未收斂」與「配方不好」未分開）；mcl_aug 為探索性，不是 augmented MCL 有效的證據。完整揭露：<a href="https://github.com/Jadiouo/robot-navigation-lab/blob/main/docs/results/benchmark_v2/FINDINGS.md">FINDINGS.md</a>、<a href="https://github.com/Jadiouo/robot-navigation-lab/blob/main/docs/results/benchmark_v2/README_v2.md">README_v2.md</a>。`;
+  $('#ppo-abl').innerHTML=`確證性檢定 G6（headline 對 headline，名義 240 對）：ppo2_s1 低於拿掉速度特徵的 ppo2nv_s2，差 ${g6.diff.toFixed(3)}（Holm p = ${pv(g6.p_holm)}，GT 與 MCL 都顯著）；照實寫為顯著，但 1/3 的 nv seed 崩潰。<b>ppo2nv_s1 訓練崩潰</b>：從 0.5M 步起訓練與驗證成功率都是 0，學到「煞車＋轉向打滿」的不動局部最優（選擇時分數就是 0；權重雜湊與凍結檔一致，不是 bug）。<b>不能結論：</b>去掉崩潰的 seed 後，nv 的兩個 seed（${f2(nv[0])}、${f2(nv[2])}）高於 v2 的三個 seed——這是事後篩選（n=2），不構成證據；訓練穩定性的差異在 3 個 seed 下也無法判斷。凍結流程沒有對全 0 的 seed 設守門，這裡照實揭露。G7：去速度特徵的 headline 仍顯著比 dwa、pp_stop 差。`;
+  $('#ppo-sure').innerHTML=`對 dwa／pp_stop：G1 ${V.g1_vs_baselines[0]}/${V.g1_vs_baselines[1]}、G2 ${V.g2[0]-2}/${V.g2[1]-2} 顯著較差（確證性，Holm 校正）。對 v1 headline 的 8 項（G1 ${V.g1[1]-V.g1_vs_baselines[1]}＋G2 2）只量化固定 policy 的情境抽樣誤差，不用於宣稱，其中一項（ppo2_s2@mcl vs ppo_s1@mcl，Holm p=0.052）不顯著。失敗分支規則已觸發（ppo2_s1 對 dwa，MCL，差 ${V.branch.diff.toFixed(3)}，Holm p ${pv(V.branch.p_holm)}）。`;
+  $('#ppo-disc').innerHTML=`v2 是整包改動（reward、速度特徵、含 hall 的課程）；選擇集依家族輪替含 hall（約 25%），會拉高選擇分數（協定只寫 families incl. hall）；PPO 經兩輪設計迭代，baseline 凍結不重調，調校不對稱；reward 訓練時用真值淨空塑形；warehouse 協定 r1 → r2（任何 episode 之前，目視 QA）；行人禮讓規則偏袒會停車的 planner；訓練在 CPU，期間被中斷三次（配方不變，部分執行封存、不進 git）；速度特徵的門檻在 8 個訓練範圍場景上調整；mcl_aug 的實作與 Thrun 標準不同（p_inject>0 即強制 resample）；訓練健康度存疑（「未收斂」與「配方不好」未分開）；mcl_aug 為探索性，不是 augmented MCL 有效的證據。完整揭露：<a href="https://github.com/Jadiouo/robot-navigation-lab/blob/main/docs/results/benchmark_v2/FINDINGS.md">FINDINGS.md</a>、<a href="https://github.com/Jadiouo/robot-navigation-lab/blob/main/docs/results/benchmark_v2/README_v2.md">README_v2.md</a>。`;
   onTheme(()=>{seedplot();failplot()});
   const host=$('#lc'),sty={s0:['5 3',1.6,.75],s1:['',2.8,1],s2:['1.5 3',1.8,.75]},mxs=2.4e6;
   const sel={};A.ppo_selection.forEach(r=>{if(!sel[r.train_seed]||r.sel_mean>sel[r.train_seed].sel_mean)sel[r.train_seed]=r});
@@ -611,7 +611,7 @@ function initNotes(){
    ['行人讓行的禮讓偏差','行人不會走進幾乎靜止（< 0.3 m/s）的車，那一步會被跳過；移動中的車沒有這個待遇。這對會停車的 planner（pp_stop、dwa、mppi）有利。pp 沒有重規劃或恢復機制，它與其他 planner 的差距有一部分來自設計，不只是避障能力。'],
    ['調校力道不對稱','pp_stop 試了 37 組候選參數，dwa 與 mppi 各 9 組，pp 沒有調（當參考），PPO 則是另外訓練並在調校集上選 checkpoint。所以「哪個 planner 最好」的說法一律保守；名義條件下 dwa 與 pp_stop 的差距不顯著。'],
    ['loc_induced 是相關性標籤',`失敗的 MCL episode 在最後 10 秒內位置誤差曾超過 1 m 就標為 loc_induced；若 planner 因別的原因撞車而 MCL 剛好也偏了，會被誤標。反事實檢查是「GT 救援率」：名義條件下 dwa 在 MCL 失敗的情境用 GT 解決 ${Math.round(gr.gt_solves*100)}%，與兩個 arm 互換的隨機基準（GT 失敗的情境用 MCL 解決 ${Math.round(gr.mcl_solves*100)}%）幾乎相同，表示名義失敗大多與定位無關。`],
-   ['PPO 的範圍','頁面上的 ppo 是 ppo_s1，規則是調校集選擇分數的中位數 seed，在測試前凍結。訓練的壓力課程只到各軸等級 3，等級 4 與 hall 家族從未見過，所以那些結果是外推測試。PPO 以替代的位姿雜訊訓練，不是真正的 MCL。'],
+   ['PPO 的範圍','頁面上的 ppo 是 ppo_s1，規則是調校集選擇分數的中位數 seed，在測試前凍結。v1 的壓力課程只到各軸等級 3，等級 4 與 hall 家族從未見過，所以那些結果是外推測試。v2 的課程含 hall、壓力最高到 3.5，warehouse 是唯一的分布外家族。PPO 以替代的位姿雜訊訓練，不是真正的 MCL。'],
    ['重播只是示意，不是證據',`重播是重新執行 repo 的 runner 並以 5 Hz 取樣。${rc.length} 個重播 episode 中 ${ok} 個的結果類別與時長與 CSV 完全一致。隨機抽樣的三個情境以固定種子 ${D.meta.random_seed} 從 240 個名義測試情境抽出；其餘兩個為了展示差異而挑選，MCL 失效情境也是為了展示失效而挑選。整體結論請看彙總統計。`],
    ['範圍限制','全部是 2D 模擬、單一車輛模型（自行車模型）、程序生成地圖與 LiDAR 模擬，不含真實感測資料。']
   ].map(([a,b])=>`<li><b>${a}</b><span>${b}</span></li>`).join('');
