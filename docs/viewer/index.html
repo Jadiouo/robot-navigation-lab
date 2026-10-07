@@ -16,7 +16,7 @@
   --bg:#eceff1; --panel:#fafbfb; --floor:#eef1f3; --ink:#11181c; --ink2:#47535a; --muted:#66727a; --line:#d5dce0; --wall:#3a464d;
   --accent:#0f6a7a; --accent-ink:#ffffff; --hid:#c0267a; --crit:#c53030; --good:#1f7a3a; --warn:#a86a00;
   --hm-neu:#eef1f2; --hm-neg:#a4301a; --hm-pos:#1f6fb0;
-  --c-pp:#6b6a66; --c-pp_stop:#2a78d6; --c-dwa:#eb6834; --c-mppi:#12996a; --c-ppo:#4a3aa7;
+  --c-pp:#6b6a66; --c-pp_stop:#2a78d6; --c-dwa:#eb6834; --c-mppi:#12996a; --c-ppo:#4a3aa7; --c-v2:#9a6200; --c-nv:#0f6a7a;
   --o-success:#2e9e57; --o-collision_dynamic:#d03b3b; --o-collision_static:#ec835a; --o-timeout:#fab219; --o-stuck:#8b979d; --o-loc_induced:#5a4ab8;
   --font:'Noto Sans TC',system-ui,-apple-system,'PingFang TC','Microsoft JhengHei',sans-serif; --mono:'IBM Plex Mono',ui-monospace,Menlo,Consolas,monospace;
 }
@@ -25,14 +25,14 @@
   --bg:#0d1113; --panel:#161b1e; --floor:#0b0e10; --ink:#eef2f4; --ink2:#aeb8be; --muted:#8a959b; --line:#283035; --wall:#8896a0;
   --accent:#5cc4d6; --accent-ink:#06222a; --hid:#ff7ab8; --crit:#f27a7a; --good:#5fd08a; --warn:#f0b64a;
   --hm-neu:#1b2226; --hm-neg:#ea7552; --hm-pos:#5aa0e0;
-  --c-pp:#9a998f; --c-pp_stop:#3987e5; --c-dwa:#d95926; --c-mppi:#199e70; --c-ppo:#a08fe8;
+  --c-pp:#9a998f; --c-pp_stop:#3987e5; --c-dwa:#d95926; --c-mppi:#199e70; --c-ppo:#a08fe8; --c-v2:#e0b04a; --c-nv:#5cc4d6;
   --o-success:#3ea866; --o-collision_dynamic:#e05a5a; --o-collision_static:#ec835a; --o-timeout:#e0a417; --o-stuck:#7c878d; --o-loc_induced:#9a8cf0}}
 :root[data-theme="dark"]{
   color-scheme:dark;
   --bg:#0d1113; --panel:#161b1e; --floor:#0b0e10; --ink:#eef2f4; --ink2:#aeb8be; --muted:#8a959b; --line:#283035; --wall:#8896a0;
   --accent:#5cc4d6; --accent-ink:#06222a; --hid:#ff7ab8; --crit:#f27a7a; --good:#5fd08a; --warn:#f0b64a;
   --hm-neu:#1b2226; --hm-neg:#ea7552; --hm-pos:#5aa0e0;
-  --c-pp:#9a998f; --c-pp_stop:#3987e5; --c-dwa:#d95926; --c-mppi:#199e70; --c-ppo:#a08fe8;
+  --c-pp:#9a998f; --c-pp_stop:#3987e5; --c-dwa:#d95926; --c-mppi:#199e70; --c-ppo:#a08fe8; --c-v2:#e0b04a; --c-nv:#5cc4d6;
   --o-success:#3ea866; --o-collision_dynamic:#e05a5a; --o-collision_static:#ec835a; --o-timeout:#e0a417; --o-stuck:#7c878d; --o-loc_induced:#9a8cf0}
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
@@ -226,6 +226,7 @@ footer a{color:var(--accent)}
     <div class="rows" id="mrows"></div>
   </div>
   <p class="sure"><b>多確定</b><span id="t3-sure"></span></p>
+  <p class="sure"><b>設計注意</b><span>這個基準的大廳終點貼近端牆：會在牆前停下的 planner，即使定位錯了也可能被判成功，所以大廳類結果<b>高估</b>了定位品質的影響（同一個注意事項也適用於前一份 P3 結果）。詳見 <a href="https://github.com/Jadiouo/robot-navigation-lab/blob/main/docs/results/benchmark_v2/FINDINGS.md">FINDINGS.md</a>。</span></p>
 </section>
 
 <!-- 4. replay -->
@@ -256,15 +257,27 @@ footer a{color:var(--accent)}
 <!-- 5. PPO -->
 <section id="s-ppo" aria-labelledby="h-ppo">
   <div class="head">
-    <div class="eyebrow">PPO v1 <span class="tag v2" style="margin-left:6px;letter-spacing:0;text-transform:none">v2 開發中</span></div>
-    <h2 id="h-ppo">學出來的 PPO v1 輸給 dwa 與 pp_stop，而且 seed 之間差很多</h2>
+    <div class="eyebrow">PPO v1 → v2</div>
+    <h2 id="h-ppo">PPO v1 → v2：預先註冊的負面結果</h2>
     <p class="sub" id="ppo-text"></p>
   </div>
-  <div class="two" style="grid-template-columns:minmax(0,1fr)">
+  <div class="panel"><h3>每個 seed 的名義成功率（GT 與 MCL 平均）</h3>
+    <p class="note" style="margin:4px 0 8px">一個點 = 一次訓練（一個 seed），各 240 個名義情境。虛線是 dwa 與 pp_stop。v1 與 v2 的範圍互相重疊，3 對 3 的精確排列檢定 <span id="ppo-perm"></span>，所以不宣稱 v2 比 v1 差。</p>
+    <div class="chart" id="seedplot"></div>
+    <div class="legend" id="seedlg"></div></div>
+  <div class="panel"><h3>失敗結構：v1 與 v2（名義，GT + MCL 合併，各 3 個 seed）</h3>
+    <p class="note" style="margin:4px 0 8px">v2 修掉了超速撞靜態障礙，但換來更多撞移動物、卡住與逾時；成功回合也慢很多。</p>
+    <div class="chart" id="failplot"></div>
+    <div class="legend" id="faillg"></div>
+    <p class="note" id="failnote" style="margin-top:8px"></p></div>
+  <div class="panel"><h3>消融：拿掉行人速度特徵</h3><p id="ppo-abl" style="font-size:14.5px;line-height:1.75;color:var(--ink2);max-width:76ch"></p></div>
+  <p class="sure"><b>多確定</b><span id="ppo-sure"></span></p>
+  <p class="sure"><b>揭露</b><span id="ppo-disc"></span></p>
+  <details class="box"><summary>v1 的學習曲線與確證性檢定 F6（較早的 P3 結果，測試 seed 100000+）</summary>
+    <div class="two" style="grid-template-columns:minmax(0,1fr);padding-bottom:12px">
     <div class="panel"><h3>學習曲線（驗證集，GT 位姿，60 個調校情境）</h3><div class="chart" id="lc" style="margin-top:8px"></div><p class="note" style="margin-top:6px">調校集上的驗證成功率，帶壓力課程，與測試集數字不可直接比較。圓圈是被選中的 checkpoint。</p></div>
     <div class="panel"><h3>確證性檢定 F6（名義 240 對，MCL，Holm 校正）</h3><p class="note" style="margin:4px 0 8px">差值 = 成功率(PPO) − 成功率(基準)。</p><div class="scroll"><table class="t" id="t-f6"></table></div></div>
-  </div>
-  <p class="sure"><b>多確定</b><span id="ppo-sure"></span></p>
+    </div></details>
 </section>
 
 <!-- 6. method -->
@@ -292,7 +305,7 @@ const ci=c=>`${f2(c.rate)} [${f2(c.lo)}, ${f2(c.hi)}]`;
 const pv=p=>p<0.001?'<0.001':p.toFixed(3);
 const pt=(v,d=0)=>(v<0?'−':v>0?'+':'')+Math.abs(v*100).toFixed(d);
 const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
-let TH={};function readTheme(){['ink','ink2','muted','line','wall','floor','panel','hid','crit','accent','bg','hm-neu','hm-neg','hm-pos',...PL.map(p=>'c-'+p)].forEach(n=>TH[n]=css('--'+n))}
+let TH={};function readTheme(){['ink','ink2','muted','line','wall','floor','panel','hid','crit','accent','bg','hm-neu','hm-neg','hm-pos','c-v2','c-nv',...PL.map(p=>'c-'+p)].forEach(n=>TH[n]=css('--'+n))}
 const dirty=[];function onTheme(f){dirty.push(f)}
 function themeChanged(){readTheme();dirty.forEach(f=>f())}
 new MutationObserver(themeChanged).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
@@ -453,7 +466,7 @@ function initHero(){
    `<b>名義條件下，定位不是瓶頸。</b>用真實位姿（GT）與用 MCL 估計位姿，成功率最多只差 <span class="num">${(h.gt_vs_mcl_nominal_max_abs_diff*100).toFixed(1)}</span> 個百分點（≤ 3 pt）。`,
    `<b>人群密度與里程計尺度誤差拖垮所有方法，各規劃器的弱點不同。</b>行人密度 1→6 讓成功率掉 <span class="num">${Math.round(-dh*100)}–${Math.round(-dl*100)}</span> pt，里程計速度尺度 ×1.0→1.3 掉 <span class="num">${Math.round(-sh*100)}–${Math.round(-sl*100)}</span> pt。${wkTxt}。`,
    `<b>定位只在「無特徵大廳＋里程計偏差」時才成為主因。</b>這時 GT 位姿全部 <span class="num">${f2(mb.dwa.gt.rate)}</span>，換成 MCL 後 <span class="mono">dwa</span> 掉到 <span class="num">${f2(mb.dwa.mcl.rate)}</span>、<span class="mono">mppi</span> <span class="num">${f2(mb.mppi.mcl.rate)}</span>、<span class="mono">ppo</span> <span class="num">${f2(mb.ppo_s1.mcl.rate)}</span>。`];
-  $('#answer').innerHTML=rows.map((t,i)=>`<li><i>${'abc'[i]}</i><span>${t}</span></li>`).join('')+`<li class="ppo"><i>＋</i><span>PPO v1 輸了：${f6.length} 個確證性檢定中 ${worse} 個顯著比 dwa / pp_stop 差（最大 Holm p = ${pv(maxp)}）。</span></li>`;
+  $('#answer').innerHTML=rows.map((t,i)=>`<li><i>${'abc'[i]}</i><span>${t}</span></li>`).join('')+`<li class="ppo"><i>＋</i><span>PPO 輸了，而且是預先註冊的負面結果：v1 的 ${f6.length} 個確證性檢定中 ${worse} 個顯著比 dwa / pp_stop 差（最大 Holm p = ${pv(maxp)}）；修過的 v2（3 個 seed，新測試 seed）在名義與未見過的倉庫地圖上也顯著比 dwa / pp_stop 差，PPO 這條線依事先凍結的規則就此收攤。</span></li>`;
   const nb=A.meta.episodes_total-N_PPO;
   $('#scope').textContent=`依據 ${nb.toLocaleString()} 個基準 episode + ${N_PPO.toLocaleString()} 個 PPO episode = ${A.meta.episodes_total.toLocaleString()} 個凍結後的測試 episode；${PL.length} 個 planner 在相同情境上配對比較。2D 模擬，非實車資料。`;
 }
@@ -535,10 +548,43 @@ function initT3(){
 
 /* ---------- PPO ---------- */
 function initPPO(){
-  const f6=A.paired.F6,mb=A.mclbreak['hall/odom_bias'],s=A.ppo_seeds_nominal,tp=A.taxonomy,
-    lo=Math.min(...f6.map(r=>r.diff)),hi=Math.max(...f6.map(r=>r.diff)),maxp=Math.max(...f6.map(r=>r.p_holm));
-  $('#ppo-text').innerHTML=`名義條件下三個 seed 全都顯著比 <span class="mono">dwa</span> 與 <span class="mono">pp_stop</span> 差（差 ${Math.round(-hi*100)}–${Math.round(-lo*100)} 個百分點）。PPO 抵達最快（平均 ${tp.ppo.mcl.ttg} s，dwa ${tp.dwa.mcl.ttg} s）但撞得最多：靜態障礙 ${tp.ppo.mcl.collision_static} 次，dwa 只有 ${tp.dwa.mcl.collision_static} 次。超速不是單一解釋：事後診斷（只在調校集，非凍結結果）把速度壓到 4 m/s，成功率也沒有回升。在 hall/odom_bias，三個 seed 分別是 ${f2(mb.ppo_s0.mcl.rate)} / ${f2(mb.ppo_s1.mcl.rate)} / ${f2(mb.ppo_s2.mcl.rate)}，只看單一 seed 會得到完全不同的結論。v2 仍在開發中，換新的測試切分前不會重跑這份結果。`;
-  $('#ppo-sure').innerHTML=`F6 是測試前宣告的確證性檢定，${f6.length} 項全部為負差，最大 Holm p = ${pv(maxp)}。三個名義成功率（MCL）：${f2(s.ppo_s0.mcl.rate)} / ${f2(s.ppo_s1.mcl.rate)} / ${f2(s.ppo_s2.mcl.rate)}（頁面上的 ppo 是調校分數居中的 ppo_s1，規則在測試前凍結）。訓練的壓力課程只到等級 3，等級 4 與大廳從未見過，那些是外推測試。`;
+  const f6=A.paired.F6,s=A.ppo_seeds_nominal,V=A.v2;
+  $('#ppo-text').innerHTML=`在凍結的合成基準（新測試 seed 200000+）上，3 個 seed 的 PPO v2 在名義與未見過的 warehouse 家族上<b>都顯著比</b> <span class="mono">dwa</span> 與 <span class="mono">pp_stop</span> 差；它是否比 v1 差、差異來自哪個改動，在 3 個 seed 下無法下定論。依事先凍結的規則，PPO 這條線就此收攤，記錄為負面結果。名義成功率（GT / MCL）：dwa ${f2(V.nominal.dwa.gt.rate)} / ${f2(V.nominal.dwa.mcl.rate)}、pp_stop ${f2(V.nominal.pp_stop.gt.rate)} / ${f2(V.nominal.pp_stop.mcl.rate)}，v2 各 seed ${f2(Math.min(...['ppo2_s0','ppo2_s1','ppo2_s2'].flatMap(k=>[V.nominal[k].gt.rate,V.nominal[k].mcl.rate])))}–${f2(Math.max(...['ppo2_s0','ppo2_s1','ppo2_s2'].flatMap(k=>[V.nominal[k].gt.rate,V.nominal[k].mcl.rate])))}。`;
+  $('#ppo-perm').textContent=`p = ${V.perm_p.toFixed(2)}`;
+  const seedplot=()=>{const host=$('#seedplot');
+    fit(host,w=>{const H=270,l=40,r=Math.min(100,w*.27),t0=14,b=46,pw=w-l-r,ph=H-t0-b,Y=v=>t0+ph-v*ph;
+      const grp=[['v1','c-ppo','v1（ppo_s*）','o'],['v2','c-v2','v2（ppo2_s*）','s'],['nv','c-nv','v2 去掉速度特徵（ppo2nv_s*）','d']];
+      const gx=i=>l+pw*(i+.5)/3, dx=[-1,0,1].map(d=>d*Math.min(34,pw/3*.34));
+      let svg=`<svg width="${w}" height="${H}" viewBox="0 0 ${w} ${H}" role="img" aria-label="v1、v2、去速度特徵三組各三個 seed 的名義成功率，對照 dwa 與 pp_stop">`;
+      [0,.25,.5,.75,1].forEach(v=>svg+=`<line x1="${l}" x2="${w-r}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--line)"/><text x="${l-6}" y="${Y(v)+4}" text-anchor="end">${v*100}%</text>`);
+      [['dwa','c-dwa'],['pp_stop','c-pp_stop']].forEach(([k,c],i)=>{const y=Y(V.ref[k]);svg+=`<line x1="${l}" x2="${w-r}" y1="${y}" y2="${y}" stroke="var(--${c})" stroke-width="1.6" stroke-dasharray="6 4"/><text x="${w-r+6}" y="${y+(i?11:-3)}" style="fill:var(--${c})">${k} ${f2(V.ref[k])}</text>`});
+      grp.forEach(([k,c,lab,sh],gi)=>{
+        svg+=`<text x="${gx(gi)}" y="${H-b+30}" text-anchor="middle" class="ink">${k==='nv'?'v2 − 速度特徵':k}</text>`;
+        V.seed_means[k].forEach((m,i)=>{const x=gx(gi)+dx[i],y=Y(m),col=`var(--${c})`,tt=`${lab} s${i}：${f2(m)}`;
+          const mk=sh==='o'?`<circle cx="${x}" cy="${y}" r="6" fill="${col}"/>`:sh==='s'?`<rect x="${x-5.5}" y="${y-5.5}" width="11" height="11" fill="${col}"/>`:`<path d="M${x},${y-7}L${x+7},${y}L${x},${y+7}L${x-7},${y}Z" fill="${col}"/>`;
+          svg+=`<g><title>${tt}</title>${mk}<text x="${x}" y="${H-b+14}" text-anchor="middle">s${i}</text></g>`;
+          if(m>0)svg+=`<text x="${x}" y="${y+22}" text-anchor="middle" class="ink">${f2(m)}</text>`;
+          else svg+=`<text x="${x}" y="${y-14}" text-anchor="middle" style="fill:var(--crit)">0.00 訓練崩潰</text>`})});
+      host.innerHTML=svg+'</svg>'})};
+  seedplot();
+  $('#seedlg').innerHTML=`<span><svg width="14" height="14"><circle cx="7" cy="7" r="6" fill="var(--c-ppo)"/></svg>v1</span><span><svg width="14" height="14"><rect x="1.5" y="1.5" width="11" height="11" fill="var(--c-v2)"/></svg>v2</span><span><svg width="14" height="14"><path d="M7,0L14,7L7,14L0,7Z" fill="var(--c-nv)"/></svg>v2 去掉行人速度特徵（消融）</span>`;
+  // failure structure
+  const FO=[['success','成功'],['collision_static','撞靜態障礙'],['collision_dynamic','撞移動物'],['stuck','卡住'],['timeout','逾時']],FR=[['v1','v1（3 seed）'],['v2','v2（3 seed）'],['dwa','dwa（參考）']];
+  const failplot=()=>{const host=$('#failplot');fit(host,w=>{const rh=34,H=FR.length*(rh+10)+4,l=Math.min(110,w*.26),pw=w-l-4;
+    let svg=`<svg width="${w}" height="${H}" viewBox="0 0 ${w} ${H}" role="img" aria-label="v1、v2、dwa 的失敗結構堆疊條">`;
+    FR.forEach(([k,lab],i)=>{const y=i*(rh+10)+2,d=V.failure[k];svg+=`<text x="${l-8}" y="${y+rh/2+4}" text-anchor="end" class="ink">${lab}</text>`;let x=l;
+      FO.forEach(([o])=>{const ww=d[o]*pw;svg+=`<rect x="${x}" y="${y}" width="${Math.max(ww,0)}" height="${rh}" fill="var(--o-${o})"><title>${lab} ${o} ${(d[o]*100).toFixed(1)}%</title></rect>`;
+        if(ww>34)svg+=`<text x="${x+ww/2}" y="${y+rh/2+4}" text-anchor="middle" style="fill:#fff;font-weight:500">${Math.round(d[o]*100)}%</text>`;x+=ww})});
+    host.innerHTML=svg+'</svg>'})};
+  failplot();
+  $('#faillg').innerHTML=FO.map(([o,n])=>`<span><i class="sw" style="background:var(--o-${o})"></i>${n}</span>`).join('');
+  const F_=V.failure,pc=(k,o)=>(F_[k][o]*100).toFixed(1);
+  $('#failnote').innerHTML=`v1 → v2：撞靜態障礙 ${pc('v1','collision_static')}% → ${pc('v2','collision_static')}%，撞移動物 ${pc('v1','collision_dynamic')}% → ${pc('v2','collision_dynamic')}%，卡住 ${pc('v1','stuck')}% → ${pc('v2','stuck')}%，逾時 ${pc('v1','timeout')}% → ${pc('v2','timeout')}%，成功 ${pc('v1','success')}% → ${pc('v2','success')}%。成功回合平均到達時間 ${F_.v1.ttg.toFixed(1)} s → ${F_.v2.ttg.toFixed(1)} s（dwa 約 ${F_.dwa.ttg.toFixed(0)} s）。各 seed 與 GT / MCL 的數字見 FINDINGS.md。`;
+  const g6=V.g6[1],nv=V.seed_means.nv;
+  $('#ppo-abl').innerHTML=`確證性檢定 G6（headline 對 headline，名義 240 對）：拿掉速度特徵的 ppo2nv_s2 高於 ppo2_s1，差 ${g6.diff.toFixed(3)}（Holm p = ${pv(g6.p_holm)}，GT 與 MCL 都顯著）。seed 層級：訓練成功的兩個 seed（${f2(nv[0])}、${f2(nv[2])}）高於 v2 的全部三個 seed。<b>但 ppo2nv_s1 訓練崩潰</b>：從 0.5M 步起訓練與驗證成功率都是 0，學到「煞車＋轉向打滿」的不動局部最優（選擇時分數就是 0；權重雜湊與凍結檔一致，不是 bug）。正確的說法是：<b>訓練成功時，拿掉速度特徵的成功率較高；但 1/3 的消融 seed 完全學不起來，訓練穩定性的差異在 3 個 seed 下無法判斷</b>。凍結流程沒有對全 0 的 seed 設守門，這裡照實揭露。G7：去速度特徵的 headline 仍顯著比 dwa、pp_stop 差。`;
+  $('#ppo-sure').innerHTML=`${V.g1[1]} 個 G1 檢定中 ${V.g1[0]} 個、${V.g2[1]} 個 G2 檢定中 ${V.g2[0]} 個顯著較差（確證性，Holm 校正）；失敗分支規則已觸發（ppo2_s1 對 dwa，MCL，差 ${V.branch.diff.toFixed(3)}，Holm p ${pv(V.branch.p_holm)}）。對 v1 的 McNemar 檢定只量化「固定 policy 的情境抽樣誤差」，不含重訓變異，所以不用它宣稱 v2 比 v1 差。`;
+  $('#ppo-disc').innerHTML=`v2 是整包改動（reward、速度特徵、含 hall 的課程）；PPO 經兩輪設計迭代，baseline 凍結不重調，調校不對稱；reward 訓練時用真值淨空塑形；warehouse 協定 r1 → r2（任何 episode 之前，目視 QA）；行人禮讓規則偏袒會停車的 planner；訓練在 CPU；訓練健康度存疑（「未收斂」與「配方不好」未分開）；mcl_aug 為探索性，不是 augmented MCL 有效的證據。完整揭露：<a href="https://github.com/Jadiouo/robot-navigation-lab/blob/main/docs/results/benchmark_v2/FINDINGS.md">FINDINGS.md</a>、<a href="https://github.com/Jadiouo/robot-navigation-lab/blob/main/docs/results/benchmark_v2/README_v2.md">README_v2.md</a>。`;
+  onTheme(()=>{seedplot();failplot()});
   const host=$('#lc'),sty={s0:['5 3',1.6,.75],s1:['',2.8,1],s2:['1.5 3',1.8,.75]},mxs=2.4e6;
   const sel={};A.ppo_selection.forEach(r=>{if(!sel[r.train_seed]||r.sel_mean>sel[r.train_seed].sel_mean)sel[r.train_seed]=r});
   fit(host,w=>{const H=250,l=38,r=60,t=10,b=34,pw=w-l-r,ph=H-t-b,X=v=>l+v/mxs*pw,Y=v=>t+ph-v*ph;
