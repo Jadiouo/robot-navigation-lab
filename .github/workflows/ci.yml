@@ -13,7 +13,9 @@ jobs:
         with:
           python-version: "3.12"
       - run: python -m pip install --upgrade pip
-      - run: python -m pip install '.[dev]'
+      # CPU torch: tests/test_v2_rl.py exercises the v2 trainer. Editable install: the v2 tests resolve docs/results/ relative to the repo root.
+      - run: python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+      - run: python -m pip install -e '.[dev,rl]'
       # Fast subset: skips the multi-episode closed-loop tests marked `slow`.
       - run: python -m pytest -p no:cacheprovider -q -m 'not slow'
       # Smoke run of the uncertainty benchmark on the tuning split (not evidence).
