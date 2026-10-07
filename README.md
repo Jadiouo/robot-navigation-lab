@@ -46,6 +46,19 @@ Recorded wall times (14 worker processes): tuning 31 min, baseline test suites 7
 
 Read these together with the caveats under *Limitations*: the planners did not get equal tuning effort, so "which planner is best" is hedged. The robust parts are the differences between conditions for a given planner and the failure signatures.
 
+**Caveat on finding 4 and the MCL-break table (added after the fact, outside the generated block).** In the `mclbreak` suite the hall goal sits close to the near wall, so a planner that stops in front of the wall can be scored a success even with a wrong pose estimate; the hall results therefore overstate how much localization matters. Details: [`FINDINGS.md`](docs/results/benchmark_v2/FINDINGS.md#disclosures), disclosure 4.
+
+## PPO v2 follow-up (2026-10): a pre-registered negative result
+
+On a second frozen benchmark (new test seeds 200000+, plus an unseen warehouse family), PPO v2 with 3 training seeds is significantly worse than `dwa` and `pp_stop` on both nominal and warehouse. Whether v2 is worse than v1, and which of its changes is responsible, cannot be decided with 3 seeds; under a failure rule frozen before training, the PPO line stops here.
+
+* Nominal success (GT / MCL pose, 240 scenarios): dwa 0.72 / 0.73, pp_stop 0.70 / 0.69, v1 seeds 0.53-0.63 / 0.55-0.66, v2 seeds 0.47-0.50 / 0.45-0.53. Warehouse: pp_stop 0.57 / 0.59, dwa 0.41 / 0.39, v2 0.19-0.26.
+* v2 removed v1's overspeeding but not its failures (nominal, 3 seeds, GT and MCL pooled): static collisions 14.6 % to 6.5 %, dynamic collisions 20.7 % to 32.3 %, stuck 4.4 % to 10.4 %; success 59.7 % to 48.3 %. At seed level (3 vs 3) the permutation test gives p = 0.10, so there is no claim that v2 is worse than v1.
+* Ablation without velocity features: higher success when training worked, but 1 of 3 ablation seeds collapsed to zero, so training stability cannot be compared.
+* Disclosed limits: bundled changes, asymmetric tuning, `mcl_aug` is exploratory and not standard Augmented MCL, hall results overstate localization effects.
+
+Full write-up: [`docs/results/benchmark_v2/FINDINGS.md`](docs/results/benchmark_v2/FINDINGS.md) (tables recomputed from the CSVs by `examples/v2_findings_numbers.py`); generated report: [`README_v2.md`](docs/results/benchmark_v2/README_v2.md).
+
 ## Pipeline
 
 ```
