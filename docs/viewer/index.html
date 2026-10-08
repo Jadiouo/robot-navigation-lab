@@ -226,7 +226,7 @@ footer a{color:var(--accent)}
     <div class="rows" id="mrows"></div>
   </div>
   <p class="sure"><b>多確定</b><span id="t3-sure"></span></p>
-  <p class="sure"><b>設計注意</b><span>這個基準的大廳終點貼近端牆：會在牆前停下的 planner，即使定位錯了也可能被判成功，所以大廳類結果<b>高估</b>了定位品質的影響（同一個注意事項也適用於前一份 P3 結果）。詳見 <a href="https://github.com/Jadiouo/robot-navigation-lab/blob/main/docs/results/benchmark_v2/FINDINGS.md">FINDINGS.md</a>。</span></p>
+  <p class="sure"><b>設計注意</b><span>這個基準的大廳終點貼近端牆：會在牆前停下的 planner，即使定位錯了也可能被判成功，這會讓 MCL 臂偏高，所以大廳類結果<b>低估</b>了定位失效造成的損失（同一個注意事項也適用於前一份 P3 結果）。探索性診斷（僅 tuning seed 0–59）：舊 hall/odom_bias 的 MCL 成功 134 次全部是假成功（最後 10 s 定位誤差 &gt; 1 m）；改用終點離端牆 ≥ 15 m 的 hall_v3 加嚴格判定後，MCL 成功率約 0.10（GT 臂仍 240/240）；hall_v3 路徑較短（約 23–26 m vs 約 47 m），兩者不完全可比（<a href="https://github.com/Jadiouo/robot-navigation-lab/blob/main/docs/results/hall_fix.md">hall_fix.md</a>）。假成功也不只出現在大廳：里程計 speed_scale 1.1–1.3 時，非大廳 MCL 成功中約 62–100% 最後 10 s 定位誤差 &gt; 1 m（探索性）。詳見 <a href="https://github.com/Jadiouo/robot-navigation-lab/blob/main/docs/results/benchmark_v2/FINDINGS.md">FINDINGS.md</a>。</span></p>
 </section>
 
 <!-- 4. replay -->

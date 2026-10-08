@@ -1,6 +1,6 @@
 """``hall_v3``: the featureless hall with start and goal kept away from both end walls.
 
-Problem (notes/DEVLOG.md 10-07): in ``hall`` the start is sampled in x < 8 m and the goal in x > 52 m, i.e. the goal sits
+Problem (see docs/results/hall_fix.md): in ``hall`` the start is sampled in x < 8 m and the goal in x > 52 m, i.e. the goal sits
 ~5 m from the end wall.  A planner whose pose estimate is wrong (MCL flips 180 deg near the symmetric end walls) still drives
 straight, is slowed by the wall in front of it, and stops inside the 2 m true-position tolerance: a false success.
 
