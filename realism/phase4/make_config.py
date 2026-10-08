@@ -51,6 +51,15 @@ def main(out):
     p["controller_server"]["ros__parameters"]["FollowPath"] = DWB
     # BT action-node ack timeout is in ms (stock 20): the Phase-0 "Timed out while waiting for action server to acknowledge"
     p["bt_navigator"]["ros__parameters"]["default_server_timeout"] = 1000
+    # Exploratory override (addendum 1): P4_AMCL_OVERRIDE="key=value,key=value" edits existing amcl ros__parameters (float values).
+    # Unset/empty (default) => no change; output is byte-identical to the main experiment.
+    ov = os.environ.get("P4_AMCL_OVERRIDE", "").strip()
+    if ov:
+        ap = p["amcl"]["ros__parameters"]
+        for kv in ov.split(","):
+            k, v = kv.split("=")
+            assert k in ap and isinstance(ap[k], (int, float)) and not isinstance(ap[k], bool), k
+            ap[k] = float(v)
     yaml.safe_dump(p, open(f"{out}/nav2_params_dwb.yaml", "w"), sort_keys=False)
 
 
