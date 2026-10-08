@@ -2,8 +2,8 @@
 """Robust sequential episode runner (run inside ONE gpujob, ROS env sourced by run_pilot.sh).
 
 run_episodes.py OUTDIR PLAN  where PLAN = "S:NNN,S:NNN,..."  (S = odometry scale, NNN = episode number)
-  episode id   = gzB-pilot-NNN
-  scenario seed= 900000 + (NNN % 100)   (hall_v3 sampler of navlab.v3.worlds; NNN and NNN+100 share a scenario => paired S)
+  episode id   = $P4_ID_PREFIX-NNN (default gzB-pilot)
+  scenario seed= $P4_SEED_BASE (default 900000) + (NNN % 100)   (hall_v3 sampler of navlab.v3.worlds; NNN and NNN+100 share a scenario => paired S)
 Each episode: fresh stack (gz + Nav2 + injector); up to MAX_RETRY=2 restarts on infrastructure failure
 (startup failure, action-server-ack timeout in the BT, robot never moved).  One JSON line per episode -> OUTDIR/episodes.jsonl
 """
@@ -14,6 +14,8 @@ import hall_world, make_config, stack
 OUT, PLAN = sys.argv[1], sys.argv[2]
 DOMAIN = int(os.environ.get("P4_DOMAIN", "84"))
 MAX_RETRY = 2
+ID_PREFIX = os.environ.get("P4_ID_PREFIX", "gzB-pilot")   # main experiment: gzB-main
+SEED_BASE = int(os.environ.get("P4_SEED_BASE", "900000"))  # main experiment: 910000
 VMAX = 0.40
 os.makedirs(OUT, exist_ok=True)
 cfg = f"{OUT}/cfg"; make_config.main(cfg)
@@ -54,7 +56,7 @@ def attempt(eid, S, seed, k):
 
 for item in PLAN.split(","):
     Ss, nn = item.split(":"); S = float(Ss); nnn = int(nn)
-    eid = f"gzB-pilot-{nnn:03d}"; seed = 900000 + nnn % 100
+    eid = f"{ID_PREFIX}-{nnn:03d}"; seed = SEED_BASE + nnn % 100
     attempts = []; t_ep = time.time()
     for k in range(MAX_RETRY + 1):
         scen, c, reason, wall = attempt(eid, S, seed, k)
