@@ -1,7 +1,7 @@
 # Realism Phase 4 (hall, minimal): Gazebo + Nav2 AMCL under odometry scale bias S
 
 Question: does an unmodelled odometry speed-scale bias S make the real Nav2 + AMCL stack declare arrival while truly far
-from the goal ("false arrival"), as the 2D simulator shows (S=1.10, MCL FAR@2.0 ~ 0.5)?
+from the goal ("false arrival"), as it does in the 2D simulator?
 
 ## Files
 | file | role |
