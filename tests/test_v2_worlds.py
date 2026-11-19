@@ -78,9 +78,9 @@ def test_warehouse_valid_and_reliable_on_tuning_range():
     assert failures / 200 < 0.01
 
 
-def test_warehouse_qa_pngs_written():
+def test_warehouse_qa_pngs_written(tmp_path):
     from navlab.v2.qa import plot_warehouse
-    out = Path(__file__).resolve().parents[1] / "notes" / "v2_qa"
+    out = tmp_path / "v2_qa"
     for s in range(12):
         assert plot_warehouse(s, out).stat().st_size > 1000
 
