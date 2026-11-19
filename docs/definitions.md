@@ -34,7 +34,7 @@ Source: `src/navlab/v3b/analysis.py` (module docstring) and `src/navlab/v3b/epis
 
 The v3b arms (MCL, scale-aware BA-MCL, odometry-compensated MCL, AMCL-style, ground truth) and the odometer scale S are listed in `src/navlab/v3b/cells.py` and `src/navlab/v3b/faults.py`; the localizer classes are in `bamcl.py` and `amcl.py`. Episode records are one JSON line per (cell, seed) written by `src/navlab/v3b/runner.py` to a path the caller chooses; no such record file is committed in this repository.
 
-`realism/phase4/summarize.py` reports a third, Nav2-specific form: the share of episodes whose true goal distance exceeds R (R = 0.5, 1.0, 2.0), printed both among episodes where Nav2 itself reported SUCCEEDED and among all episodes. The stack's own goal checker (estimated pose within 0.25 m) plays the role of "declared"; see `realism/phase4/DESIGN.md`. It is closest to B but is not computed by `navlab.v3b.analysis`.
+`realism/phase4/summarize.py` reports a third, Nav2-specific form: the number of episodes where Nav2 itself reported SUCCEEDED while the true goal distance exceeds R (R = 0.5, 1.0, 2.0), printed as a share of the SUCCEEDED episodes and as a share of all episodes. The stack's own goal checker (estimated pose within 0.25 m) plays the role of "declared"; see `realism/phase4/DESIGN.md`. It is closest to B but is not computed by `navlab.v3b.analysis`.
 
 ## Why the numbers cannot be compared
 
