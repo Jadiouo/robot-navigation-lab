@@ -19,7 +19,7 @@ else
   STEPS=8000000; MAXH_AV=6.0; MAXH_NV=7.0; VAL_EVERY=500000; TRAIN_EXTRA=(); SEL_EXTRA=()
 fi
 WORKERS_TRAIN=4; WORKERS_EVAL=14
-# learner device for BOTH arms (consistent recipe): V2_DEVICE=cpu|cuda|auto (default cpu: this machine has one shared GPU, GPU work goes through gpujob).
+# learner device for BOTH arms (consistent recipe): V2_DEVICE=cpu|cuda|auto (default cpu).
 # Evaluation stages (select / benchmark-v2 / finalize) are numpy-only; CUDA is hidden from them anyway.
 DEVICE=${V2_DEVICE:-cpu}
 mkdir -p "$OUT/logs"
