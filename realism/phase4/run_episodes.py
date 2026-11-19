@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Robust sequential episode runner (run inside ONE gpujob, ROS env sourced by run_pilot.sh).
+"""Robust sequential episode runner (run as ONE GPU job, ROS env sourced by run_pilot.sh).
 
 run_episodes.py OUTDIR PLAN  where PLAN = "S:NNN,S:NNN,..."  (S = odometry scale, NNN = episode number)
   episode id   = $P4_ID_PREFIX-NNN (default gzB-pilot)

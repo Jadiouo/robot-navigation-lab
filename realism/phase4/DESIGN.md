@@ -11,7 +11,7 @@ from the goal ("false arrival"), as it does in the 2D simulator?
 | `odom_scale_node.py` | injector: `/odom_clean` -> linear velocity x S -> re-integrate -> `/odom` + TF odom->base_footprint |
 | `stack.py` | launch / process-tree teardown (kills by `GZ_PARTITION` in /proc/*/environ, never by name) |
 | `episode_client.py` | one attempt: readiness gates, goal, measurements |
-| `run_episodes.py`, `run_pilot.sh` | sequential episodes, retries, jsonl; `run_pilot.sh OUT "1.0:0,1.1:100,..."` goes inside ONE gpujob |
+| `run_episodes.py`, `run_pilot.sh` | sequential episodes, retries, jsonl; `run_pilot.sh OUT "1.0:0,1.1:100,..."` runs as ONE GPU job |
 | `verify_scale.py`, `run_verify.sh` | straight 5 m / 90 deg turn check of S |
 | `summarize.py` | rates, Wilson CIs, time estimate |
 

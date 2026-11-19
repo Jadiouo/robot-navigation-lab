@@ -1,7 +1,7 @@
 #!/bin/bash
 # usage: run_in_docker.sh OUTDIR [IMAGE]
 #  Runs 2 hall_v3 episodes in the container: gzB-docker-000 (S=1.00) and gzB-docker-100 (S=1.10); both use scenario seed 910000
-#  (same scenario as native gzB-main-1000). Local: submit through gpujob (it starts `gz sim`).
+#  (same scenario as native gzB-main-1000). Local: run as a single GPU job (it starts `gz sim`).
 #  Needs from the repo root: realism/phase4/ and src/navlab/ (hall_world.py imports navlab.v3.worlds).
 set -u
 OUT=$(realpath -m "${1:?OUTDIR}"); IMG=${2:-realism-phase4:jazzy}
