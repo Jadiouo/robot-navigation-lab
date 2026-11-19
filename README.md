@@ -6,7 +6,7 @@ A 2-D car-like robot navigates procedurally generated maps with a noisy LiDAR, b
 
 > As sensing noise, odometry bias, crowd density / speed and map mismatch increase, where and how does each navigation stack break?
 
-Four stacks (a pure-pursuit reference, pure pursuit with a stop rule, a car-like DWA, an MPPI planner) and a PPO-learned local planner are compared on the same frozen test scenarios, with paired statistics. The main benchmark runs on a CPU simulator written for this project, with no real-robot hardware. A small optional cross-check under `realism/` runs one hall scenario in Gazebo with the Nav2 AMCL localizer inside Docker (see *Beyond the main benchmark*); it needs ROS 2 and is not part of the tests.
+Four stacks (a pure-pursuit reference, pure pursuit with a stop rule, a car-like DWA, an MPPI planner) and a PPO-learned local planner are compared on the same frozen test scenarios, with paired statistics. The main benchmark runs on a CPU simulator written for this project, with no real-robot hardware. A small optional cross-check under `realism/` runs hall scenarios in Gazebo with the Nav2 AMCL localizer (Docker scripts are provided; the pilot launcher can also run directly on a ROS 2 Jazzy install; see *Beyond the main benchmark*); it needs ROS 2 and is not part of the tests.
 
 ## Summary of findings
 
@@ -59,7 +59,7 @@ On a second frozen benchmark (new test seeds 200000+, plus an unseen warehouse f
 
 Full write-up: [`docs/results/benchmark_v2/FINDINGS.md`](docs/results/benchmark_v2/FINDINGS.md) (tables recomputed from the CSVs by `examples/v2_findings_numbers.py`); generated report: [`README_v2.md`](docs/results/benchmark_v2/README_v2.md).
 
-## Beyond the main benchmark: arrival declared in the wrong place ("direction B")
+## Beyond the main benchmark: arrival declared in the wrong place
 
 The main benchmark scores success on the *true* pose. A separate line of work asks a different question: when odometry has a scale error, how often does the navigation stack decide it has arrived while it is actually far from the goal? That is called a "false arrival". **The repository contains two different definitions of it, with different code and different experiments; their numbers are not comparable.** [`docs/definitions.md`](docs/definitions.md) defines both and explains why.
 
@@ -68,9 +68,9 @@ The main benchmark scores success on the *true* pose. A separate line of work as
 | post-hoc false arrival (`false_arrival`) | `src/navlab/v3/` (`judge.py`), reported in [`docs/results/hall_fix.md`](docs/results/hall_fix.md) | an episode the runner scored as timeout or stuck, in which the recorded trace shows the planner believing it had arrived while the true pose was outside the tolerance |
 | stop-based false-arrival rate (FAR@R) | `src/navlab/v3b/`, `src/navlab/v3b_addendum1/` | the stack comes to rest with its estimated goal distance within R, but the true distance is larger than R |
 
-Neither definition is a change to the main benchmark above. The v3b and addendum code is provided with its tests; this repository does not include v3b result files, so you would produce them yourself with `navlab.v3b.runner` (output path given by the caller). The `src/navlab/v3b/*.py` sources are hash-locked: the runner records their SHA-256 (`navlab.v3b.runner.source_sha256`) in every result line, so editing them changes that hash.
+Neither definition is a change to the main benchmark above. The v3b and addendum code is provided with its tests; this repository does not include per-episode v3b result files (the few numbers in `realism/phase4/DESIGN.md` are noted below), so you would produce them yourself with `navlab.v3b.runner` (output path given by the caller). The runner records the SHA-256 of the `src/navlab/v3b/*.py` sources (`navlab.v3b.runner.source_sha256`) in every result line; nothing blocks edits to them, but a changed source gives new results a different hash from old ones.
 
-The `realism/` directory holds the infrastructure for repeating the hall experiment with a real navigation stack (ROS 2 Jazzy, Gazebo Harmonic, Nav2 AMCL, DWB) in a headless Docker image: `realism/docker/` builds the image, `realism/phase4/` has the world generator, an odometry-scale injector, the episode runner and a summary script, and `realism/phase4/DESIGN.md` documents the set-up and how it differs from the 2-D simulator. It is a pilot runner; it needs Docker and a long wall-clock time, and no results from it are published here.
+The `realism/` directory holds the infrastructure for repeating the hall experiment with a real navigation stack (ROS 2 Jazzy, Gazebo Harmonic, Nav2 AMCL, DWB) in a headless Docker image: `realism/docker/` builds the image, `realism/phase4/` has the world generator, an odometry-scale injector, the episode runner and a summary script, and `realism/phase4/DESIGN.md` documents the set-up and how it differs from the 2-D simulator. It is a pilot runner; it is meant to run in Docker (the launcher can also run directly on a ROS 2 Jazzy install) and needs a long wall-clock time. The repository has no per-episode result files for this experiment; `DESIGN.md` records the set-up, the numbers that verify the injector, and observations from a pilot.
 
 ## Pipeline
 
@@ -134,7 +134,7 @@ python3 -m venv .venv && .venv/bin/python -m pip install -e '.[dev,rl]'   # '.[d
 .venv/bin/python -m navlab.benchmark.readme_block --write                 # refresh the generated block above
 ```
 
-`'.[dev]'` installs pytest and pandas; `'.[rl]'` adds PyTorch, which `tests/test_v2_rl.py` imports directly (without it that file fails). `tests/test_learning.py` skips itself when PyTorch is missing. The full suite takes several minutes; add `-m 'not slow'` to skip the multi-episode closed-loop tests (this is what the CI job does). On a machine without a GPU, install CPU PyTorch first (`pip install torch --index-url https://download.pytorch.org/whl/cpu`). `-p no:metadata` only matters if a broken pytest plugin is installed.
+`'.[dev]'` installs pytest and pandas; `'.[rl]'` adds PyTorch, which `tests/test_v2_rl.py` needs (tests there import it or call the trainer, and fail without it). One test in `tests/test_learning.py` skips itself when PyTorch is missing. Add `-m 'not slow'` to skip the multi-episode closed-loop tests (this is what the CI job does). On a machine without a GPU, install CPU PyTorch first (`pip install torch --index-url https://download.pytorch.org/whl/cpu`). `-p no:metadata` disables the pytest-metadata plugin; the CI job does not use it.
 
 Full reproduction (tuning, freeze, test suites, report; the recorded run took the wall times listed in the findings block on 14 worker processes):
 
@@ -171,7 +171,7 @@ Full reproduction (tuning, freeze, test suites, report; the recorded run took th
 | `src/navlab/rl` | PPO local planner (features, NumPy policy, env, trainer, freeze) and frozen weights |
 | `src/navlab/v2` | second frozen benchmark: warehouse family, PPO v2 training and its freeze files |
 | `src/navlab/v3` | `hall_v3` world (goal away from the end wall) and the post-hoc arrival judge (definition A in [`docs/definitions.md`](docs/definitions.md)) |
-| `src/navlab/v3b`, `src/navlab/v3b_addendum1` | direction-B experiment code: episode with declaration records, odometry faults, localizers, cell table, runner, FAR@R analysis (definition B); `v3b` sources are hash-locked, see *Beyond the main benchmark* |
+| `src/navlab/v3b`, `src/navlab/v3b_addendum1` | stop-based false-arrival experiment code: episode with declaration records, odometry faults, localizers, cell table, runner, FAR@R analysis (definition B); the runner records a hash of the `v3b` sources, see *Beyond the main benchmark* |
 | `realism/` | optional Gazebo + Nav2 AMCL pilot infrastructure (Docker), see above |
 | `src/navlab/{planning,trajectory,control,evaluation,sim}` | classical A*/RRT*, trajectory and tracking controllers (components, and the original project) |
 | `docs/results/benchmark` | generated benchmark report, CSVs, figures, freeze artifacts |
